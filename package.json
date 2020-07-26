@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json.schemastore.org/package",
+    "name": "@kayahr/kaylib",
+    "version": "1.0.0",
+    "description": "TODO Write a description",
+    "keywords": [],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "publishConfig": {
+        "access": "public"
+    },
+    "author": {
+        "name": "Klaus Reimer",
+        "email": "k@ailis.de"
+    },
+    "scripts": {
+        "clean": "rimraf lib",
+        "compile": "tsc",
+        "watch": "tsc -w",
+        "check": "jest",
+        "coverage": "jest --coverage",
+        "doc": "typedoc --excludeNotExported --excludePrivate --mode file --includes doc --out doc/api src/main ../../node_modules/**/*.d.ts",
+        "lint": "eslint --max-warnings 0 --ext .ts src",
+        "cspell": "cspell '**/*'",
+        "prepare": "npm run -s clean && npm run -s compile",
+        "test": "npm run -s cspell && npm run -s lint && npm run -s check"
+    },
+    "files": [
+        "lib/main/",
+        "src/main/"
+    ],
+    "jest": {
+        "projects": [
+            {
+                "displayName": "node",
+                "testEnvironment": "jest-environment-node-single-context",
+                "testRunner": "jest-circus/runner",
+                "testMatch": [
+                    "<rootDir>/lib/test/**/*.test.js"
+                ]
+            },
+            {
+                "displayName": "electron",
+                "runner": "@jest-runner/electron",
+                "testEnvironment": "@jest-runner/electron/environment",
+                "testRunner": "jest-circus/runner",
+                "testMatch": [
+                    "<rootDir>/lib/test/**/*.test.js"
+                ]
+            }
+        ],
+        "collectCoverageFrom": [
+            "<rootDir>/lib/main/**/*.js"
+        ]
+    },
+    "devDependencies": {
+        "@jest-runner/electron": "3.0.0",
+        "@kayahr/eslint-config": "1.0.0",
+        "@types/jest": "26.0.7",
+        "@typescript-eslint/eslint-plugin": "3.7.0",
+        "@typescript-eslint/parser": "3.7.0",
+        "chai": "4.2.0",
+        "cspell": "4.0.63",
+        "electron": "9.1.1",
+        "eslint": "7.5.0",
+        "eslint-plugin-deprecation": "1.1.0",
+        "eslint-plugin-simple-import-sort": "5.0.3",
+        "jest": "26.1.0",
+        "jest-circus": "26.1.0",
+        "jest-environment-node-single-context": "26.1.0",
+        "jest-extended": "0.11.5",
+        "rimraf": "3.0.2",
+        "source-map-support": "0.5.19",
+        "typedoc": "0.17.8",
+        "typescript": "3.9.7"
+    },
+    "dependencies": {
+        "tslib": "^2.0.0"
+    }
+}
