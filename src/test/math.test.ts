@@ -3,7 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../main/math";
+import {
+    clamp, degrees, fract, mix, radians, roundEven, sanitizeDegrees, sanitizeRadians, smoothStep, step
+} from "../main/math";
 
 describe("math", () => {
     describe("fract", () => {
@@ -21,6 +23,28 @@ describe("math", () => {
         it("converts degrees to radians", () => {
             expect(radians(-45)).toBeCloseTo(-45 * Math.PI / 180);
             expect(radians(73.19)).toBeCloseTo(73.19 * Math.PI / 180);
+        });
+    });
+
+    describe("sanitizeRadians", () => {
+        it("sanitizes angle in radians", () => {
+            expect(sanitizeRadians(0)).toBeCloseTo(0);
+            expect(sanitizeRadians(Math.PI * 2)).toBeCloseTo(0);
+            expect(sanitizeRadians(Math.PI * 2 - 0.01)).toBeCloseTo(Math.PI * 2 - 0.01);
+            expect(sanitizeRadians(-0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
+            expect(sanitizeRadians(-Math.PI * 2 - 0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
+            expect(sanitizeRadians(radians(780.05))).toBeCloseTo(radians(60.05));
+        });
+    });
+
+    describe("sanitizeDegrees", () => {
+        it("sanitizes angle in degrees", () => {
+            expect(sanitizeDegrees(0)).toBeCloseTo(0);
+            expect(sanitizeDegrees(360)).toBeCloseTo(0);
+            expect(sanitizeDegrees(359.99)).toBeCloseTo(359.99);
+            expect(sanitizeDegrees(-0.05)).toBeCloseTo(359.95);
+            expect(sanitizeDegrees(-360.05)).toBeCloseTo(359.95);
+            expect(sanitizeDegrees(780.05)).toBeCloseTo(60.05);
         });
     });
 

@@ -37,6 +37,27 @@ export function degrees(radians: number): number {
 }
 
 /**
+ * Sanitizes an angle in radians so it is between 0 (inclusive) and 2*PI (exclusive).
+ *
+ * @param degrees - The angle to sanitize.
+ * @return The sanitized angle.
+ */
+export function sanitizeRadians(angle: number): number {
+    const pi2 = Math.PI * 2;
+    return ((angle % pi2) + pi2) % pi2;
+}
+
+/**
+ * Sanitizes an angle in degrees so it is between 0 (inclusive) and 360 (exclusive).
+ *
+ * @param degrees - The angle to sanitize.
+ * @return The sanitized angle.
+ */
+export function sanitizeDegrees(degrees: number): number {
+    return ((degrees % 360) + 360) % 360;
+}
+
+/**
  * Clamps a value to the given range.
  *
  * @param value - The value to clamp.

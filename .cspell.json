@@ -20,6 +20,7 @@
     "words": [
         "cloneable",
         "deserializable",
+        "deserializes",
         "Disableable",
         "downlevel",
         "Enableable",
