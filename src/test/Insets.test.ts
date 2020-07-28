@@ -3,8 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
+import "jest-extended";
 import "@kayahr/jest-matchers";
 
+import { IllegalArgumentException } from "../main/exception";
 import { Insets } from "../main/Insets";
 
 describe("Insets", () => {
@@ -49,6 +51,47 @@ describe("Insets", () => {
         });
     });
 
+    describe("fromInsets", () => {
+        it("creates insets from insets-like object", () => {
+            expect(Insets.fromInsets(new Insets(1, 2, 3, 4))).toEqual(new Insets(1, 2, 3, 4));
+        });
+    });
+
+    describe("fromString", () => {
+        it("parses insets from a string", () => {
+            expect(Insets.fromString(" 9px")).toEqual(new Insets(9, 9, 9, 9));
+            expect(Insets.fromString(" 1    4 ")).toEqual(new Insets(1, 4, 1, 4));
+            expect(Insets.fromString("1,2,3")).toEqual(new Insets(1, 2, 3, 2));
+            expect(Insets.fromString("+10.4% 9.8px -1.9em 0")).toEqual(new Insets(10.4, 9.8, -1.9, 0));
+        });
+        it("throws error when insets string is invalid", () => {
+            expect(() => Insets.fromString("+++")).toThrowWithMessage(IllegalArgumentException,
+                "Invalid insets string: +++");
+        });
+    });
+
+    describe("toString", () => {
+        it("returns string representation of the insets", () => {
+            expect(new Insets(1, 2, 3, 4).toString()).toBe("1 2 3 4");
+            expect(new Insets(1, 2, 1, 4).toString()).toBe("1 2 1 4");
+            expect(new Insets(1.2, -3.4, -50, 100.123).toString()).toBe("1.2 -3.4 -50 100.123");
+            expect(new Insets(1e21, 1e-6, 0, 0).toString()).toBe("1000000000000000000000 0.000001 0 0");
+        });
+        it("returns two component string representation of the insets", () => {
+            expect(new Insets(1, 2).toString()).toBe("1 2");
+        });
+        it("returns one component string representation of the insets", () => {
+            expect(new Insets(0).toString()).toBe("0");
+        });
+        it("includes given unit", () => {
+            expect(new Insets(1, 2, 3, 4).toString("px")).toBe("1px 2px 3px 4px");
+        });
+        it("allows configuring maximum fraction digits", () => {
+            expect(new Insets(1.23456789, 2.3456789, 3.456789, 4.56789).toString("%", 2))
+                .toBe("1.23% 2.35% 3.46% 4.57%");
+        });
+    });
+
     describe("getVertical", () => {
         it("returns the vertical insets", () => {
             expect(new Insets(2, 3, 4, 5).getVertical()).toBe(6);
@@ -61,13 +104,13 @@ describe("Insets", () => {
         });
     });
 
-    describe("isEmpty", () => {
-        it("checks if insets are empty", () => {
-            expect(new Insets(0).isEmpty()).toBe(true);
-            expect(new Insets(1, 0, 0, 0).isEmpty()).toBe(false);
-            expect(new Insets(0, 1, 0, 0).isEmpty()).toBe(false);
-            expect(new Insets(0, 0, 1, 0).isEmpty()).toBe(false);
-            expect(new Insets(0, 0, 0, 1).isEmpty()).toBe(false);
+    describe("isNull", () => {
+        it("checks if all insets are 0", () => {
+            expect(new Insets(0).isNull()).toBe(true);
+            expect(new Insets(1, 0, 0, 0).isNull()).toBe(false);
+            expect(new Insets(0, 1, 0, 0).isNull()).toBe(false);
+            expect(new Insets(0, 0, 1, 0).isNull()).toBe(false);
+            expect(new Insets(0, 0, 0, 1).isNull()).toBe(false);
         });
     });
 

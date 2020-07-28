@@ -3,8 +3,11 @@
  * See LICENSE.md for licensing information.
  */
 
+import "jest-extended";
+
+import { IllegalArgumentException } from "../main/exception";
 import {
-    capitalize, extractWords, toLowerCamelCase, toLowerDashCase, toLowerSnakeCase, toUpperCamelCase,
+    capitalize, extractWords, formatNumber, toLowerCamelCase, toLowerDashCase, toLowerSnakeCase, toUpperCamelCase,
     toUpperDashCase, toUpperSnakeCase
 } from "../main/string";
 
@@ -84,6 +87,34 @@ describe("string", () => {
             expect(toUpperCamelCase("foo_bar__baz")).toBe("FooBarBaz");
             expect(toUpperCamelCase("Foobar23")).toBe("Foobar23");
             expect(toUpperCamelCase("FooBarBaz")).toBe("FooBarBaz");
+        });
+    });
+
+    describe("formatNumber", () => {
+        it("throws exception when number is NaN", () => {
+            expect(() => formatNumber(NaN)).toThrowWithMessage(IllegalArgumentException,
+                "Unable to convert NaN to string");
+        });
+        it("throws exception when number is infinite", () => {
+            expect(() => formatNumber(Infinity)).toThrowWithMessage(IllegalArgumentException,
+                "Unable convert infinite value to string");
+            expect(() => formatNumber(-Infinity)).toThrowWithMessage(IllegalArgumentException,
+                "Unable convert infinite value to string");
+        });
+        it("formats numbers with default settings", () => {
+            expect(formatNumber(0)).toBe("0");
+            expect(formatNumber(-1)).toBe("-1");
+            expect(formatNumber(0.0000001)).toBe("0");
+            expect(formatNumber(0.000001)).toBe("0.000001");
+            expect(formatNumber(0.23456789)).toBe("0.234568");
+            expect(formatNumber(1.6e23)).toBe("160000000000000000000000");
+            expect(formatNumber(Number.MAX_VALUE).length).toBe(309);
+            expect(formatNumber(Number.MAX_SAFE_INTEGER)).toBe("9007199254740991");
+            expect(formatNumber(Number.MIN_SAFE_INTEGER)).toBe("-9007199254740991");
+        });
+        it("formats numbers with custom settings", () => {
+            expect(formatNumber(123456.123456, { locales: "de", maximumFractionDigits: 3, useGrouping: true }))
+                .toBe("123.456,123");
         });
     });
 });

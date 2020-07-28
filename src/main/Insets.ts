@@ -4,8 +4,10 @@
  */
 
 import { Equatable, isEqual } from "./Equatable";
+import { IllegalArgumentException } from "./exception";
 import { InsetsLike } from "./InsetsLike";
 import { Serializable } from "./Serializable";
+import { formatNumber } from "./string";
 
 /** JSON representation of insets. */
 export interface InsetsJSON {
@@ -42,6 +44,34 @@ export class Insets implements InsetsLike, Serializable<InsetsJSON>, Equatable {
         private readonly left: number = right
     ) {}
 
+    /**
+     * Creates new insets from the given insets-like object.
+     *
+     * @param insets - The object to copy the insets from.
+     * @return The created insets object.
+     */
+    public static fromInsets(insets: InsetsLike): Insets {
+        return new Insets(insets.getTop(), insets.getRight(), insets.getBottom(), insets.getLeft());
+    }
+
+    public static fromJSON(json: InsetsJSON): Insets {
+        return new Insets(json.top, json.right, json.bottom, json.left);
+    }
+
+    /**
+     * Parses insets from a string. The 1-4 components can be separated by any character/string which is not a number.
+     *
+     * @param s - The insets string to parse.
+     * @return The parsed insets.
+     */
+    public static fromString(s: string): Insets {
+        const values = s.trim().split(/[^-+0-9.]+/s, 4).filter(value => value !== "").map(value => +value);
+        if (values.length < 1 || values.some(value => isNaN(value))) {
+            throw new IllegalArgumentException("Invalid insets string: " + s);
+        }
+        return new Insets(values[0], values[1], values[2], values[3]);
+    }
+
     /** @inheritDoc */
     public toJSON(): InsetsJSON {
         return {
@@ -52,8 +82,29 @@ export class Insets implements InsetsLike, Serializable<InsetsJSON>, Equatable {
         };
     }
 
-    public static fromJSON(json: InsetsJSON): Insets {
-        return new Insets(json.top, json.right, json.bottom, json.left);
+    /**
+     * Returns string representation of the insets. An optional unit can be specified to generate a CSS compatible
+     * string with the unit `px` for example.
+     *
+     * @param unit                  - Optional unit to append to each inset. Defaults to empty string.
+     * @param maximumFractionDigits - The maximum number of fraction digits. Defaults to 6.
+     * @return The string representation.
+     */
+    public toString(unit: string = "", maximumFractionDigits: number = 6): string {
+        const top = formatNumber(this.top, { maximumFractionDigits });
+        const right = formatNumber(this.right, { maximumFractionDigits });
+        const bottom = formatNumber(this.bottom, { maximumFractionDigits });
+        const left = formatNumber(this.left, { maximumFractionDigits });
+        if (top === bottom) {
+            if (left === right) {
+                if (left === top) {
+                    return `${top}${unit}`;
+                } else {
+                    return `${top}${unit} ${right}${unit}`;
+                }
+            }
+        }
+        return `${top}${unit} ${right}${unit} ${bottom}${unit} ${left}${unit}`;
     }
 
     /** @inheritDoc */
@@ -106,7 +157,7 @@ export class Insets implements InsetsLike, Serializable<InsetsJSON>, Equatable {
      *
      * @return True if insets are empty, false if not.
      */
-    public isEmpty(): boolean {
+    public isNull(): boolean {
         return this.top === 0 && this.right === 0 && this.bottom === 0 && this.left === 0;
     }
 

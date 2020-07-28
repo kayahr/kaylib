@@ -3,6 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
+import { IllegalArgumentException } from "./exception";
+
 /**
  * Regular expression used to split words in a string. Words can be separated by dashes, underscores or white-spaces.
  * Switching from lower-case to upper-case also separates words.
@@ -94,4 +96,25 @@ export function toLowerCamelCase(s: string): string {
  */
 export function toUpperCamelCase(s: string): string {
     return extractWords(s).map(capitalize).join("");
+}
+
+/**
+ * Formats a number to a string. The returned string is never in scientific notation so the string may get
+ * pretty long. NaN und infinite numbers are rejected because they can't be represented as a numerical string.
+ *
+ * @param value   - The numeric value to convert.
+ * @param options - Optional number format options. Defaults to english fullwide locale, not using number grouping
+ *                  and using 6 maximum fraction digits.
+ * @return The numerical string.
+ */
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions & { locales?: string | string[] }):
+        string {
+    if (isNaN(value)) {
+        throw new IllegalArgumentException("Unable to convert NaN to string");
+    }
+    if (!isFinite(value)) {
+        throw new IllegalArgumentException("Unable convert infinite value to string");
+    }
+    return value.toLocaleString(options?.locales ?? [ "fullwide", "en" ],
+        { useGrouping: false, maximumFractionDigits: 6, ...options });
 }
