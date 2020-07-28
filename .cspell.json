@@ -25,6 +25,7 @@
         "downlevel",
         "Enableable",
         "fract",
+        "fullwide",
         "kayahr",
         "kaylib",
         "Mutex",
