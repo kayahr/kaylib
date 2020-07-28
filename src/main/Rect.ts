@@ -151,6 +151,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         return new Rect(this.left, this.top, this.height, this.width);
     }
 
+    /* TODO
     moveBy(left, top);
     moveByPoint(point);
 
@@ -166,5 +167,5 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
 
     addInsets(size);
     subInsets(size);
-
+    */
 }
