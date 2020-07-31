@@ -3,7 +3,6 @@
  * See LICENSE.md for licensing information.
  */
 
-import { LRUMap } from "../collection/LRUMap";
 import { createMethodDecorator } from "./decorator";
 import { getObjectId } from "./object";
 
@@ -43,74 +42,19 @@ export function createJoinedCacheKey(values: unknown[]): string {
 }
 
 /**
- * Type for cache decorator options passed to the [[cache]] decorator.
- */
-export type CacheOptions = {
-    /**
-     * The maximum number of results to cache for the different sets of method arguments. Not used when method has
-     * no arguments because then there always can be only one result. If method has arguments and no maximum size
-     * is defined then the cache can grow indefinitely and must be cleared manually.
-     */
-    maxSize?: number;
-};
-
-/** The result value cache. */
-let resultCache = new WeakMap<object, WeakMap<Function, Map<string, unknown>>>();
-
-/**
  * Decorator for caching method results. The method is only called on cache miss and then the returned result
  * is cached. Subsequent calls then return the cached result immediately without executing the method until the
- * cache is reset with [[resetResultCache]].
- *
- * @param options - Optional cache options.
+ * cache is reset with `delete obj.method`.
  */
-export const cacheResult = createMethodDecorator((target, propertyKey,
-        descriptor: TypedPropertyDescriptor<(...args: any[]) => any>, options: CacheOptions) => {
-    const origMethod = descriptor.value;
-    function newMethod(this: object, ...args: any[]): any {
-        let targetCache = resultCache.get(this);
-        if (!targetCache) {
-            targetCache = new WeakMap<object, Map<string, any>>();
-            resultCache.set(this, targetCache);
-        }
-        let methodCache = targetCache.get(newMethod);
-        if (!methodCache) {
-            methodCache = options.maxSize != null ? new LRUMap<string, any>(options.maxSize) : new Map<string, any>();
-            targetCache.set(newMethod, methodCache);
-        }
-        const cacheKey = createJoinedCacheKey(args);
-        if (methodCache.has(cacheKey)) {
-            return methodCache.get(cacheKey);
-        }
-        if (origMethod == null) {
-            throw new Error("Method not found");
-        }
-        const value = origMethod.apply(this, args) as unknown;
-        methodCache.set(cacheKey, value);
-        return value;
-    }
-    descriptor.value = newMethod;
+export const cacheResult = createMethodDecorator((target, propertyKey, descriptor:
+        TypedPropertyDescriptor<() => any>) => {
+    const origMethod = target[propertyKey];
+    descriptor.value = function() {
+        const origValue = origMethod.call(this) as unknown;
+        Object.defineProperty(this, propertyKey, {
+            configurable: true,
+            value: () => origValue
+        });
+        return origValue;
+    };
 });
-
-/**
- * Resets the result cache.
- *
- * @param target - Optional target object for which to reset the result cache. Resets the whole result cache if no
- *                 target object is specified.
- * @param method - Optional method for which to reset the result cache. Resets the cache for all methods of the target
- *                 object if not specified.
- */
-export function resetResultCache(target?: object, method?: Function): void {
-    if (target) {
-        if (method) {
-            const targetCache = resultCache.get(target);
-            if (targetCache) {
-                targetCache.delete(method);
-            }
-        } else {
-            resultCache.delete(target);
-        }
-    } else {
-        resultCache = new WeakMap<object, WeakMap<Function, Map<string, unknown>>>();
-    }
-}

@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { TypedArray } from "./types";
+import { TypedArray, WritableArrayLike } from "./types";
 
 /**
  * Checks whether the given object is an array like object providing a numeric length property.
@@ -109,4 +109,57 @@ export function concat<T extends TypedArray | unknown[]>(array1: T, ...moreArray
         }
         return <T>result;
     }
+}
+
+/**
+ * Swaps two elements within the given array.
+ *
+ * @param array - The array to swap entries within.
+ * @param i     - Index of first entry to swap.
+ * @param j     - Index of second entry to swap.
+ */
+export function swap(array: WritableArrayLike<unknown>, i: number, j: number): void {
+    const tmp = array[i];
+    array[i] = array[j];
+    array[j] = tmp;
+}
+
+/**
+ * Permutes the given array. The used algorithm also prevents duplicate permutations.
+ *
+ * @param values - The array to permute.
+ * @return The unique permutations of the given values.
+ */
+export function permute<T>(values: T[]): T[][] {
+    // Shortcuts. Return empty array when no values are given and one-and-only value if only one value is given
+    if (values.length === 0) {
+        return [];
+    } else if (values.length === 1) {
+        return [ values ];
+    }
+
+    // Generate array with sorted indices. Duplicate values are represented by the same index of the first duplicate
+    // value. This ensures that the permutation result does not contain duplicate permutations.
+    const indices = values.map(v => values.indexOf(v)).sort((a, b) => a - b);
+    const numIndices = indices.length;
+
+    const result: T[][] = [];
+    do {
+        result.push(indices.map(v => values[v]));
+        let i = numIndices - 2;
+        while (indices[i] >= indices[i + 1]) {
+            if (--i < 0) {
+                return result;
+            }
+        }
+        let j = numIndices - 1;
+        while (indices[i] >= indices[j]) {
+            --j;
+        }
+        swap(indices, i, j);
+        const length = (numIndices - (i + 1)) / 2;
+        for (let k = 0; k < length; k++) {
+            swap(indices, i + 1 + k, numIndices - 1 - k);
+        }
+    } while (true);
 }

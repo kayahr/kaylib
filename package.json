@@ -14,7 +14,7 @@
         "email": "k@ailis.de"
     },
     "scripts": {
-        "clean": "rimraf lib",
+        "clean": "rimraf lib coverage doc/api",
         "compile": "tsc",
         "watch": "tsc -w",
         "check": "jest",
@@ -64,6 +64,7 @@
         "chai": "4.2.0",
         "cspell": "4.0.63",
         "electron": "9.1.1",
+        "es-observable-tests": "0.3.0",
         "eslint": "7.5.0",
         "eslint-plugin-deprecation": "1.1.0",
         "eslint-plugin-simple-import-sort": "5.0.3",
@@ -73,6 +74,7 @@
         "jest-extended": "0.11.5",
         "rimraf": "3.0.2",
         "source-map-support": "0.5.19",
+        "steal": "2.2.4",
         "typedoc": "0.17.8",
         "typescript": "3.9.7"
     },

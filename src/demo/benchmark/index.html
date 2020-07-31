@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Benchmark</title>
+    <style>
+      canvas {
+        border: solid 1px #000;
+        background: #eee;
+        float: left;
+        margin-right: 1em;
+      }
+
+      #benchmarks {
+        display: grid;
+        grid-template-columns: min-content;
+        gap: 1em 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Benchmark</h1>
+    <canvas width="1024" height="512"></canvas>
+    <div id="benchmarks">
+      <button id="stop">Stop</button>
+    </div>
+    <script src="../../../node_modules/steal/steal.js" main="lib/demo/benchmark/benchmark"></script>
+  </body>
+</html>
