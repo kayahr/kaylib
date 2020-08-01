@@ -15,7 +15,7 @@ describe("PointLike", () => {
                 getY() { return 0; }
             })).toBe(true);
         });
-        it("returns false when object is not an Point-like", () => {
+        it("returns false when object is not a point-like", () => {
             expect(isPointLike([ 1, 2 ])).toBe(false);
             expect(isPointLike({})).toBe(false);
             expect(isPointLike(34)).toBe(false);

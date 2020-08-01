@@ -39,6 +39,9 @@ describe("Point", () => {
             expect(new Point(1.2, -3.4).toString()).toBe("1.2,-3.4");
             expect(new Point(1e21, 1e-6).toString()).toBe("1000000000000000000000,0.000001");
         });
+        it("supports setting maximum fraction digits", () => {
+            expect(new Point(1.234567890, 2.34567890).toString(3)).toBe("1.235,2.346");
+        });
     });
 
     describe("fromString", () => {

@@ -70,6 +70,42 @@ export namespace Direction {
     }
 
     /**
+     * Checks if direction is west, north-west or south-west.
+     *
+     * @return True if direction is west, north-west or south-west. False if not.
+     */
+    export function isWest(direction: Direction): boolean {
+        return (direction & Direction.WEST) !== 0;
+    }
+
+    /**
+     * Checks if direction is east, north-east or south-east.
+     *
+     * @return True if direction is east, north-east or south-east. False if not.
+     */
+    export function isEast(direction: Direction): boolean {
+        return (direction & Direction.EAST) !== 0;
+    }
+
+    /**
+     * Checks if direction is north, north-east or north-west.
+     *
+     * @return True if direction is north, north-east or north-west. False if not.
+     */
+    export function isNorth(direction: Direction): boolean {
+        return (direction & Direction.NORTH) !== 0;
+    }
+
+    /**
+     * Checks if direction is south, south-east or south-west.
+     *
+     * @return True if direction is south, south-east or south-west. False if not.
+     */
+    export function isSouth(direction: Direction): boolean {
+        return (direction & Direction.SOUTH) !== 0;
+    }
+
+    /**
      * Converts direction into an angle starting at north and going in 45 degrees step in clock-wise direction.
      *
      * @param direction - The direction.

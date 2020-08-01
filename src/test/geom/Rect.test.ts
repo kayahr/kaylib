@@ -1,0 +1,392 @@
+/*
+ * Copyright (C) 2020 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
+
+import "jest-extended";
+import "@kayahr/jest-matchers";
+
+import { Direction } from "../../main/geom/Direction";
+import { Point } from "../../main/geom/Point";
+import { PointLike } from "../../main/geom/PointLike";
+import { Rect } from "../../main/geom/Rect";
+import { RectLike } from "../../main/geom/RectLike";
+import { Size } from "../../main/geom/Size";
+import { SizeLike } from "../../main/geom/SizeLike";
+import { IllegalArgumentException } from "../../main/util/exception";
+
+describe("Rect", () => {
+    describe("constructor", () => {
+        it("be default sets a rectangle with north-west anchor", () => {
+            const rect = new Rect(20, 10, 100, 50);
+            expect(rect.getLeft()).toBe(20);
+            expect(rect.getTop()).toBe(10);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("correctly initializes rectangle with south-east anchor", () => {
+            const rect = new Rect(20, 10, 100, 50, Direction.SOUTH_EAST);
+            expect(rect.getLeft()).toBe(-80);
+            expect(rect.getTop()).toBe(-40);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("correctly initializes rectangle with center anchor", () => {
+            const rect = new Rect(20, 10, 100, 50, Direction.CENTER);
+            expect(rect.getLeft()).toBe(-30);
+            expect(rect.getTop()).toBe(-15);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("corrects negative width height with north-west anchor", () => {
+            const rect = new Rect(20, 10, -100, -50, Direction.NORTH_WEST);
+            expect(rect.getLeft()).toBe(-80);
+            expect(rect.getTop()).toBe(-40);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("corrects negative width height with south-east anchor", () => {
+            const rect = new Rect(20, 10, -100, -50, Direction.SOUTH_EAST);
+            expect(rect.getLeft()).toBe(20);
+            expect(rect.getTop()).toBe(10);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("corrects negative width height with center anchor", () => {
+            const rect = new Rect(20, 10, -100, -50, Direction.CENTER);
+            expect(rect.getLeft()).toBe(-30);
+            expect(rect.getTop()).toBe(-15);
+            expect(rect.getWidth()).toBe(100);
+            expect(rect.getHeight()).toBe(50);
+        });
+        it("Allows 0 size", () => {
+            const rect = new Rect(20, 10, 0, 0);
+            expect(rect.getLeft()).toBe(20);
+            expect(rect.getTop()).toBe(10);
+            expect(rect.getWidth()).toBe(0);
+            expect(rect.getHeight()).toBe(0);
+        });
+    });
+
+    describe("fromRect", () => {
+        it("creates rectangle from rectangle like object", () => {
+            const rect = Rect.fromRect({
+                getLeft: () => 1,
+                getTop: () => 2,
+                getWidth: () => 3,
+                getHeight: () => 4
+            } as RectLike);
+            expect(rect).toEqual(new Rect(1, 2, 3, 4));
+        });
+    });
+
+    describe("fromPoints", () => {
+        it("creates rectangle from two points in top-left to bottom-right order", () => {
+            const rect = Rect.fromPoints(
+                { getX: () => 10, getY: () => 20 } as PointLike,
+                { getX: () => 110, getY: () => 70 } as PointLike
+            );
+            expect(rect).toEqual(new Rect(10, 20, 100, 50));
+        });
+        it("creates rectangle from two points in bottom-right to top-left order", () => {
+            const rect = Rect.fromPoints(
+                { getX: () => 110, getY: () => 70 } as PointLike,
+                { getX: () => 10, getY: () => 20 } as PointLike
+            );
+            expect(rect).toEqual(new Rect(10, 20, 100, 50));
+        });
+    });
+
+    describe("fromSize", () => {
+        it("creates rectangle from size with default position 0,0", () => {
+            const rect = Rect.fromSize(
+                { getWidth: () => 100, getHeight: () => 50 } as SizeLike
+            );
+            expect(rect).toEqual(new Rect(0, 0, 100, 50));
+        });
+        it("creates rectangle from negative size", () => {
+            const rect = Rect.fromSize(
+                { getWidth: () => -100, getHeight: () => -50 } as SizeLike
+            );
+            expect(rect).toEqual(new Rect(-100, -50, 100, 50));
+        });
+        it("creates rectangle from size and position with default north-west anchor", () => {
+            const rect = Rect.fromSize(
+                { getWidth: () => 100, getHeight: () => 50 } as SizeLike,
+                { getX: () => 10, getY: () => 20 } as PointLike
+            );
+            expect(rect).toEqual(new Rect(10, 20, 100, 50));
+        });
+        it("creates rectangle from size and position with custom anchor", () => {
+            const rect = Rect.fromSize(
+                { getWidth: () => 100, getHeight: () => 50 } as SizeLike,
+                { getX: () => 10, getY: () => 20 } as PointLike,
+                Direction.CENTER
+            );
+            expect(rect).toEqual(new Rect(-40, -5, 100, 50));
+        });
+    });
+
+    describe("toJSON", () => {
+        it("returns JSON representation of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).toJSON()).toEqual({
+                left: 1,
+                top: 2,
+                width: 3,
+                height: 4
+            });
+        });
+    });
+
+    describe("toString", () => {
+        it("returns string representation of the rectangle", () => {
+            expect(new Rect(10, 20, 1024, 768).toString()).toBe("1024x768+10+20");
+            expect(new Rect(5.6, -7.8, 1.2, 3.4).toString()).toBe("1.2x3.4+5.6-7.8");
+            expect(new Rect(-1e21, -1e-6, 1e21, 1e-6).toString()).toBe(
+                "1000000000000000000000x0.000001-1000000000000000000000-0.000001");
+        });
+        it("supports setting maximum fraction digits", () => {
+            expect(new Rect(1.234567890, 2.34567890, 3.4567890, 4.567890).toString(3)).toBe("3.457x4.568+1.235+2.346");
+        });
+    });
+
+    describe("fromString", () => {
+        it("creates rectangle from a string", () => {
+            expect(Rect.fromString("103.1 x 9-1-2")).toEqual(new Rect(-1, -2, 103.1, 9));
+            expect(Rect.fromString(" 1024 768 1 2")).toEqual(new Rect(1, 2, 1024, 768));
+            expect(Rect.fromString("1  /  2 -3 _ 4")).toEqual(new Rect(-3, 4, 1, 2));
+            expect(Rect.fromString("1000000000000000000000x0.000001-1000000000000000000000-0.000001")).toEqual(
+                new Rect(-1000000000000000000000, -0.000001, 1000000000000000000000, 0.000001));
+        });
+        it("throws error when rectangle string is invalid", () => {
+            expect(() => Rect.fromString("+++")).toThrowWithMessage(IllegalArgumentException,
+                "Invalid rectangle string: +++");
+        });
+    });
+
+    describe("fromJSON", () => {
+        it("deserializes rectangle from JSON", () => {
+            expect(Rect.fromJSON({ left: 1, top: 2, width: 3, height: 4 })).toEqual(new Rect(1, 2, 3, 4));
+        });
+    });
+
+    describe("isNull", () => {
+        it("checks if all rectangle components are 0", () => {
+            expect(new Rect(0, 0, 0, 0).isNull()).toBe(true);
+            expect(new Rect(0, 1, 0, 0).isNull()).toBe(false);
+            expect(new Rect(0, 0, 1, 0).isNull()).toBe(false);
+            expect(new Rect(0, 0, 0, 1).isNull()).toBe(false);
+            expect(new Rect(-1, 0, 0, 0).isNull()).toBe(false);
+            expect(new Rect(0, -1, 0, 0).isNull()).toBe(false);
+            expect(new Rect(0, 0, -1, 0).isNull()).toBe(false);
+            expect(new Rect(0, 0, 0, -1).isNull()).toBe(false);
+        });
+    });
+
+    describe("transpose", () => {
+        it("swaps X and Y coordinates and width and height", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            const transposed = rect.transpose();
+            expect(transposed).toEqual(new Rect(2, 1, 4, 3));
+            expect(transposed).not.toBe(rect);
+        });
+    });
+
+     describe("equals", () => {
+        it("checks if rectangles are equal", () => {
+            expect(new Rect(1, 2, 3, 4)).toBeEquatable([
+                new Rect(1, 2, 3, 4),
+                new Rect(1, 6, 3, -4)
+            ], [
+                new Rect(9, 2, 3, 4),
+                new Rect(1, 9, 3, 4),
+                new Rect(1, 2, 9, 4),
+                new Rect(1, 2, 3, 9)
+            ]);
+        });
+    });
+
+    describe("getX", () => {
+        it("returns X position for given anchor", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getX()).toBe(1);
+            expect(rect.getX(Direction.NORTH_WEST)).toBe(1);
+            expect(rect.getX(Direction.WEST)).toBe(1);
+            expect(rect.getX(Direction.SOUTH_WEST)).toBe(1);
+            expect(rect.getX(Direction.NORTH)).toBe(2.5);
+            expect(rect.getX(Direction.CENTER)).toBe(2.5);
+            expect(rect.getX(Direction.SOUTH)).toBe(2.5);
+            expect(rect.getX(Direction.NORTH_EAST)).toBe(4);
+            expect(rect.getX(Direction.EAST)).toBe(4);
+            expect(rect.getX(Direction.SOUTH_EAST)).toBe(4);
+        });
+    });
+
+    describe("getY", () => {
+        it("returns Y position for given anchor", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getY()).toBe(2);
+            expect(rect.getY(Direction.NORTH_WEST)).toBe(2);
+            expect(rect.getY(Direction.NORTH)).toBe(2);
+            expect(rect.getY(Direction.NORTH_EAST)).toBe(2);
+            expect(rect.getY(Direction.WEST)).toBe(4);
+            expect(rect.getY(Direction.CENTER)).toBe(4);
+            expect(rect.getY(Direction.EAST)).toBe(4);
+            expect(rect.getY(Direction.SOUTH_WEST)).toBe(6);
+            expect(rect.getY(Direction.SOUTH)).toBe(6);
+            expect(rect.getY(Direction.SOUTH_EAST)).toBe(6);
+        });
+    });
+
+    describe("getLeft", () => {
+        it("returns the left edge of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getLeft()).toBe(1);
+        });
+    });
+
+    describe("getTop", () => {
+        it("returns the top edge of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getTop()).toBe(2);
+        });
+    });
+
+    describe("getWidth", () => {
+        it("returns the width of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getWidth()).toBe(3);
+        });
+    });
+
+    describe("getHeight", () => {
+        it("returns height of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getHeight()).toBe(4);
+        });
+    });
+
+    describe("getTopLeft", () => {
+        it("returns the top left corner of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getTopLeft()).toEqual(new Point(1, 2));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getTopLeft()).toBe(rect.getTopLeft());
+        });
+    });
+
+    describe("getTopRight", () => {
+        it("returns the top right corner of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getTopRight()).toEqual(new Point(4, 2));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getTopRight()).toBe(rect.getTopRight());
+        });
+    });
+
+    describe("getBottomRight", () => {
+        it("returns the bottom right corner of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getBottomRight()).toEqual(new Point(4, 6));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getBottomRight()).toBe(rect.getBottomRight());
+        });
+    });
+
+    describe("getBottomLeft", () => {
+        it("returns the bottom left corner of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getBottomLeft()).toEqual(new Point(1, 6));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getBottomLeft()).toBe(rect.getBottomLeft());
+        });
+    });
+
+    describe("getCenter", () => {
+        it("returns the center of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getCenter()).toEqual(new Point(2.5, 4));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getCenter()).toBe(rect.getCenter());
+        });
+    });
+
+    describe("getCenterX", () => {
+        it("returns the horizontal center of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getCenterX()).toBe(2.5);
+        });
+    });
+
+    describe("getCenterY", () => {
+        it("returns the vertical center of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getCenterY()).toBe(4);
+        });
+    });
+
+    describe("getSize", () => {
+        it("returns the size of the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).getSize()).toEqual(new Size(3, 4));
+        });
+        it("caches the result", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getSize()).toBe(rect.getSize());
+        });
+    });
+
+    describe("isEmpty", () => {
+        it("returns true when rectangle is empty, false if not", () => {
+            expect(new Rect(1, 2, 0, 0).isEmpty()).toBe(true);
+            expect(new Rect(1, 2, -1, -1).isEmpty()).toBe(false);
+            expect(new Rect(1, 2, 1, 0).isEmpty()).toBe(true);
+            expect(new Rect(1, 2, 0, 1).isEmpty()).toBe(true);
+            expect(new Rect(1, 2, 1, 1).isEmpty()).toBe(false);
+        });
+    });
+
+    describe("contains", () => {
+        it("checks if point is within rectangle", () => {
+            expect(new Rect(10, 20, 100, 50).contains(10, 20)).toBe(true);
+            expect(new Rect(10, 20, 100, 50).contains(110, 70)).toBe(true);
+            expect(new Rect(10, 20, 100, 50).contains(9, 20)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(10, 19)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(111, 70)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(110, 71)).toBe(false);
+        });
+        it("checks if rectangle is within rectangle", () => {
+            expect(new Rect(10, 20, 100, 50).contains(10, 20, 100, 50)).toBe(true);
+            expect(new Rect(10, 20, 100, 50).contains(9, 20, 100, 50)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(9, 19, 100, 50)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(10, 20, 101, 50)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(10, 20, 100, 51)).toBe(false);
+            expect(new Rect(10, 20, 100, 50).contains(110, 70, -100, -50)).toBe(true);
+            expect(new Rect(10, 20, 100, 50).contains(110, 70, 100, 50, Direction.SOUTH_EAST)).toBe(true);
+        });
+    });
+
+    describe("containsPoint", () => {
+        it("checks if point is within rectangle", () => {
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 10, getY: () => 20 })).toBe(true);
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 110, getY: () => 70 })).toBe(true);
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 9, getY: () => 20 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 10, getY: () => 19 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 111, getY: () => 70 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsPoint({ getX: () => 110, getY: () => 71 })).toBe(false);
+        });
+    });
+
+    describe("contains", () => {
+        it("checks if rectangle is within rectangle", () => {
+            expect(new Rect(10, 20, 100, 50).containsRect(
+                { getLeft: () => 10, getTop: () => 20, getWidth: () => 100, getHeight: () => 50 })).toBe(true);
+            expect(new Rect(10, 20, 100, 50).containsRect(
+                { getLeft: () => 9, getTop: () => 20, getWidth: () => 100, getHeight: () => 50 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsRect(
+                { getLeft: () => 9, getTop: () => 19, getWidth: () => 100, getHeight: () => 50 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsRect(
+                { getLeft: () => 10, getTop: () => 20, getWidth: () => 101, getHeight: () => 50 })).toBe(false);
+            expect(new Rect(10, 20, 100, 50).containsRect(
+                { getLeft: () => 10, getTop: () => 20, getWidth: () => 100, getHeight: () => 51 })).toBe(false);
+        });
+    });
+});

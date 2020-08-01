@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2020 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
+
 import { benchmark, BenchmarkCandidate, BenchmarkResult } from "../../main/util/benchmark";
 import { formatNumber } from "../../main/util/string";
 import * as benchmarks from "./benchmarks";

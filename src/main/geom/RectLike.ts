@@ -6,7 +6,7 @@
 import { isSizeLike, SizeLike } from "./SizeLike";
 
 /**
- * Interface for rectangle-like objects.
+ * Interface for rectangle-like objects. Width and height must always be 0 or positive.
  */
 export interface RectLike extends SizeLike {
     /**

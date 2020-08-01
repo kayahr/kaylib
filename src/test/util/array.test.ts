@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { concat, findLast, findLastIndex, isArrayLike } from "../../main/util/array";
+import { concat, findLast, findLastIndex, isArrayLike, permute, swap } from "../../main/util/array";
 
 describe("array", () => {
     describe("isArrayLike", () => {
@@ -184,6 +184,48 @@ describe("array", () => {
                 return value < 3;
             }, ctx);
             expect(v).toBe(1);
+        });
+    });
+
+    describe("swap", () => {
+        it("swaps two elements within an array", () => {
+            const a = [ 1, 2, 3, 4 ];
+            swap(a, 0, 3);
+            expect(a).toEqual([ 4, 2, 3, 1 ]);
+        });
+        it("works with typed arrays", () => {
+            const a = new Uint8Array([ 1, 2, 3, 4 ]);
+            swap(a, 0, 3);
+            expect(a).toEqual(new Uint8Array([ 4, 2, 3, 1 ]));
+        });
+    });
+
+    describe("permute", () => {
+        it("creates a permutation of the given values", () => {
+            expect(permute([ 9, 1, 3 ])).toEqual([
+                [ 9, 1, 3 ],
+                [ 9, 3, 1 ],
+                [ 1, 9, 3 ],
+                [ 1, 3, 9 ],
+                [ 3, 9, 1 ],
+                [ 3, 1, 9 ]
+            ]);
+        });
+        it("does not create duplicate permutations", () => {
+            expect(permute([ 9, 3, 3 ])).toEqual([
+                [ 9, 3, 3 ],
+                [ 3, 9, 3 ],
+                [ 3, 3, 9 ]
+            ]);
+        });
+        it("returns empty array when no values are given", () => {
+            expect(permute([])).toEqual([]);
+        });
+        it("returns just one permutation when only a single value is given", () => {
+            expect(permute([ 1 ])).toEqual([ [ 1 ] ]);
+        });
+        it("returns just one permutation when only the same values are given", () => {
+            expect(permute([ 2, 2, 2 ])).toEqual([ [ 2, 2, 2 ] ]);
         });
     });
 });

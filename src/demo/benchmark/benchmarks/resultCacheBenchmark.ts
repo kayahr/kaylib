@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2020 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
+
 import { Point } from "../../../main/geom/Point";
 import { BenchmarkCandidate } from "../../../main/util/benchmark";
 import { cacheResult } from "../../../main/util/cache";

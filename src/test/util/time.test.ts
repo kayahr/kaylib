@@ -9,11 +9,12 @@ describe("time", () => {
     describe("getHRTime", () => {
         it("returns a high resolution timestamp", async () => {
             const a = Date.now();
-            await sleep(1);
+            await sleep(100);
             const b = getHRTime();
+            await sleep(1);
             const c = getHRTime();
             expect(b).toBeGreaterThan(a);
-            expect(c).toBeGreaterThanOrEqual(b);
+            expect(c).toBeGreaterThan(b);
         });
     });
 
