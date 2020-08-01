@@ -7,7 +7,7 @@ class LRUMapEntry<K, V> {
     public constructor(
         public readonly key: K,
         public readonly value: V,
-        public previous: LRUMapEntry<K, V> | null = null,
+        public previous: LRUMapEntry<K, V> | null,
         public next: LRUMapEntry<K, V> | null = null
     ) {}
 }
@@ -28,13 +28,22 @@ export class LRUMap<K, V> implements Map<K, V> {
      * @param maxSize - The maximum number of entries in the map.
      * @param entries - Optional initial map entries.
      */
-    public constructor(maxSize: number, entries?: ReadonlyArray<[K, V]> | null) {
+    public constructor(maxSize: number, entries?: ReadonlyArray<readonly [K, V]> | null) {
         this.maxSize = maxSize;
         if (entries) {
             for (const entry of entries) {
                 this.set(entry[0], entry[1]);
             }
         }
+    }
+
+    /**
+     * Returns the maximum size of the map.
+     *
+     * @return The maximum size.
+     */
+    public getMaxSize(): number {
+        return this.maxSize;
     }
 
     /** @inheritDoc */
@@ -51,17 +60,17 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public delete(key: K): boolean {
         const entry = this.index.get(key);
-        if (entry) {
+        if (entry != null) {
             if (this.last === entry) {
                 this.last = entry.previous;
             }
             if (this.first === entry) {
                 this.first = entry.next;
             }
-            if (entry.previous) {
+            if (entry.previous != null) {
                 entry.previous.next = entry.next;
             }
-            if (entry.next) {
+            if (entry.next != null) {
                 entry.next.previous = entry.previous;
             }
             this.index.delete(key);
@@ -81,9 +90,15 @@ export class LRUMap<K, V> implements Map<K, V> {
     }
 
     private touch(entry: LRUMapEntry<K, V>): void {
-        if (this.last && this.last !== entry) {
-            if (entry.previous) {
+        if (this.last != null && this.last !== entry) {
+            if (entry.previous != null) {
                 entry.previous.next = entry.next;
+            }
+            if (entry.next != null) {
+                entry.next.previous = entry.previous;
+            }
+            if (this.first === entry) {
+                this.first = entry.next;
             }
             entry.previous = this.last;
             entry.next = null;
@@ -128,10 +143,10 @@ export class LRUMap<K, V> implements Map<K, V> {
     public set(key: K, value: V): this {
         this.delete(key);
         const entry = new LRUMapEntry(key, value, this.last);
-        if (this.last) {
+        if (this.last != null) {
             this.last.next = entry;
         }
-        if (!this.first) {
+        if (this.first == null) {
             this.first = entry;
         }
         this.last = entry;
