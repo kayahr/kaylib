@@ -531,6 +531,9 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @return The transposed rectangle.
      */
     public transpose(): Rect {
+        if (this.top === this.left && this.width === this.height) {
+            return this;
+        }
         return new Rect(this.top, this.left, this.height, this.width);
     }
 

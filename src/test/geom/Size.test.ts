@@ -103,6 +103,10 @@ describe("Size", () => {
             expect(transposed).toEqual(new Size(2, 1));
             expect(transposed).not.toBe(size);
         });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 10);
+            expect(size.transpose()).toBe(size);
+        });
     });
 
     describe("add", () => {
@@ -111,6 +115,10 @@ describe("Size", () => {
             const result = size.add(10, 20);
             expect(result).toEqual(new Size(11, 22));
             expect(result).not.toBe(size);
+        });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.add(0, 0)).toBe(size);
         });
     });
 
@@ -121,6 +129,10 @@ describe("Size", () => {
             expect(result).toEqual(new Size(11, 22));
             expect(result).not.toBe(size);
         });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.addSize(new Size(0, 0))).toBe(size);
+        });
     });
 
     describe("addInsets", () => {
@@ -129,6 +141,10 @@ describe("Size", () => {
             const result = size.addInsets(new Insets(1, 2, 3, 4));
             expect(result).toEqual(new Size(1 + 2 + 4, 2 + 1 + 3));
             expect(result).not.toBe(size);
+        });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.addInsets(new Insets(0))).toBe(size);
         });
     });
 
@@ -139,6 +155,10 @@ describe("Size", () => {
             expect(result).toEqual(new Size(1, 2));
             expect(result).not.toBe(Size);
         });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.sub(0, 0)).toBe(size);
+        });
     });
 
     describe("subSize", () => {
@@ -148,6 +168,10 @@ describe("Size", () => {
             expect(result).toEqual(new Size(1, 2));
             expect(result).not.toBe(size);
         });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.subSize(new Size(0, 0))).toBe(size);
+        });
     });
 
     describe("subInsets", () => {
@@ -156,6 +180,10 @@ describe("Size", () => {
             const result = size.subInsets(new Insets(1, 2, 3, 4));
             expect(result).toEqual(new Size(11 - 2 - 4, 22 - 1 - 3));
             expect(result).not.toBe(size);
+        });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.subInsets(new Insets(0))).toBe(size);
         });
     });
 
@@ -172,6 +200,10 @@ describe("Size", () => {
             expect(result).toEqual(new Size(10, 20));
             expect(result).not.toBe(size);
         });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.mul(1)).toBe(size);
+        });
     });
 
     describe("div", () => {
@@ -186,6 +218,10 @@ describe("Size", () => {
             const result = size.div(10);
             expect(result).toEqual(new Size(1, 2));
             expect(result).not.toBe(size);
+        });
+        it("returns same size when not changed", () => {
+            const size = new Size(10, 20);
+            expect(size.div(1)).toBe(size);
         });
     });
 

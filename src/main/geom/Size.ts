@@ -133,6 +133,9 @@ export class Size implements SizeLike, Serializable<SizeJSON>, Equatable, Compar
      * @return The transposed size.
      */
     public transpose(): Size {
+        if (this.width === this.height) {
+            return this;
+        }
         return new Size(this.height, this.width);
     }
 
@@ -144,6 +147,9 @@ export class Size implements SizeLike, Serializable<SizeJSON>, Equatable, Compar
      * @return The new size.
      */
     public add(width: number, height: number): Size {
+        if (width === 0 && height === 0) {
+            return this;
+        }
         return new Size(this.width + width, this.height + height);
     }
 
@@ -175,6 +181,9 @@ export class Size implements SizeLike, Serializable<SizeJSON>, Equatable, Compar
      * @return The new size.
      */
     public sub(width: number, height: number): Size {
+        if (width === 0 && height === 0) {
+            return this;
+        }
         return new Size(this.width - width, this.height - height);
     }
 
@@ -206,6 +215,9 @@ export class Size implements SizeLike, Serializable<SizeJSON>, Equatable, Compar
      * @return The new size.
      */
     public mul(widthFactor: number, heightFactor: number = widthFactor): Size {
+        if (widthFactor === 1 && heightFactor === 1) {
+            return this;
+        }
         return new Size(this.width * widthFactor, this.height * heightFactor);
     }
 
@@ -216,7 +228,10 @@ export class Size implements SizeLike, Serializable<SizeJSON>, Equatable, Compar
      * @param heightDivisor - The height divisor to divide by. Defaults to width divisor.
      * @return The new size.
      */
-    public div(widthDivisor: number, heightDivisor: number = widthDivisor): Size {
+    public div(widthDivisor: number, heightDivisor = widthDivisor): Size {
+        if (widthDivisor === 1 && heightDivisor === 1) {
+            return this;
+        }
         return new Size(this.width / widthDivisor, this.height / heightDivisor);
     }
 
