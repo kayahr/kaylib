@@ -672,4 +672,42 @@ describe("Rect", () => {
             expect(rect.subInsets(new Insets(0, 0, 0, 0))).toBe(rect);
         });
     });
+
+    describe("mul", () => {
+        it("multiplies the rectangle with the given factors", () => {
+            expect(new Rect(1, 2, 3, 4).mul(10)).toEqual(new Rect(10, 20, 30, 40));
+            expect(new Rect(1, 2, 3, 4).mul(10, 100)).toEqual(new Rect(10, 200, 30, 400));
+            expect(new Rect(1, 2, 3, 4).mul(10, 1, 1, 1)).toEqual(new Rect(10, 2, 3, 4));
+            expect(new Rect(1, 2, 3, 4).mul(1, 10, 1, 1)).toEqual(new Rect(1, 20, 3, 4));
+            expect(new Rect(1, 2, 3, 4).mul(1, 1, 10, 1)).toEqual(new Rect(1, 2, 30, 4));
+            expect(new Rect(1, 2, 3, 4).mul(1, 1, 1, 10)).toEqual(new Rect(1, 2, 3, 40));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.mul(1, 1, 1, 1)).toBe(rect);
+            expect(rect.mul(2, 1, 1, 1)).not.toBe(rect);
+            expect(rect.mul(1, 2, 1, 1)).not.toBe(rect);
+            expect(rect.mul(1, 1, 2, 1)).not.toBe(rect);
+            expect(rect.mul(1, 1, 1, 2)).not.toBe(rect);
+        });
+    });
+
+    describe("div", () => {
+        it("divides the rectangle by the given divisors", () => {
+            expect(new Rect(10, 20, 30, 40).div(10)).toEqual(new Rect(1, 2, 3, 4));
+            expect(new Rect(10, 20, 30, 40).div(10, 1)).toEqual(new Rect(1, 20, 3, 40));
+            expect(new Rect(10, 20, 30, 40).div(10, 1, 1, 1)).toEqual(new Rect(1, 20, 30, 40));
+            expect(new Rect(10, 20, 30, 40).div(1, 10, 1, 1)).toEqual(new Rect(10, 2, 30, 40));
+            expect(new Rect(10, 20, 30, 40).div(1, 1, 10, 1)).toEqual(new Rect(10, 20, 3, 40));
+            expect(new Rect(10, 20, 30, 40).div(1, 1, 1, 10)).toEqual(new Rect(10, 20, 30, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.div(1, 1, 1, 1)).toBe(rect);
+            expect(rect.div(2, 1, 1, 1)).not.toBe(rect);
+            expect(rect.div(1, 2, 1, 1)).not.toBe(rect);
+            expect(rect.div(1, 1, 2, 1)).not.toBe(rect);
+            expect(rect.div(1, 1, 1, 2)).not.toBe(rect);
+        });
+    });
 });

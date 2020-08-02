@@ -686,4 +686,37 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
             this.height - insets.getVertical()
         );
     }
+
+    /**
+     * Multiplies this rectangle with the given factors and returns the new rectangle.
+     *
+     * @param xFactor      - The factor to multiply the X coordinate with.
+     * @param yFactor      - The factor to multiply the Y coordinate with. Defaults to X factor.
+     * @param widthFactor  - The factor to multiply the width with. Defaults to X factor.
+     * @param heightFactor - The factor to multiply the height with. Defaults to Y factor.
+     * @return The new rectangle.
+     */
+    public mul(xFactor: number, yFactor = xFactor, widthFactor = xFactor, heightFactor = yFactor): Rect {
+        if (xFactor === 1 && yFactor === 1 && widthFactor === 1 && heightFactor === 1) {
+            return this;
+        }
+        return new Rect(this.left * xFactor, this.top * yFactor, this.width * widthFactor, this.height * heightFactor);
+    }
+
+    /**
+     * Divides this rectangle by the given divisors and returns the new rectangle.
+     *
+     * @param xDivisor      - The divisor to divide the X coordinate by.
+     * @param yDivisor      - The divisor to divide the Y coordinate by. Defaults to X factor.
+     * @param widthDivisor  - The divisor to divide the width by. Defaults to X factor.
+     * @param heightDivisor - The divisor to divide the height by. Defaults to Y factor.
+     * @return The new rectangle.
+     */
+    public div(xDivisor: number, yDivisor = xDivisor, widthDivisor = xDivisor, heightDivisor = yDivisor): Rect {
+        if (xDivisor === 1 && yDivisor === 1 && widthDivisor === 1 && heightDivisor === 1) {
+            return this;
+        }
+        return new Rect(this.left / xDivisor, this.top / yDivisor, this.width / widthDivisor,
+            this.height / heightDivisor);
+    }
 }
