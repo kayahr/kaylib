@@ -192,7 +192,7 @@ describe("Rect", () => {
             expect(transposed).not.toBe(rect);
         });
         it("returns same rectangle when not changed", () => {
-            const rect = new Rect(1, 2, 3, 4);
+            const rect = new Rect(1, 1, 2, 2);
             expect(rect.transpose()).toBe(rect);
         });
     });
