@@ -66,6 +66,9 @@ function normalizeRect<T>(x: number, y: number, width: number, height: number, a
  * Immutable rectangle with a position and size.
  */
 export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatable, PointLike {
+    /** Rectangle constant for position x=0,y=0 with empty size. */
+    public static readonly NULL = new Rect(0, 0, 0, 0);
+
     /** The left edge. */
     private readonly left: number;
 
@@ -218,6 +221,16 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         }
     }
 
+    /**
+     * Returns the location of the given anchor on the rectangle.
+     *
+     * @return anchor - Optional anchor. Defaults to north-west.
+     * @return The location relative to given anchor.
+     */
+    public getLocation(anchor: Direction = Direction.NORTH_WEST): Point {
+        return new Point(this.getX(anchor), this.getY(anchor));
+    }
+
     /** @inheritDoc */
     public getWidth(): number {
         return this.width;
@@ -360,10 +373,22 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
             && top >= this.top && top + height <= this.getBottom();
     }
 
+    /**
+     * Checks if given point is within this rectangle.
+     *
+     * @param point - The point to check.
+     * @return True if point is within this rectangle. False if not.
+     */
     public containsPoint(point: PointLike): boolean {
         return this.contains(point.getX(), point.getY());
     }
 
+    /**
+     * Checks if given rectangle is within this rectangle.
+     *
+     * @param rect - The rectangle to check.
+     * @return True if rectangle is within this rectangle. False if not.
+     */
     public containsRect(rect: RectLike): boolean {
         return this.contains(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
     }
@@ -377,7 +402,82 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         return new Rect(this.top, this.left, this.height, this.width);
     }
 
+    /**
+     * Returns the intersection rectangle with the given rectangle data. When rectangles do not intersect then an
+     * empty rectangle is returned.
+     *
+     * @param x      - The X position of the other rectangle at anchor.
+     * @param y      - The Y position of the other rectangle at anchor.
+     * @param width  - The width of the other rectangle. May be negative.
+     * @param height - The height of the other rectangle. May be negative.
+     * @param anchor - The optional anchor point. Defaults to north-west.
+     * @return The new rectangle describing the intersection. Empty rectangle when not intersecting.
+     */
+    public getIntersection(x: number, y: number, width: number, height: number, anchor = Direction.NORTH_WEST): Rect {
+        let left: number, top: number;
+        [ left, top, width, height ] = normalizeRect(x, y, width, height, anchor);
+        const right = left + width;
+        const maxLeft = Math.max(left, this.left);
+        const minRight = Math.min(right, this.getRight());
+        if (maxLeft < minRight) {
+            const bottom = top + height;
+            const maxTop = Math.max(top, this.top);
+            const minBottom = Math.min(bottom, this.getBottom());
+            if (maxTop < minBottom) {
+                return new Rect(maxLeft, maxTop, minRight - maxLeft, minBottom - maxTop);
+            }
+        }
+        return Rect.NULL;
+    }
+
+    /**
+     * Returns the intersection rectangle with the given rectangle. When rectangles do not intersect then an
+     * empty rectangle is returned.
+     *
+     * @param rect - The other rectangle for intersection calculation.
+     * @return The new rectangle describing the intersection. Empty rectangle when not intersecting.
+     */
+    public getRectIntersection(rect: RectLike): Rect {
+        return this.getIntersection(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
+    }
+
+    /**
+     * Checks if this rectangle intersects with the given one.
+     *
+     * @param x      - The X position of the other rectangle at anchor.
+     * @param y      - The Y position of the other rectangle at anchor.
+     * @param width  - The width of the other rectangle. May be negative.
+     * @param height - The height of the other rectangle. May be negative.
+     * @param anchor - The optional anchor point. Defaults to north-west.
+     * @return True if rectangles intersect, false if not.
+     */
+    public intersects(x: number, y: number, width: number, height: number, anchor = Direction.NORTH_WEST): boolean {
+        let left: number, top: number;
+        [ left, top, width, height ] = normalizeRect(x, y, width, height, anchor);
+        const right = left + width;
+        const maxLeft = Math.max(left, this.left);
+        const minRight = Math.min(right, this.getRight());
+        if (maxLeft >= minRight) {
+            return false;
+        }
+        const bottom = top + height;
+        const maxTop = Math.max(top, this.top);
+        const minBottom = Math.min(bottom, this.getBottom());
+        return maxTop < minBottom;
+    }
+
+    /**
+     * Checks if this rectangle intersects with the given one.
+     *
+     * @param rect - The other rectangle for intersection calculation.
+     * @return The new rectangle describing the intersection. Empty rectangle when not intersecting.
+     */
+    public intersectsRect(rect: RectLike): boolean {
+        return this.intersects(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
+    }
+
 /*
+    public grow(x: number, y: number
     public moveBy(left: number, top: number): Rect {
         return new Rect(this.left + left, this.top + top, this.width, this.height);
     }

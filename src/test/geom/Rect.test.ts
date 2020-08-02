@@ -238,6 +238,22 @@ describe("Rect", () => {
         });
     });
 
+    describe("getLocation", () => {
+        it("returns location for given anchor", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getLocation()).toEqual(new Point(1, 2));
+            expect(rect.getLocation(Direction.NORTH_WEST)).toEqual(new Point(1, 2));
+            expect(rect.getLocation(Direction.WEST)).toEqual(new Point(1, 4));
+            expect(rect.getLocation(Direction.SOUTH_WEST)).toEqual(new Point(1, 6));
+            expect(rect.getLocation(Direction.NORTH)).toEqual(new Point(2.5, 2));
+            expect(rect.getLocation(Direction.CENTER)).toEqual(new Point(2.5, 4));
+            expect(rect.getLocation(Direction.SOUTH)).toEqual(new Point(2.5, 6));
+            expect(rect.getLocation(Direction.NORTH_EAST)).toEqual(new Point(4, 2));
+            expect(rect.getLocation(Direction.EAST)).toEqual(new Point(4, 4));
+            expect(rect.getLocation(Direction.SOUTH_EAST)).toEqual(new Point(4, 6));
+        });
+    });
+
     describe("getLeft", () => {
         it("returns the left edge of the rectangle", () => {
             expect(new Rect(1, 2, 3, 4).getLeft()).toBe(1);
@@ -387,6 +403,77 @@ describe("Rect", () => {
                 { getLeft: () => 10, getTop: () => 20, getWidth: () => 101, getHeight: () => 50 })).toBe(false);
             expect(new Rect(10, 20, 100, 50).containsRect(
                 { getLeft: () => 10, getTop: () => 20, getWidth: () => 100, getHeight: () => 51 })).toBe(false);
+        });
+    });
+
+    describe("getIntersection", () => {
+        it("returns intersection rectangle", () => {
+            expect(new Rect(-1, -1, 4, 3).getIntersection(2, 0, 3, 4)).toEqual(new Rect(2, 0, 1, 2));
+            expect(new Rect(-1, -1, 4, 3).getIntersection(2, 0, 3, 1)).toEqual(new Rect(2, 0, 1, 1));
+            expect(new Rect(-1, -1, 4, 3).getIntersection(3.5, 2, 3, 4, Direction.CENTER))
+                .toEqual(new Rect(2, 0, 1, 2));
+        });
+        it("returns empty rectangle when rectangles do not intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).getIntersection(3, 0, 3, 1)).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getIntersection(2, 2, 3, 4)).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getIntersection(2, -1, 3, 4, Direction.SOUTH_WEST)).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getIntersection(2, -1, 3, 4, Direction.SOUTH_EAST)).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getIntersection(-1, 2, 3, 4, Direction.SOUTH_EAST)).toEqual(Rect.NULL);
+        });
+    });
+
+    describe("getRectIntersection", () => {
+        it("returns intersection rectangle", () => {
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(2, 0, 3, 4))).toEqual(new Rect(2, 0, 1, 2));
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(2, 0, 3, 1))).toEqual(new Rect(2, 0, 1, 1));
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection({
+                getLeft: () => 0,
+                getTop: () => 0,
+                getWidth: () => 2,
+                getHeight: () => 1
+            })).toEqual(new Rect(0, 0, 2, 1));
+        });
+        it("returns empty rectangle when rectangles do not intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(3, 0, 3, 1))).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(2, 2, 3, 4))).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(2, -5, 3, 4))).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(-1, -5, 3, 4))).toEqual(Rect.NULL);
+            expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(-4, -2, 3, 4))).toEqual(Rect.NULL);
+        });
+    });
+
+    describe("intersects", () => {
+        it("returns true if rectangles do intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).intersects(2, 0, 3, 4)).toBe(true);
+            expect(new Rect(-1, -1, 4, 3).intersects(2, 0, 3, 1)).toBe(true);
+            expect(new Rect(-1, -1, 4, 3).intersects(3.5, 2, 3, 4, Direction.CENTER)).toBe(true);
+        });
+        it("returns false if rectangles do not intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).intersects(3, 0, 3, 1)).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersects(2, 2, 3, 4)).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersects(2, -1, 3, 4, Direction.SOUTH_WEST)).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersects(2, -1, 3, 4, Direction.SOUTH_EAST)).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersects(-1, 2, 3, 4, Direction.SOUTH_EAST)).toBe(false);
+        });
+    });
+
+    describe("intersectsRect", () => {
+        it("returns true if rectangles do intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(2, 0, 3, 4))).toBe(true);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(2, 0, 3, 1))).toBe(true);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect({
+                getLeft: () => 0,
+                getTop: () => 0,
+                getWidth: () => 2,
+                getHeight: () => 1
+            })).toBe(true);
+        });
+        it("returns false if rectangles do not intersect", () => {
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(3, 0, 3, 1))).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(2, 2, 3, 4))).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(2, -5, 3, 4))).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(-1, -5, 3, 4))).toBe(false);
+            expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(-4, -2, 3, 4))).toBe(false);
         });
     });
 });
