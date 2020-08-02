@@ -116,6 +116,9 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The transposed point.
      */
     public transpose(): Point {
+        if (this.x === this.y) {
+            return this;
+        }
         return new Point(this.y, this.x);
     }
 
@@ -127,6 +130,9 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The new point.
      */
     public add(x: number, y: number): Point {
+        if (x === 0 && y === 0) {
+            return this;
+        }
         return new Point(this.x + x, this.y + y);
     }
 
@@ -148,6 +154,9 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The new point.
      */
     public sub(x: number, y: number): Point {
+        if (x === 0 && y === 0) {
+            return this;
+        }
         return new Point(this.x - x, this.y - y);
     }
 
@@ -169,6 +178,9 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The new point.
      */
     public mul(xFactor: number, yFactor: number = xFactor): Point {
+        if (xFactor === 1 && yFactor === 1) {
+            return this;
+        }
         return new Point(this.x * xFactor, this.y * yFactor);
     }
 
@@ -180,6 +192,9 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The new point.
      */
     public div(xDivisor: number, yDivisor: number = xDivisor): Point {
+        if (xDivisor === 1 && yDivisor === 1) {
+            return this;
+        }
         return new Point(this.x / xDivisor, this.y / yDivisor);
     }
 

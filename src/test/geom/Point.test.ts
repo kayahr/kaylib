@@ -81,6 +81,10 @@ describe("Point", () => {
             expect(transposed).toEqual(new Point(2, 1));
             expect(transposed).not.toBe(point);
         });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 1);
+            expect(point.transpose()).toBe(point);
+        });
     });
 
     describe("add", () => {
@@ -89,6 +93,10 @@ describe("Point", () => {
             const result = point.add(10, 20);
             expect(result).toEqual(new Point(11, 22));
             expect(result).not.toBe(point);
+        });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.add(0, 0)).toBe(point);
         });
     });
 
@@ -99,6 +107,10 @@ describe("Point", () => {
             expect(result).toEqual(new Point(11, 22));
             expect(result).not.toBe(point);
         });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.addPoint(new Point(0, 0))).toBe(point);
+        });
     });
 
     describe("sub", () => {
@@ -108,6 +120,10 @@ describe("Point", () => {
             expect(result).toEqual(new Point(1, 2));
             expect(result).not.toBe(Point);
         });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.sub(0, 0)).toBe(point);
+        });
     });
 
     describe("subPoint", () => {
@@ -116,6 +132,10 @@ describe("Point", () => {
             const result = point.subPoint(new Point(10, 20));
             expect(result).toEqual(new Point(1, 2));
             expect(result).not.toBe(point);
+        });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.subPoint(Point.NULL)).toBe(point);
         });
     });
 
@@ -132,6 +152,10 @@ describe("Point", () => {
             expect(result).toEqual(new Point(10, 20));
             expect(result).not.toBe(point);
         });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.mul(1)).toBe(point);
+        });
     });
 
     describe("div", () => {
@@ -146,6 +170,10 @@ describe("Point", () => {
             const result = point.div(10);
             expect(result).toEqual(new Point(1, 2));
             expect(result).not.toBe(point);
+        });
+        it("returns same point when not changed", () => {
+            const point = new Point(1, 2);
+            expect(point.div(1)).toBe(point);
         });
     });
 
