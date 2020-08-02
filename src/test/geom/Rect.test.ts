@@ -7,6 +7,7 @@ import "jest-extended";
 import "@kayahr/jest-matchers";
 
 import { Direction } from "../../main/geom/Direction";
+import { Insets } from "../../main/geom/Insets";
 import { Point } from "../../main/geom/Point";
 import { PointLike } from "../../main/geom/PointLike";
 import { Rect } from "../../main/geom/Rect";
@@ -254,6 +255,59 @@ describe("Rect", () => {
         });
     });
 
+    describe("setLocation", () => {
+        it("moves the rectangle to new location", () => {
+            expect(new Rect(1, 2, 3, 4).setLocation(new Point(10, 20))).toEqual(new Rect(10, 20, 3, 4));
+            expect(new Rect(1, 2, 3, 4).setLocation(new Point(10, 20), Direction.SOUTH_EAST))
+                .toEqual(new Rect(7, 16, 3, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.setLocation(new Point(0, 0))).not.toBe(rect);
+            expect(rect.setLocation(new Point(1, 2))).toBe(rect);
+            expect(rect.setLocation(new Point(4, 6), Direction.SOUTH_EAST)).toBe(rect);
+        });
+    });
+
+    describe("move", () => {
+        it("moves the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).move(10, -20)).toEqual(new Rect(11, -18, 3, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.move(0, 1)).not.toBe(rect);
+            expect(rect.move(1, 0)).not.toBe(rect);
+            expect(rect.move(0, 0)).toBe(rect);
+        });
+    });
+
+    describe("moveTo", () => {
+        it("moves the rectangle to give position", () => {
+            expect(new Rect(1, 2, 3, 4).moveTo(100, -100)).toEqual(new Rect(100, -100, 3, 4));
+            expect(new Rect(1, 2, 3, 4).moveTo(100, -100, Direction.SOUTH_EAST)).toEqual(new Rect(97, -104, 3, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.moveTo(0, 0)).not.toBe(rect);
+            expect(rect.moveTo(1, 2)).toBe(rect);
+            expect(rect.moveTo(4, 6, Direction.SOUTH_EAST)).toBe(rect);
+        });
+    });
+
+    describe("moveToPoint", () => {
+        it("moves the rectangle to give position", () => {
+            expect(new Rect(1, 2, 3, 4).moveToPoint(new Point(100, -100))).toEqual(new Rect(100, -100, 3, 4));
+            expect(new Rect(1, 2, 3, 4).moveToPoint(new Point(100, -100), Direction.SOUTH_EAST))
+                .toEqual(new Rect(97, -104, 3, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.moveToPoint(new Point(0, 0))).not.toBe(rect);
+            expect(rect.moveToPoint(new Point(1, 2))).toBe(rect);
+            expect(rect.moveToPoint(new Point(4, 6), Direction.SOUTH_EAST)).toBe(rect);
+        });
+    });
+
     describe("getLeft", () => {
         it("returns the left edge of the rectangle", () => {
             expect(new Rect(1, 2, 3, 4).getLeft()).toBe(1);
@@ -350,6 +404,71 @@ describe("Rect", () => {
         });
     });
 
+    describe("resize", () => {
+        it("resizes the rectangle by given size delta", () => {
+            expect(new Rect(1, 2, 3, 4).resize(17, 6)).toEqual(new Rect(1, 2, 20, 10));
+            expect(new Rect(1, 2, 3, 4).resize(7, 2, Direction.EAST)).toEqual(new Rect(-6, 1, 10, 6));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.resize(0, 0)).toBe(rect);
+            expect(rect.resize(0, 1)).not.toBe(rect);
+            expect(rect.resize(1, 0)).not.toBe(rect);
+        });
+    });
+
+    describe("addSize", () => {
+        it("adds given size to rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).addSize(new Size(17, 6))).toEqual(new Rect(1, 2, 20, 10));
+            expect(new Rect(1, 2, 3, 4).addSize(new Size(7, 2), Direction.EAST)).toEqual(new Rect(-6, 1, 10, 6));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.addSize(new Size(0, 0))).toBe(rect);
+            expect(rect.addSize(new Size(0, 1))).not.toBe(rect);
+            expect(rect.addSize(new Size(1, 0))).not.toBe(rect);
+        });
+    });
+
+    describe("subSize", () => {
+        it("subtracts given size from rectangle", () => {
+            expect(new Rect(1, 2, 20, 10).subSize(new Size(17, 6))).toEqual(new Rect(1, 2, 3, 4));
+            expect(new Rect(-6, 1, 10, 6).subSize(new Size(7, 2), Direction.EAST)).toEqual(new Rect(1, 2, 3, 4));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.subSize(new Size(0, 0))).toBe(rect);
+            expect(rect.subSize(new Size(0, 1))).not.toBe(rect);
+            expect(rect.subSize(new Size(1, 0))).not.toBe(rect);
+        });
+    });
+
+    describe("resizeTo", () => {
+        it("resizes the rectangle to given size", () => {
+            expect(new Rect(1, 2, 3, 4).resizeTo(20, 10)).toEqual(new Rect(1, 2, 20, 10));
+            expect(new Rect(1, 2, 3, 4).resizeTo(10, 6, Direction.EAST)).toEqual(new Rect(-6, 1, 10, 6));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.resizeTo(3, 4)).toBe(rect);
+            expect(rect.resizeTo(4, 4)).not.toBe(rect);
+            expect(rect.resizeTo(4, 3)).not.toBe(rect);
+        });
+    });
+
+    describe("setSize", () => {
+        it("resizes the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).setSize(new Size(20, 10))).toEqual(new Rect(1, 2, 20, 10));
+            expect(new Rect(1, 2, 3, 4).setSize(new Size(10, 6), Direction.EAST)).toEqual(new Rect(-6, 1, 10, 6));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.setSize(new Size(3, 4))).toBe(rect);
+            expect(rect.setSize(new Size(4, 4))).not.toBe(rect);
+            expect(rect.setSize(new Size(4, 3))).not.toBe(rect);
+        });
+    });
+
     describe("isEmpty", () => {
         it("returns true when rectangle is empty, false if not", () => {
             expect(new Rect(1, 2, 0, 0).isEmpty()).toBe(true);
@@ -420,6 +539,10 @@ describe("Rect", () => {
             expect(new Rect(-1, -1, 4, 3).getIntersection(2, -1, 3, 4, Direction.SOUTH_EAST)).toEqual(Rect.NULL);
             expect(new Rect(-1, -1, 4, 3).getIntersection(-1, 2, 3, 4, Direction.SOUTH_EAST)).toEqual(Rect.NULL);
         });
+        it("returns new rectangle", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getIntersection(2, 3, 4, 5)).not.toBe(rect);
+        });
     });
 
     describe("getRectIntersection", () => {
@@ -439,6 +562,10 @@ describe("Rect", () => {
             expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(2, -5, 3, 4))).toEqual(Rect.NULL);
             expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(-1, -5, 3, 4))).toEqual(Rect.NULL);
             expect(new Rect(-1, -1, 4, 3).getRectIntersection(new Rect(-4, -2, 3, 4))).toEqual(Rect.NULL);
+        });
+        it("returns new rectangle", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.getRectIntersection(new Rect(2, 3, 4, 5))).not.toBe(rect);
         });
     });
 
@@ -474,6 +601,75 @@ describe("Rect", () => {
             expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(2, -5, 3, 4))).toBe(false);
             expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(-1, -5, 3, 4))).toBe(false);
             expect(new Rect(-1, -1, 4, 3).intersectsRect(new Rect(-4, -2, 3, 4))).toBe(false);
+        });
+    });
+
+    describe("add", () => {
+        it("adds point (as coordinates) to rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).add(-2, 10)).toEqual(new Rect(-2, 2, 6, 8));
+            expect(new Rect(1, 2, 3, 4).add(10, -2)).toEqual(new Rect(1, -2, 9, 8));
+        });
+        it("adds rectangle (as coordinate) to rectangle, creating a union", () => {
+            expect(new Rect(-1, -1, 4, 3).add(2, 0, 3, 4)).toEqual(new Rect(-1, -1, 6, 5));
+            expect(new Rect(2, 0, 3, 4).add(3, 2, 4, 3, Direction.SOUTH_EAST)).toEqual(new Rect(-1, -1, 6, 5));
+        });
+        it("returns new rectangle", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.add(0, 0)).not.toBe(rect);
+        });
+    });
+
+    describe("addPoint", () => {
+        it("adds point to rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).addPoint(new Point(-2, 10))).toEqual(new Rect(-2, 2, 6, 8));
+            expect(new Rect(1, 2, 3, 4).addPoint(new Point(10, -2))).toEqual(new Rect(1, -2, 9, 8));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.addPoint(new Point(0, 0))).not.toBe(rect);
+            expect(rect.addPoint(new Point(1.5, 2.5))).toBe(rect);
+        });
+    });
+
+    describe("addRect", () => {
+        it("creates union of two rectangles", () => {
+            expect(new Rect(-1, -1, 4, 3).addRect(new Rect(2, 0, 3, 4))).toEqual(new Rect(-1, -1, 6, 5));
+            expect(new Rect(2, 0, 3, 4).addRect(new Rect(-1, -1, 4, 3))).toEqual(new Rect(-1, -1, 6, 5));
+            expect(new Rect(2, 0, 3, 4).addRect(new Rect(1000, -1000, 0, 0))).toEqual(new Rect(2, -1000, 998, 1004));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.addRect(new Rect(2, 3, 4, 5))).not.toBe(rect);
+            expect(rect.addRect(new Rect(1, 2, 3, 4))).toBe(rect);
+            expect(rect.addRect(new Rect(1.1, 2.1, 2, 3))).toBe(rect);
+        });
+    });
+
+    describe("addInsets", () => {
+        it("adds insets to the rectangle", () => {
+            expect(new Rect(1, 2, 3, 4).addInsets(new Insets(1, 2, 3, 4))).toEqual(new Rect(-3, 1, 9, 8));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.addInsets(new Insets(1, 0, 0, 0))).not.toBe(rect);
+            expect(rect.addInsets(new Insets(0, 1, 0, 0))).not.toBe(rect);
+            expect(rect.addInsets(new Insets(0, 0, 1, 0))).not.toBe(rect);
+            expect(rect.addInsets(new Insets(0, 0, 0, 1))).not.toBe(rect);
+            expect(rect.addInsets(new Insets(0, 0, 0, 0))).toBe(rect);
+        });
+    });
+
+    describe("subInsets", () => {
+        it("adds insets to the rectangle", () => {
+            expect(new Rect(10, 20, 30, 40).subInsets(new Insets(1, 2, 3, 4))).toEqual(new Rect(14, 21, 24, 36));
+        });
+        it("returns new rectangle when changed", () => {
+            const rect = new Rect(1, 2, 3, 4);
+            expect(rect.subInsets(new Insets(1, 0, 0, 0))).not.toBe(rect);
+            expect(rect.subInsets(new Insets(0, 1, 0, 0))).not.toBe(rect);
+            expect(rect.subInsets(new Insets(0, 0, 1, 0))).not.toBe(rect);
+            expect(rect.subInsets(new Insets(0, 0, 0, 1))).not.toBe(rect);
+            expect(rect.subInsets(new Insets(0, 0, 0, 0))).toBe(rect);
         });
     });
 });

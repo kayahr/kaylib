@@ -9,6 +9,7 @@ import { cacheResult } from "../util/cache";
 import { IllegalArgumentException } from "../util/exception";
 import { formatNumber } from "../util/string";
 import { Direction } from "./Direction";
+import { Insets } from "./Insets";
 import { Point } from "./Point";
 import { PointLike } from "./PointLike";
 import { RectLike } from "./RectLike";
@@ -101,6 +102,19 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      */
     public static fromRect(rect: RectLike): Rect {
         return new Rect(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
+    }
+
+    /**
+     * Creates a new rectangle from the given edges.
+     *
+     * @param left - The left edge.
+     * @param top  - The top edge.
+     * @param right - The right edge.
+     * @param bottom - The bottom edge.
+     * @return The created rectangle.
+     */
+    public static fromEdges(left: number, top: number, right: number, bottom: number): Rect {
+        return new Rect(left, top, right - left, bottom - top);
     }
 
     /**
@@ -231,6 +245,61 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         return new Point(this.getX(anchor), this.getY(anchor));
     }
 
+    /**
+     * Moves this rectangle to the given location and returns the new rectangle.
+     *
+     * @param location - The location to set. Relative to given anchor.
+     * @param anchor   - Optional anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public setLocation(location: Point, anchor = Direction.NORTH_WEST): Rect {
+        if (location.getX() === this.getX(anchor) && location.getY() === this.getY(anchor)) {
+            return this;
+        }
+        return new Rect(location.getX(), location.getY(), this.width, this.height, anchor);
+    }
+
+    /**
+     * Moves the rectangle by the given delta.
+     *
+     * @param x - The horizontal position delta.
+     * @param y - The vertical position delta.
+     * @return The new rectangle.
+     */
+    public move(x: number, y: number): Rect {
+        if (x === 0 && y === 0) {
+            return this;
+        }
+        return new Rect(this.left + x, this.top + y, this.width, this.height);
+    }
+
+    /**
+     * Moves the rectangle to the given position.
+     *
+     * @param x      - The new horizontal position.
+     * @param y      - The new vertical position.
+     * @param anchor - Optional anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public moveTo(x: number, y: number, anchor = Direction.NORTH_WEST): Rect {
+        const [ left, top ] = normalizeRect(x, y, this.width, this.height, anchor);
+        if (left === this.left && top === this.top) {
+            return this;
+        }
+        return new Rect(left, top, this.width, this.height);
+    }
+
+    /**
+     * Moves the rectangle to the given position.
+     *
+     * @param point  - The new position.
+     * @param anchor - Optional anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public moveToPoint(point: PointLike, anchor = Direction.NORTH_WEST): Rect {
+        return this.moveTo(point.getX(), point.getY(), anchor);
+    }
+
     /** @inheritDoc */
     public getWidth(): number {
         return this.width;
@@ -335,6 +404,69 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
     @cacheResult
     public getSize(): Size {
         return new Size(this.width, this.height);
+    }
+
+    /**
+     * Resizes the rectangle by the given additional size and returns the new rectangle.
+     *
+     * @param addWidth  - The horizontal size to add.
+     * @param addHeight - The vertical size to add.
+     * @param anchor    - Optional resize anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public resize(addWidth: number, addHeight: number, anchor = Direction.NORTH_WEST): Rect {
+        if (addWidth === 0 && addHeight === 0) {
+            return this;
+        }
+        return new Rect(this.getX(anchor), this.getY(anchor), this.width + addWidth, this.height + addHeight, anchor);
+    }
+
+    /**
+     * Resizes the rectangle by the given size and returns the new rectangle.
+     *
+     * @param size   - The size to add.
+     * @param anchor - Optional resize anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public addSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+        return this.resize(size.getWidth(), size.getHeight(), anchor);
+    }
+
+    /**
+     * Subtracts the given size from this rectangle and returns the new rectangle.
+     *
+     * @param size   - The size to subtract.
+     * @param anchor - Optional resize anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public subSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+        return this.resize(-size.getWidth(), -size.getHeight(), anchor);
+    }
+
+    /**
+     * Resizes the rectangle to the given size and returns the new rectangle.
+     *
+     * @param newWidth  - The new rectangle width.
+     * @param newHeight - The new rectangle height.
+     * @param anchor    - Optional resize anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public resizeTo(newWidth: number, newHeight: number, anchor = Direction.NORTH_WEST): Rect {
+        if (newWidth === this.width && newHeight === this.height) {
+            return this;
+        }
+        return new Rect(this.getX(anchor), this.getY(anchor), newWidth, newHeight, anchor);
+    }
+
+    /**
+     * Resizes the rectangle to the given size and returns the new rectangle.
+     *
+     * @param size - The new size.
+     * @param anchor    - Optional resize anchor. Defaults to north-west.
+     * @return The new rectangle.
+     */
+    public setSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+        return this.resizeTo(size.getWidth(), size.getHeight(), anchor);
     }
 
     /**
@@ -476,28 +608,82 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         return this.intersects(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
     }
 
-/*
-    public grow(x: number, y: number
-    public moveBy(left: number, top: number): Rect {
-        return new Rect(this.left + left, this.top + top, this.width, this.height);
+    /**
+     * Returns a new rectangle containing the current one and the given point or rectangle coordinates.
+     *
+     * @param x - The X position of the point to add.
+     * @param y - The Y position of the point to add.
+     * @return The new rectangle containing the rectangle and the given point.
+     */
+    public add(x: number, y: number, width = 0, height = 0, anchor = Direction.NORTH_WEST): Rect {
+        let left: number, top: number;
+        [ left, top, width, height ] = normalizeRect(x, y, width, height, anchor);
+        if (this.contains(left, top, width, height)) {
+            return this;
+        }
+        const right = left + width;
+        const bottom = top + height;
+        return Rect.fromEdges(
+            Math.min(this.left, this.getRight(), left, right),
+            Math.min(this.top, this.getBottom(), top, bottom),
+            Math.max(this.left, this.getRight(), left, right),
+            Math.max(this.top, this.getBottom(), top, bottom)
+        );
     }
 
-    public moveByPoint(point: PointLike): Rect {
-        return this.moveBy(point.getX(), point.getY());
+    /**
+     * Returns a new rectangle containing the current one and the given point.
+     *
+     * @param point - The point to add.
+     * @return The new rectangle containing the rectangle and the given point.
+     */
+    public addPoint(point: Point): Rect {
+        return this.add(point.getX(), point.getY());
     }
-*/
-    /*
-    moveTo(x, y, anchor);
-    moveToPoint(point, anchor);
 
-    resizeTo(width, height, anchor)
-    resizeBy(width, height, anchor)
+    /**
+     * Returns a new rectangle containing the current one and the given one.
+     *
+     * @param rect - The rectangle to add.
+     * @return The new rectangle containing this rectangle and the given one.
+     */
+    public addRect(rect: Rect): Rect {
+        return this.add(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
+    }
 
-    setSize(size, anchor);
-    addSize(size, anchor);
-    subSize(size, anchor);
+    /**
+     * Adds the given insets to this rectangle and returns the new one.
+     *
+     * @param insets - The insets to add.
+     * @return The new rectangle.
+     */
+    public addInsets(insets: Insets): Rect {
+        if (insets.isNull()) {
+            return this;
+        }
+        return new Rect(
+            this.left - insets.getLeft(),
+            this.top - insets.getTop(),
+            this.width + insets.getHorizontal(),
+            this.height + insets.getVertical()
+        );
+    }
 
-    addInsets(size);
-    subInsets(size);
-    */
+    /**
+     * Subtracts the given insets from this rectangle and returns the new one.
+     *
+     * @param insets - The insets to subtract.
+     * @return The new rectangle.
+     */
+    public subInsets(insets: Insets): Rect {
+        if (insets.isNull()) {
+            return this;
+        }
+        return new Rect(
+            this.left + insets.getLeft(),
+            this.top + insets.getTop(),
+            this.width - insets.getHorizontal(),
+            this.height - insets.getVertical()
+        );
+    }
 }
