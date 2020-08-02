@@ -76,7 +76,7 @@ export function createTimeUUID(mac?: Uint8Array): string {
     const time = `${low}-${mid}-1${high}-${seq}`;
 
     // Finalize the UUID by adding the mac address (or random numbers) and then return it
-    if (mac) {
+    if (mac != null) {
         if (mac.length !== 6) {
             throw new IllegalArgumentException("Mac address must contain six bytes");
         }

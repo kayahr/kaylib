@@ -104,7 +104,7 @@ export class Observable<T> implements ObservableLike<T> {
 
         function cleanup(): void {
             const teardown = onCleanup;
-            if (teardown) {
+            if (teardown != null) {
                 onCleanup = null;
                 teardown();
             }
@@ -112,7 +112,7 @@ export class Observable<T> implements ObservableLike<T> {
 
         const subscription = new class implements Subscription {
             public get closed(): boolean {
-                return !activeObserver;
+                return activeObserver == null;
             }
             public unsubscribe(): void {
                 cleanup();
@@ -120,21 +120,21 @@ export class Observable<T> implements ObservableLike<T> {
             }
         };
         subscription.constructor = Object;
-        if (observer.start) {
+        if (observer.start != null) {
             observer.start(subscription);
         }
         if (activeObserver != null) {
             let teardown: TeardownLogic | null = null;
             const subscriptionObserver = new class implements SubscriptionObserver<T> {
                 public get closed(): boolean {
-                    return !activeObserver;
+                    return activeObserver == null;
                 }
                 public next(value?: T): any {
                     // eslint-disable-next-line @typescript-eslint/unbound-method
-                    const onNext = activeObserver ? activeObserver.next : null;
-                    if (onNext) {
+                    const onNext = activeObserver?.next ?? null;
+                    if (onNext != null) {
                         try {
-                            return onNext.call(activeObserver, <T>value);
+                            return onNext.call(activeObserver, value as T);
                         } catch (e) {
                             try {
                                 this.error(e);
@@ -149,8 +149,8 @@ export class Observable<T> implements ObservableLike<T> {
                     const observer = activeObserver;
                     try {
                         activeObserver = null;
-                        const onError = observer ? observer.error : null;
-                        if (onError) {
+                        const onError = observer?.error ?? null;
+                        if (onError != null) {
                             return onError.call(observer, e);
                         } else {
                             throw e;
@@ -170,8 +170,8 @@ export class Observable<T> implements ObservableLike<T> {
                     const observer = activeObserver;
                     try {
                         activeObserver = null;
-                        const onComplete = observer ? observer.complete : null;
-                        if (onComplete) {
+                        const onComplete = observer?.complete ?? null;
+                        if (onComplete != null) {
                             return onComplete.call(observer, arg);
                         }
                         return undefined;
@@ -242,7 +242,7 @@ export function createObservableFrom<T>(thisConstructor: ObservableConstructor<T
                 if (observable.constructor !== constructor) {
                     return new constructor(observer => observable.subscribe(observer));
                 }
-                return <Observable<T>>observable;
+                return observable as Observable<T>;
             }
         }
         if (isSubscribable(observable)) {
@@ -253,7 +253,7 @@ export function createObservableFrom<T>(thisConstructor: ObservableConstructor<T
 }
 
 export function merge<A, B>(o1: ObservableLike<A>, o2: ObservableLike<B>): Observable<A | B>;
-export function merge<A extends ObservableLike<T>[], T>(...observables: A): Observable<T> {
+export function merge<A extends Array<ObservableLike<T>>, T>(...observables: A): Observable<T> {
     return new Observable<T>(observer => {
         const subscriptions = observables.map(observable => observable.subscribe(observer));
         return (): void => {

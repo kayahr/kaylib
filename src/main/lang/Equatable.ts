@@ -46,7 +46,7 @@ export function isEqual<T extends Equatable>(a: T, b: unknown, comparer: (other:
     if (b === a) {
         return true;
     }
-    const other = <T>b;
+    const other = b as T;
     if (other.equals !== a.equals) {
         return false;
     }

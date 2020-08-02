@@ -94,7 +94,7 @@ export function findLastIndex<T, V, C>(array: T & ArrayLike<V>,
  * @return The concatenated arrays.
  */
 export function concat<T extends TypedArray | unknown[]>(array1: T, array2: T, ...moreArrays: T[]): T;
-export function concat<T extends TypedArray | unknown[]>(array1: T, ...moreArrays: Array<T>): T {
+export function concat<T extends TypedArray | unknown[]>(array1: T, ...moreArrays: T[]): T {
     if (array1 instanceof Array) {
         return array1.concat(...moreArrays) as T;
     } else {
@@ -107,7 +107,7 @@ export function concat<T extends TypedArray | unknown[]>(array1: T, ...moreArray
             result.set(array as TypedArray, offset);
             offset += array.length;
         }
-        return <T>result;
+        return result as T;
     }
 }
 

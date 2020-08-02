@@ -8,17 +8,5 @@
     },
     "extends": [
         "@kayahr"
-    ],
-    "rules": {
-        "@typescript-eslint/ban-types": [
-            "error",
-            {
-                "extendDefaults": true,
-                "types": {
-                    "Function": false,
-                    "object": false
-                }
-            }
-        ]
-    }
+    ]
 }

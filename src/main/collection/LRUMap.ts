@@ -30,7 +30,7 @@ export class LRUMap<K, V> implements Map<K, V> {
      */
     public constructor(maxSize: number, entries?: ReadonlyArray<readonly [K, V]> | null) {
         this.maxSize = maxSize;
-        if (entries) {
+        if (entries != null) {
             for (const entry of entries) {
                 this.set(entry[0], entry[1]);
             }
@@ -82,7 +82,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: unknown): void {
         let entry: LRUMapEntry<K, V> | null = this.first;
-        while (entry) {
+        while (entry != null) {
             const next = entry.next;
             callbackfn.call(thisArg, entry.value, entry.key, this);
             entry = next;
@@ -109,10 +109,10 @@ export class LRUMap<K, V> implements Map<K, V> {
 
     private cleanup(): void {
         let overflow = this.size - this.maxSize;
-        while (this.first && overflow > 0) {
+        while (this.first != null && overflow > 0) {
             this.index.delete(this.first.key);
             this.first = this.first.next;
-            if (this.first) {
+            if (this.first != null) {
                 this.first.previous = null;
             }
             overflow--;
@@ -122,7 +122,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public get(key: K): V | undefined {
         const entry = this.index.get(key);
-        if (entry) {
+        if (entry != null) {
             this.touch(entry);
             return entry.value;
         }
@@ -132,7 +132,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public has(key: K): boolean {
         const entry = this.index.get(key);
-        if (entry) {
+        if (entry != null) {
             this.touch(entry);
             return true;
         }
@@ -163,7 +163,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public *[Symbol.iterator](): IterableIterator<[K, V]> {
         let entry: LRUMapEntry<K, V> | null = this.first;
-        while (entry) {
+        while (entry != null) {
             const next = entry.next;
             yield [ entry.key, entry.value ];
             entry = next;
@@ -173,7 +173,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public *entries(): IterableIterator<[K, V]> {
         let entry: LRUMapEntry<K, V> | null = this.first;
-        while (entry) {
+        while (entry != null) {
             const next = entry.next;
             yield [ entry.key, entry.value ];
             entry = next;
@@ -183,7 +183,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public *keys(): IterableIterator<K> {
         let entry: LRUMapEntry<K, V> | null = this.first;
-        while (entry) {
+        while (entry != null) {
             const next = entry.next;
             yield entry.key;
             entry = next;
@@ -193,7 +193,7 @@ export class LRUMap<K, V> implements Map<K, V> {
     /** @inheritDoc */
     public *values(): IterableIterator<V> {
         let entry: LRUMapEntry<K, V> | null = this.first;
-        while (entry) {
+        while (entry != null) {
             const next = entry.next;
             yield entry.value;
             entry = next;
