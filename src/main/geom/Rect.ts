@@ -9,7 +9,7 @@ import { cacheResult } from "../util/cache";
 import { IllegalArgumentException } from "../util/exception";
 import { formatNumber } from "../util/string";
 import { Direction } from "./Direction";
-import { Insets } from "./Insets";
+import { InsetsLike } from "./InsetsLike";
 import { Point } from "./Point";
 import { PointLike } from "./PointLike";
 import { RectLike } from "./RectLike";
@@ -252,7 +252,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param anchor   - Optional anchor. Defaults to north-west.
      * @return The new rectangle.
      */
-    public setLocation(location: Point, anchor = Direction.NORTH_WEST): Rect {
+    public setLocation(location: PointLike, anchor = Direction.NORTH_WEST): Rect {
         if (location.getX() === this.getX(anchor) && location.getY() === this.getY(anchor)) {
             return this;
         }
@@ -428,7 +428,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param anchor - Optional resize anchor. Defaults to north-west.
      * @return The new rectangle.
      */
-    public addSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+    public addSize(size: SizeLike, anchor = Direction.NORTH_WEST): Rect {
         return this.resize(size.getWidth(), size.getHeight(), anchor);
     }
 
@@ -439,7 +439,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param anchor - Optional resize anchor. Defaults to north-west.
      * @return The new rectangle.
      */
-    public subSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+    public subSize(size: SizeLike, anchor = Direction.NORTH_WEST): Rect {
         return this.resize(-size.getWidth(), -size.getHeight(), anchor);
     }
 
@@ -465,7 +465,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param anchor    - Optional resize anchor. Defaults to north-west.
      * @return The new rectangle.
      */
-    public setSize(size: Size, anchor = Direction.NORTH_WEST): Rect {
+    public setSize(size: SizeLike, anchor = Direction.NORTH_WEST): Rect {
         return this.resizeTo(size.getWidth(), size.getHeight(), anchor);
     }
 
@@ -637,7 +637,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param point - The point to add.
      * @return The new rectangle containing the rectangle and the given point.
      */
-    public addPoint(point: Point): Rect {
+    public addPoint(point: PointLike): Rect {
         return this.add(point.getX(), point.getY());
     }
 
@@ -647,7 +647,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param rect - The rectangle to add.
      * @return The new rectangle containing this rectangle and the given one.
      */
-    public addRect(rect: Rect): Rect {
+    public addRect(rect: RectLike): Rect {
         return this.add(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
     }
 
@@ -657,16 +657,15 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param insets - The insets to add.
      * @return The new rectangle.
      */
-    public addInsets(insets: Insets): Rect {
-        if (insets.isNull()) {
+    public addInsets(insets: InsetsLike): Rect {
+        const left = insets.getLeft();
+        const top = insets.getTop();
+        const right = insets.getRight();
+        const bottom = insets.getBottom();
+        if (left === 0 && top === 0 && right === 0 && bottom === 0) {
             return this;
         }
-        return new Rect(
-            this.left - insets.getLeft(),
-            this.top - insets.getTop(),
-            this.width + insets.getHorizontal(),
-            this.height + insets.getVertical()
-        );
+        return new Rect(this.left - left, this.top - top, this.width + (left + right), this.height + (top + bottom));
     }
 
     /**
@@ -675,16 +674,15 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @param insets - The insets to subtract.
      * @return The new rectangle.
      */
-    public subInsets(insets: Insets): Rect {
-        if (insets.isNull()) {
+    public subInsets(insets: InsetsLike): Rect {
+        const left = insets.getLeft();
+        const top = insets.getTop();
+        const right = insets.getRight();
+        const bottom = insets.getBottom();
+        if (left === 0 && top === 0 && right === 0 && bottom === 0) {
             return this;
         }
-        return new Rect(
-            this.left + insets.getLeft(),
-            this.top + insets.getTop(),
-            this.width - insets.getHorizontal(),
-            this.height - insets.getVertical()
-        );
+        return new Rect(this.left + left, this.top + top, this.width - (left + right), this.height - (top + bottom));
     }
 
     /**

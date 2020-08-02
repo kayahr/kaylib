@@ -265,7 +265,7 @@ describe("Rect", () => {
             const rect = new Rect(1, 2, 3, 4);
             expect(rect.setLocation(new Point(0, 0))).not.toBe(rect);
             expect(rect.setLocation(new Point(1, 2))).toBe(rect);
-            expect(rect.setLocation(new Point(4, 6), Direction.SOUTH_EAST)).toBe(rect);
+            expect(rect.setLocation({ getX: () => 4, getY: () => 6 }, Direction.SOUTH_EAST)).toBe(rect);
         });
     });
 
@@ -426,7 +426,7 @@ describe("Rect", () => {
             const rect = new Rect(1, 2, 3, 4);
             expect(rect.addSize(new Size(0, 0))).toBe(rect);
             expect(rect.addSize(new Size(0, 1))).not.toBe(rect);
-            expect(rect.addSize(new Size(1, 0))).not.toBe(rect);
+            expect(rect.addSize({ getWidth: () => 1, getHeight: () => 0 })).not.toBe(rect);
         });
     });
 
@@ -439,7 +439,7 @@ describe("Rect", () => {
             const rect = new Rect(1, 2, 3, 4);
             expect(rect.subSize(new Size(0, 0))).toBe(rect);
             expect(rect.subSize(new Size(0, 1))).not.toBe(rect);
-            expect(rect.subSize(new Size(1, 0))).not.toBe(rect);
+            expect(rect.subSize({ getWidth: () => 1, getHeight: () => 0 })).not.toBe(rect);
         });
     });
 
@@ -465,7 +465,7 @@ describe("Rect", () => {
             const rect = new Rect(1, 2, 3, 4);
             expect(rect.setSize(new Size(3, 4))).toBe(rect);
             expect(rect.setSize(new Size(4, 4))).not.toBe(rect);
-            expect(rect.setSize(new Size(4, 3))).not.toBe(rect);
+            expect(rect.setSize({ getWidth: () => 4, getHeight: () => 3 })).not.toBe(rect);
         });
     });
 
@@ -626,7 +626,7 @@ describe("Rect", () => {
         });
         it("returns new rectangle when changed", () => {
             const rect = new Rect(1, 2, 3, 4);
-            expect(rect.addPoint(new Point(0, 0))).not.toBe(rect);
+            expect(rect.addPoint({ getX: () => 0, getY: () => 0 })).not.toBe(rect);
             expect(rect.addPoint(new Point(1.5, 2.5))).toBe(rect);
         });
     });
@@ -639,7 +639,12 @@ describe("Rect", () => {
         });
         it("returns new rectangle when changed", () => {
             const rect = new Rect(1, 2, 3, 4);
-            expect(rect.addRect(new Rect(2, 3, 4, 5))).not.toBe(rect);
+            expect(rect.addRect({
+                getLeft: () => 2,
+                getTop: () => 3,
+                getWidth: () => 4,
+                getHeight: () => 5
+            })).not.toBe(rect);
             expect(rect.addRect(new Rect(1, 2, 3, 4))).toBe(rect);
             expect(rect.addRect(new Rect(1.1, 2.1, 2, 3))).toBe(rect);
         });
@@ -655,7 +660,12 @@ describe("Rect", () => {
             expect(rect.addInsets(new Insets(0, 1, 0, 0))).not.toBe(rect);
             expect(rect.addInsets(new Insets(0, 0, 1, 0))).not.toBe(rect);
             expect(rect.addInsets(new Insets(0, 0, 0, 1))).not.toBe(rect);
-            expect(rect.addInsets(new Insets(0, 0, 0, 0))).toBe(rect);
+            expect(rect.addInsets({
+                getLeft: () => 0,
+                getTop: () => 0,
+                getRight: () => 0,
+                getBottom: () => 0
+            })).toBe(rect);
         });
     });
 
@@ -669,7 +679,12 @@ describe("Rect", () => {
             expect(rect.subInsets(new Insets(0, 1, 0, 0))).not.toBe(rect);
             expect(rect.subInsets(new Insets(0, 0, 1, 0))).not.toBe(rect);
             expect(rect.subInsets(new Insets(0, 0, 0, 1))).not.toBe(rect);
-            expect(rect.subInsets(new Insets(0, 0, 0, 0))).toBe(rect);
+            expect(rect.subInsets({
+                getLeft: () => 0,
+                getTop: () => 0,
+                getRight: () => 0,
+                getBottom: () => 0
+            })).toBe(rect);
         });
     });
 
