@@ -717,4 +717,22 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
         return new Rect(this.left / xDivisor, this.top / yDivisor, this.width / widthDivisor,
             this.height / heightDivisor);
     }
+
+    /**
+     * Returns the aspect ratio (width / height) of this size.
+     *
+     * @return The aspect ratio.
+     */
+    public getAspectRatio(): number {
+        return this.width / this.height;
+    }
+
+    /**
+     * Returns the area (width * height) of this size.
+     *
+     * @return The area.
+     */
+    public getArea(): number {
+        return this.width * this.height;
+    }
 }

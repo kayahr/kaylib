@@ -725,4 +725,16 @@ describe("Rect", () => {
             expect(rect.div(1, 1, 1, 2)).not.toBe(rect);
         });
     });
+
+    describe("getAspectRatio", () => {
+        it("returns the aspect ratio of the size", () => {
+            expect(new Rect(1, 2, 1024, 768).getAspectRatio()).toBe(1024 / 768);
+        });
+    });
+
+    describe("getArea", () => {
+        it("returns the area of the size", () => {
+            expect(new Rect(1, 2, 1024, 768).getArea()).toBe(1024 * 768);
+        });
+    });
 });
