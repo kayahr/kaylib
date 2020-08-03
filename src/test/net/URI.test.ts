@@ -6,6 +6,8 @@
 import "jest-extended";
 
 import { URI, URISyntaxException } from "../../main/net/URI";
+import { IllegalStateException } from "../../main/util/exception";
+import { isNodeJS, isWindows } from "../../main/util/runtime";
 
 describe("URI", () => {
     describe("constructor", () => {
@@ -150,10 +152,43 @@ describe("URI", () => {
         });
     });
 
+    describe("toFile", () => {
+        it("converts relative URI to a file", () => {
+            expect(new URI("../path/file").toFile(true)).toBe("..\\path\\file");
+            expect(new URI("../path/file").toFile(false)).toBe("../path/file");
+        });
+        it("converts absolute URI to a file", () => {
+            expect(new URI("file:///C:/path/file").toFile(true)).toBe("C:\\path\\file");
+            expect(new URI("file:///path/file").toFile(false)).toBe("/path/file");
+        });
+        it("defaults to operating-system specific conversion", () => {
+            if (isNodeJS() && isWindows()) {
+                expect(new URI("file:///C:/path/file").toFile()).toBe("C:\\path\\file");
+            } else {
+                expect(new URI("file:///path/file").toFile()).toBe("/path/file");
+            }
+        });
+        it("throws exception when URI is not a relative path or a non-file scheme", () => {
+            expect(() => new URI("http://foo/").toFile()).toThrowWithMessage(IllegalStateException,
+                "URI 'http://foo/' can't be converted into a file path");
+        });
+    });
+
     describe("fromJSON", () => {
         it("constructs an URI from a JSON object", () => {
             expect(URI.fromJSON("https://foo.tld:321/?arg=1#bar").toString()).toBe("https://foo.tld:321/?arg=1#bar");
             expect(URI.fromJSON("path").toString()).toBe("path");
+        });
+    });
+
+    describe("fromFile", () => {
+        it("converts relative path to relative URI", () => {
+            expect(URI.fromFile("../path/file")).toEqual(new URI("../path/file"));
+            expect(URI.fromFile("..\\path\\file")).toEqual(new URI("../path/file"));
+        });
+        it("converts absolute path to URI", () => {
+            expect(URI.fromFile("/path/file/")).toEqual(new URI("file:///path/file/"));
+            expect(URI.fromFile("C:\\path\\file\\")).toEqual(new URI("file:///C:/path/file/"));
         });
     });
 
@@ -195,6 +230,157 @@ describe("URI", () => {
         it("converts a URL into a URI", () => {
             expect(URI.fromURL(new URL("https://foo.tld:321/?arg=1#bar")).toString()).toBe(
                 "https://foo.tld:321/?arg=1#bar");
+        });
+    });
+
+    describe("fromFile", () => {
+        it("converts a os-specific file system path into a file URI", () => {
+            expect(URI.fromFile(__filename).toFile()).toBe(__filename);
+        });
+    });
+
+    describe("resolveURI", () => {
+        it("returns given URI if absolute", () => {
+            const baseURI = new URI("http://host/path");
+            const uri = new URI("http://otherhost/otherpath");
+            expect(baseURI.resolveURI(uri)).toBe(uri);
+        });
+        it("returns given URI if base URI is opaque", () => {
+            const baseURI = new URI("urn:isbn:0123456789");
+            const uri = new URI("path");
+            expect(baseURI.resolveURI(uri)).toBe(uri);
+        });
+        it("merges base URI with fragment", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = new URI("#foo");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path?a=1#foo"));
+        });
+        it("uses authority and path from given URI if authority is given", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = new URI("//user2:pass2@host2:321/path2/");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user2:pass2@host2:321/path2/"));
+        });
+        it("merges base URI with absolute path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = new URI("/path2/file");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path2/file"));
+        });
+        it("merges base URI ending in file with relative path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/file?a=1#bar");
+            const uri = new URI("path2/file2");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path/path2/file2"));
+        });
+        it("merges base URI ending in directory with relative path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = new URI("path2/file2");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path/path2/file2"));
+        });
+        it("uses query from given URI", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = new URI("path2/file2?b=2");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path/path2/file2?b=2"));
+        });
+        it("uses fragment from given URI", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = new URI("path2/file2#foo");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path/path2/file2#foo"));
+        });
+        it("normalizes merged paths", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/foo/?a=1#bar");
+            const uri = new URI("../path2/file2");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("http://user:pass@host:123/path/path2/file2"));
+        });
+        it("merges relative paths", () => {
+            const baseURI = new URI("a/b/c");
+            const uri = new URI("../d");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("a/d"));
+        });
+        it("merges relative path with fragment", () => {
+            const baseURI = new URI("a/b/c");
+            const uri = new URI("#foo");
+            expect(baseURI.resolveURI(uri)).toEqual(new URI("a/b/c#foo"));
+        });
+    });
+
+    describe("resolve", () => {
+        it("returns given URI if absolute", () => {
+            const baseURI = new URI("http://host/path");
+            const uri = "http://otherhost/otherpath";
+            expect(baseURI.resolve(uri)).toBe(uri);
+        });
+        it("returns given URI if base URI is opaque", () => {
+            const baseURI = new URI("urn:isbn:0123456789");
+            const uri = "path";
+            expect(baseURI.resolve(uri)).toBe(uri);
+        });
+        it("merges base URI with fragment", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = "#foo";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path?a=1#foo");
+        });
+        it("uses authority and path from given URI if authority is given", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = "//user2:pass2@host2:321/path2/";
+            expect(baseURI.resolve(uri)).toBe("http://user2:pass2@host2:321/path2/");
+        });
+        it("merges base URI with absolute path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path?a=1#bar");
+            const uri = "/path2/file";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path2/file");
+        });
+        it("merges base URI ending in file with relative path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/file?a=1#bar");
+            const uri = "path2/file2";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path/path2/file2");
+        });
+        it("merges base URI ending in directory with relative path", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = "path2/file2";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path/path2/file2");
+        });
+        it("uses query from given URI", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = "path2/file2?b=2";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path/path2/file2?b=2");
+        });
+        it("uses fragment from given URI", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/?a=1#bar");
+            const uri = "path2/file2#foo";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path/path2/file2#foo");
+        });
+        it("normalizes merged paths", () => {
+            const baseURI = new URI("http://user:pass@host:123/path/foo/?a=1#bar");
+            const uri = "../path2/file2";
+            expect(baseURI.resolve(uri)).toBe("http://user:pass@host:123/path/path2/file2");
+        });
+        it("merges relative paths", () => {
+            const baseURI = new URI("a/b/c");
+            const uri = "../d";
+            expect(baseURI.resolve(uri)).toBe("a/d");
+        });
+        it("merges relative path with fragment", () => {
+            const baseURI = new URI("a/b/c");
+            const uri = "#foo";
+            expect(baseURI.resolve(uri)).toBe("a/b/c#foo");
+        });
+    });
+
+    describe("normalize", () => {
+        it("returns same URI when opaque", () => {
+            const uri = new URI("foo:bar:1234");
+            expect(uri.normalize()).toBe(uri);
+        });
+        it("returns same URI when nothing to normalize", () => {
+            const uri = new URI("https://host/foo/bar");
+            expect(uri.normalize()).toBe(uri);
+        });
+        it("normalizes URI with all URI components set", () => {
+            const uri = new URI("http://user:pass@host:123/a/b/./../c/../d/?a=1#bar");
+            expect(uri.normalize()).toEqual(new URI("http://user:pass@host:123/a/d/?a=1#bar"));
+        });
+        it("normalizes URI which only has a path", () => {
+            const uri = new URI("/a/../../b/./../c/../d/");
+            expect(uri.normalize()).toEqual(new URI("/d/"));
         });
     });
 });

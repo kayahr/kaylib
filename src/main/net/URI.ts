@@ -6,7 +6,9 @@
 import { Comparable } from "../lang/Comparable";
 import { Equatable, isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
-import { Exception } from "../util/exception";
+import { Exception, IllegalStateException } from "../util/exception";
+import { normalizePath } from "../util/file";
+import { isNodeJS, isWindows } from "../util/runtime";
 
 /** The regular expression used to parse an URI string. */
 const URI_REGEXP
@@ -63,35 +65,91 @@ export class URI implements Serializable<string>, Equatable, Comparable<URI> {
         this.fragment = match[9] != null ? decodeURI(match[9]) : null;
     }
 
+    public static fromJSON(json: string): URI {
+        return new URI(json);
+    }
+
+    /**
+     * Converts a URL into a URI.
+     *
+     * @param url - The URL to convert.
+     * @return The created URI.
+     */
+    public static fromURL(url: URL): URI {
+        return new URI(url.toString());
+    }
+
+    /**
+     * Converts operating system specific file path into an URI.
+     *
+     * @param file - The file path to convert.
+     * @return The created URI.
+     */
+    public static fromFile(file: string): URI {
+        if (file.includes("\\")) {
+            file = file.replace(/\\/g, "/");
+            if (/^[a-z]:/i.exec(file) != null) {
+                return new URI(`file:///${file}`);
+            }
+        } else if (file.startsWith("/")) {
+            return new URI(`file://${file}`);
+        }
+        return new URI(file);
+    }
+
+    /** @inheritDoc */
     public toString(): string {
         return (this.scheme != null ? `${this.scheme}:` : "")
             + this.rawSchemeSpecificPart
             + (this.rawFragment != null ? `#${this.rawFragment}` : "");
     }
 
+    /** @inheritDoc */
     public toJSON(): string {
         return this.toString();
     }
 
-    public static fromJSON(json: string): URI {
-        return new URI(json);
+    /**
+     * Converts the URI into a URL.
+     *
+     * @return The created URL.
+     */
+    public toURL(): URL {
+        return new URL(this.toString());
     }
 
+    /**
+     * Converts this URI into a file path and returns it.
+     *
+     * @param windows - Set to true to force windows file syntax, false to force unix file syntax. If not specified
+     *                  then operating-system specific syntax is used.
+     * @return The URI as a file path.
+     * @throws IllegalStateError - When URI has a scheme but this scheme is not "file".
+     */
+    public toFile(windows?: boolean): string {
+        if ((this.scheme != null && this.scheme !== "file") || this.path == null) {
+            throw new IllegalStateException(`URI '${this}' can't be converted into a file path`);
+        }
+        const file = this.path;
+        if (windows !== false && (windows === true || (isNodeJS() && isWindows()))) {
+            if (/^\/[a-z]:/i.exec(file) != null) {
+                return file.substr(1).replace(/\//g, "\\");
+            } else {
+                return file.replace(/\//g, "\\");
+            }
+        }
+        return file;
+    }
+
+    /** @inheritDoc */
     public equals(other: unknown): boolean {
         return isEqual(this, other, other => this.scheme === other.scheme
             && this.rawSchemeSpecificPart === other.rawSchemeSpecificPart && this.rawFragment === other.rawFragment);
     }
 
+    /** @inheritDoc */
     public compareTo(other: URI): number {
         return this.toString().localeCompare(other.toString());
-    }
-
-    public toURL(): URL {
-        return new URL(this.toString());
-    }
-
-    public static fromURL(url: URL): URI {
-        return new URI(url.toString());
     }
 
     /**
@@ -252,5 +310,99 @@ export class URI implements Serializable<string>, Equatable, Comparable<URI> {
      */
     public getFragment(): string | null {
         return this.fragment;
+    }
+
+    /**
+     * Normalizes the URI and returns the normalized one.
+     *
+     * @return The normalized URI. May be the same URI when there is nothing to normalize.
+     */
+    public normalize(): URI {
+        if (this.isOpaque() || this.path == null) {
+            return this;
+        }
+        const newPath = normalizePath(this.path, "/");
+        if (newPath === this.path) {
+            return this;
+        }
+        return new URI(
+            (this.scheme != null ? `${this.scheme}:` : "")
+            + (this.rawAuthority != null ? `//${this.rawAuthority}` : "")
+            + newPath
+            + (this.rawQuery != null ? `?${this.rawQuery}` : "")
+            + (this.rawFragment != null ? `#${this.rawFragment}` : "")
+        );
+    }
+
+    /**
+     * Resolves the given URI against this URI.
+     *
+     * @param uri - The URI to be resolved against this URI.
+     * @return The resulting URI.
+     */
+    public resolve(uri: string): string {
+        return this.resolveURI(new URI(uri)).toString();
+    }
+
+    /**
+     * Resolves the given URI against this URI.
+     *
+     * @param uri - The URI to be resolved against this URI.
+     * @return The resulting URI.
+     */
+    public resolveURI(uri: URI): URI {
+        // If the given URI is already absolute, or if this URI is opaque, then the given URI is returned.
+        if (uri.isAbsolute() || this.isOpaque()) {
+            return uri;
+        }
+
+        const scheme = uri.getScheme();
+        const authority = uri.getRawAuthority();
+        const path = uri.getRawPath() ?? "";
+        const query = uri.getRawQuery();
+        const fragment = uri.getRawFragment();
+
+        // If given URL only has a fragment then return base URI with this fragment added.
+        if (fragment != null && path === "" && scheme == null && authority == null && query == null) {
+            return new URI((this.scheme != null ? `${this.scheme}:` : "")
+                + this.rawSchemeSpecificPart
+                + `#${fragment}`);
+        }
+
+        // Construct a new hierarchical URI in a manner consistent with RFC 2396, section 5.2
+        // A new URI is constructed with this URI's scheme and the given URI's query and fragment components.
+        const newScheme = this.scheme;
+        const newQuery = query;
+        const newFragment = fragment;
+        let newAuthority: string | null;
+        let newPath: string;
+        if (authority != null) {
+            // If the given URI has an authority component then the new URI's authority and path are taken from the
+            // given URI.
+            newAuthority = authority;
+            newPath = path;
+        } else {
+            // Otherwise the new URI's authority component is copied from this URI, and its path is resolved
+            newAuthority = this.rawAuthority;
+            if (path.startsWith("/")) {
+                // If the given URI's path is absolute then the new URI's path is taken from the given URI.
+                newPath = path;
+            } else {
+                // Otherwise the given URI's path is relative, and so the new URI's path is computed by resolving the
+                // path of the given URI against the path of this URI. This is done by concatenating all but the last
+                // segment of this URI's path, if any, with the given URI's path
+                const basePath = this.path ?? "";
+                newPath = normalizePath(basePath.substr(0, basePath.lastIndexOf("/") + 1) + path, "/");
+            }
+        }
+
+        // Construct, normalize and return the new URI
+        return new URI(
+            (newScheme != null ? `${newScheme}:` : "")
+            + (newAuthority != null ? `//${newAuthority}` : "")
+            + newPath
+            + (newQuery != null ? `?${newQuery}` : "")
+            + (newFragment != null ? `#${newFragment}` : "")
+        );
     }
 }

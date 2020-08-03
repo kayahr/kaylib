@@ -7,8 +7,8 @@ import "jest-extended";
 
 import { IllegalArgumentException } from "../../main/util/exception";
 import {
-    capitalize, extractWords, formatNumber, toLowerCamelCase, toLowerDashCase, toLowerSnakeCase, toUpperCamelCase,
-    toUpperDashCase, toUpperSnakeCase
+    capitalize, extractWords, formatNumber, toHex, toLowerCamelCase, toLowerDashCase, toLowerSnakeCase,
+    toUpperCamelCase, toUpperDashCase, toUpperSnakeCase
 } from "../../main/util/string";
 
 describe("string", () => {
@@ -115,6 +115,18 @@ describe("string", () => {
         it("formats numbers with custom settings", () => {
             expect(formatNumber(123456.123456, { locales: "de", maximumFractionDigits: 3, useGrouping: true }))
                 .toBe("123.456,123");
+        });
+    });
+
+    describe("toHex", () => {
+        it("converts number to hex", () => {
+            expect(toHex(0)).toBe("0");
+            expect(toHex(15)).toBe("f");
+            expect(toHex(15.9)).toBe("f");
+            expect(toHex(49152)).toBe("c000");
+            expect(toHex(65535, 8)).toBe("0000ffff");
+            expect(toHex(0xffffffff)).toBe("ffffffff");
+            expect(toHex(0xff << 24)).toBe("ff000000");
         });
     });
 });

@@ -118,3 +118,15 @@ export function formatNumber(value: number, options?: Intl.NumberFormatOptions &
     return value.toLocaleString(options?.locales ?? [ "fullwide", "en" ],
         { useGrouping: false, maximumFractionDigits: 6, ...options });
 }
+
+/**
+ * Converts the given value into a hex string.
+ *
+ * @param value  - The decimal value to convert.
+ * @param length - The minimum length of the created hex string. Missing digits are filled with 0.
+ * @return The hex string.
+ */
+export function toHex(value: number, length = 0): string {
+    const hex = (value >>> 0).toString(16);
+    return "0".repeat(Math.max(0, length - hex.length)) + hex;
+}

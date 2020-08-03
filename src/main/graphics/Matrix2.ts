@@ -1,0 +1,393 @@
+/*
+ * Copyright (C) 2019 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
+
+import { Cloneable } from "../lang/Cloneable";
+import { Serializable } from "../lang/Serializable";
+import { AbstractMatrix } from "./AbstractMatrix";
+import { Matrix, MatrixLike, ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlyVectorLike } from "./Vector";
+
+/**
+ * JSON representation of a matrix with 4 floating point components.
+ */
+export type Matrix2JSON = [
+    number, number,
+    number, number
+];
+
+export type Matrix2Like = MatrixLike<2, 2>;
+
+/**
+ * 2x2 matrix using 32 bit floating point components.
+ */
+export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializable<Matrix2JSON>,
+        Cloneable<Matrix2> {
+    /** The number of columns. */
+    public readonly columns: 2;
+
+    /** The number of rows. */
+    public readonly rows: 2;
+
+    /**
+     * Creates a matrix initialized to an identity matrix.
+     */
+    public constructor();
+
+    /**
+     * Creates a new matrix initialized to the given matrix. If given matrix has smaller dimensions then the missing
+     * columns/rows are filled from an identity matrix.
+     *
+     * @param matrix - The matrix to copy the components from.
+     */
+    public constructor(matrix: ReadonlyMatrixLike);
+
+    /**
+     * Creates a new matrix initialized to the given component values.
+     *
+     * @param components - The component values.
+     */
+    public constructor(...components: Matrix2JSON);
+
+    /**
+     * Creates a new matrix with the component values copied from the given column vectors.
+     *
+     * @param columns - The column vectors.
+     */
+    public constructor(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ])
+
+    /**
+     * Creates a new matrix using the given array buffer as component values.
+     *
+     * @param buffer - The array buffer to use.
+     * @param offset - Optional byte offset within the array buffer. Defaults to 0.
+     */
+    public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
+
+    public constructor(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ] |
+            [ ArrayBuffer | SharedArrayBuffer, number? ]) {
+        if (args.length === 0) {
+            super(4);
+            this[0] = this[3] = 1;
+        } else if (AbstractMatrix.isInitFromMatrix(args)) {
+            super(4);
+            this[0] = this[3] = 1;
+            const arg = args[0];
+            const argColumns = arg.columns;
+            const columns = Math.min(2, argColumns);
+            const rows = Math.min(2, arg.rows);
+            for (let x = 0; x < columns; ++x) {
+                for (let y = 0; y < rows; ++y) {
+                    this[x + y * 2] = arg[x + y * argColumns];
+                }
+            }
+        } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
+            super(args[0], args[1] ?? 0, 4);
+        } else {
+            super(4);
+            this.setValues(args);
+        }
+        this.columns = 2;
+        this.rows = 2;
+    }
+
+    /** Matrix component at row 1 column 1. */
+    public get m11(): number {
+        return this[0];
+    }
+    public set m11(v: number) {
+        this[0] = v;
+    }
+
+    /** Matrix component at row 2 column 1. */
+    public get m12(): number {
+        return this[1];
+    }
+    public set m12(v: number) {
+        this[1] = v;
+    }
+
+    /** Matrix component at row 1 column 2. */
+    public get m21(): number {
+        return this[2];
+    }
+    public set m21(v: number) {
+        this[2] = v;
+    }
+
+    /** Matrix component at row 2 column 2. */
+    public get m22(): number {
+        return this[3];
+    }
+    public set m22(v: number) {
+        this[3] = v;
+    }
+
+    /**
+     * Sets the matrix component values.
+     *
+     * @param components - The component values to set.
+     */
+    public set(...components: Matrix2JSON): this;
+
+    /**
+     * Sets the matrix component values from another matrix. If given matrix has smaller dimensions then the missing
+     * columns/rows are filled from an identity matrix.
+     *
+     * @param matrix - The matrix to copy the component values from.
+     */
+    public set(matrix: ReadonlyMatrixLike): this;
+
+    /**
+     * Sets the component values by copying them from the given column vectors.
+     *
+     * @param columns - The column vectors.
+     */
+    public set(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ]): this;
+
+    public set(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ]): this {
+        if (AbstractMatrix.isInitFromMatrix(args)) {
+            this.reset();
+            const arg = args[0];
+            const argColumns = arg.columns;
+            const columns = Math.min(2, argColumns);
+            const rows = Math.min(2, arg.rows);
+            for (let x = 0; x < columns; ++x) {
+                for (let y = 0; y < rows; ++y) {
+                    this[x + y * 2] = arg[x + y * argColumns];
+                }
+            }
+            return this;
+        } else {
+            return this.setValues(args);
+        }
+    }
+
+    /**
+     * Creates a result matrix initialized with the given component values. This is used internally to create result
+     * matrices returned by the various methods.
+     *
+     * @param result - The result matrix to re-use. A new one is created when undefined
+     * @param m11    - Matrix component at row 1 column 1.
+     * @param m12    - Matrix component at row 2 column 1.
+     * @param m21    - Matrix component at row 1 column 2.
+     * @param m22    - Matrix component at row 2 column 2.
+     * @return The result matrix. Either a new one or the specified result matrix.
+     * @hidden
+     */
+    public static createResult<T extends Matrix2Like = Matrix2>(result: T | undefined,
+            m11: number, m12: number, m21: number, m22: number): T {
+        if (result != null) {
+            result[0] = m11; result[1] = m12;
+            result[2] = m21; result[3] = m22;
+            return result;
+        } else {
+            return new Matrix2(m11, m12, m21, m22) as unknown as T;
+        }
+    }
+
+    /**
+     * Creates a new matrix from the given JSON array.
+     *
+     * @param components - Array with the 4 matrix components.
+     * @return The created matrix.
+     */
+    public static fromJSON(components: Matrix2JSON): Matrix2 {
+        return new Matrix2(...components);
+    }
+
+    /** @inheritDoc */
+    public clone(): Matrix2 {
+        return new Matrix2(this);
+    }
+
+    /** @inheritDoc */
+    public toJSON(fractionDigits?: number): Matrix2JSON {
+        if (fractionDigits != null) {
+            return [
+                +this[0].toFixed(fractionDigits), +this[1].toFixed(fractionDigits),
+                +this[2].toFixed(fractionDigits), +this[3].toFixed(fractionDigits)
+            ];
+        } else {
+            return [
+                this[0], this[1],
+                this[2], this[3]
+            ];
+        }
+    }
+
+    /** @inheritDoc */
+    public equals(obj: unknown, fractionDigits?: number): boolean {
+        const other = obj as Matrix2;
+        if (obj == null || other.equals !== this.equals) {
+            return false;
+        }
+        if (fractionDigits != null) {
+            return this.every((value, index) => value.toFixed(fractionDigits) === other[index].toFixed(fractionDigits));
+        } else {
+            return this.every((value, index) => value === other[index]);
+        }
+    }
+
+    /** @inheritDoc */
+    public isIdentity(): boolean {
+        return this[0] === 1 && this[1] === 0
+            && this[2] === 0 && this[3] === 1;
+    }
+
+    /** @inheritDoc */
+    public reset(): this {
+        this[0] = 1; this[1] = 0;
+        this[2] = 0; this[3] = 1;
+        return this;
+    }
+
+    /** @inheritDoc */
+    public add<T extends Matrix2Like = Matrix2>(summand: number, result?: T): T;
+
+    /** @inheritDoc */
+    public add<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+
+    public add<T extends Matrix2Like = Matrix2>(arg: number | ReadonlyMatrixLike<2, 2>, result?: T): T {
+        if (typeof arg === "number") {
+            return Matrix2.createResult(result,
+                this[0] + arg, this[1] + arg,
+                this[2] + arg, this[3] + arg
+            );
+        } else {
+            return Matrix2.createResult(result,
+                this[0] + arg[0], this[1] + arg[1],
+                this[2] + arg[2], this[3] + arg[3]
+            );
+        }
+    }
+
+    /** @inheritDoc */
+    public sub<T extends Matrix2Like = Matrix2>(subtrahend: number, result?: T): T;
+
+    /** @inheritDoc */
+    public sub<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+
+    public sub<T extends Matrix2Like = Matrix2>(arg: number | ReadonlyMatrixLike<2, 2>, result?: T): T {
+        if (typeof arg === "number") {
+            return Matrix2.createResult(result,
+                this[0] - arg, this[1] - arg,
+                this[2] - arg, this[3] - arg
+            );
+        } else {
+            return Matrix2.createResult(result,
+                this[0] - arg[0], this[1] - arg[1],
+                this[2] - arg[2], this[3] - arg[3]
+            );
+        }
+    }
+
+    /** @inheritDoc */
+    public compMul<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+
+    /** @inheritDoc */
+    public compMul<T extends Matrix2Like = Matrix2>(factor: number, result?: T): T;
+
+    public compMul<T extends Matrix2Like = Matrix2>(arg: ReadonlyMatrixLike<2, 2> | number, result?: T): T {
+        if (typeof arg === "number") {
+            return Matrix2.createResult(result,
+                this[0] * arg, this[1] * arg,
+                this[2] * arg, this[3] * arg
+            );
+        } else {
+            return Matrix2.createResult(result,
+                this[0] * arg[0], this[1] * arg[1],
+                this[2] * arg[2], this[3] * arg[3]
+            );
+        }
+    }
+
+    /** @inheritDoc */
+    public compDiv<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+
+    /** @inheritDoc */
+    public compDiv<T extends Matrix2Like = Matrix2>(divisor: number, result?: T): T;
+
+    public compDiv<T extends Matrix2Like = Matrix2>(arg: ReadonlyMatrixLike<2, 2> | number, result?: T): T {
+        if (typeof arg === "number") {
+            return Matrix2.createResult(result,
+                this[0] / arg, this[1] / arg,
+                this[2] / arg, this[3] / arg
+            );
+        } else {
+            return Matrix2.createResult(result,
+                this[0] / arg[0], this[1] / arg[1],
+                this[2] / arg[2], this[3] / arg[3]
+            );
+        }
+    }
+
+    /** @inheritDoc */
+    public mul<T extends Matrix2Like = Matrix2>(other: ReadonlyMatrixLike<2, 2>, result?: T): T {
+        const a11 = this[0], a12 = this[1];
+        const a21 = this[2], a22 = this[3];
+        const b11 = other[0], b12 = other[1];
+        const b21 = other[2], b22 = other[3];
+
+        // | a11 a12 | * | b11 b12 | = | a11b11+a21b12 a12b11+a22b12 |
+        // | a21 a22 |   | b21 b22 |   | a11b21+a21b22 a12b21+a22b22 |
+        return Matrix2.createResult(result,
+            a11 * b11 + a21 * b12, a12 * b11 + a22 * b12,
+            a11 * b21 + a21 * b22, a12 * b21 + a22 * b22
+        );
+    }
+
+    /** @inheritDoc */
+    public div<T extends Matrix2Like = Matrix2>(other: ReadonlyMatrixLike<2, 2>, result?: T): T {
+        const a11 = this[0], a12 = this[1];
+        const a21 = this[2], a22 = this[3];
+        const b11 = other[0], b12 = other[1];
+        const b21 = other[2], b22 = other[3];
+
+        // d = determinant(b)
+        const d = b11 * b22 - b12 * b21;
+
+        // c = invert(b)
+        const c11 =  b22 / d, c12 = -b12 / d;
+        const c21 = -b21 / d, c22 =  b11 / d;
+
+        // result = this * c
+        return Matrix2.createResult(result,
+            a11 * c11 + a21 * c12, a12 * c11 + a22 * c12,
+            a11 * c21 + a21 * c22, a12 * c21 + a22 * c22
+        );
+    }
+
+    /** @inheritDoc */
+    public getDeterminant(): number {
+        return this[0] * this[3] - this[1] * this[2];
+    }
+
+    /** @inheritDoc */
+    public invert<T extends Matrix2Like = Matrix2>(result?: T): T {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[2], m22 = this[3];
+        const d = m11 * m22 - m12 * m21;
+        return Matrix2.createResult(result,
+             m22 / d, -m12 / d,
+            -m21 / d,  m11 / d
+        );
+    }
+
+    /** @inheritDoc */
+    public transpose<T extends Matrix2Like = Matrix2>(result?: T): T {
+        return Matrix2.createResult(result,
+            this[0], this[2],
+            this[1], this[3]
+        );
+    }
+
+    /** @inheritDoc */
+    public adjugate<T extends Matrix2Like = Matrix2>(result?: T): T {
+        return Matrix2.createResult(result,
+             this[3], -this[2],
+            -this[1],  this[0]
+        );
+    }
+}
