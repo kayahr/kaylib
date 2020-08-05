@@ -4,6 +4,7 @@
  */
 
 import { Cloneable } from "../lang/Cloneable";
+import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { Matrix, ReadonlyMatrixLike } from "./Matrix";
@@ -195,39 +196,16 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
     }
 
     /** @inheritDoc */
-    public toJSON(fractionDigits?: number): Matrix3x2JSON {
-        if (fractionDigits != null) {
-            return [
-                +this[0].toFixed(fractionDigits), +this[1].toFixed(fractionDigits), +this[2].toFixed(fractionDigits),
-                +this[3].toFixed(fractionDigits), +this[4].toFixed(fractionDigits), +this[5].toFixed(fractionDigits)
-            ];
-        } else {
-            return [
-                this[0], this[1], this[2],
-                this[3], this[4], this[5]
-            ];
-        }
+    public toJSON(): Matrix3x2JSON {
+        return [
+            this[0], this[1], this[2],
+            this[3], this[4], this[5]
+        ];
     }
 
-    /**
-     * Checks if the given matrix is equal to this one. By default the values are checked for exact matches. Use
-     * the optional `fractionDigits` parameter to specify the compare precision.
-     *
-     * @param object         - The object to check for equality.
-     * @param fractionDigits - Optional parameter specifying the number of fraction digits to compare for the
-     *                         equality check.
-     * @return True if object is equal, false if not.
-     */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        const other = obj as Matrix3x2;
-        if (obj == null || other.equals !== this.equals) {
-            return false;
-        }
-        if (fractionDigits != null) {
-            return this.every((value, index) => value.toFixed(fractionDigits) === other[index].toFixed(fractionDigits));
-        } else {
-            return this.every((value, index) => value === other[index]);
-        }
+    /** @inheritDoc */
+    public equals(other: unknown): boolean {
+        return isEqual(this, other, other => this.every((value, index) => value === other[index]));
     }
 
     /** @inheritDoc */

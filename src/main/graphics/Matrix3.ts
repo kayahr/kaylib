@@ -4,6 +4,7 @@
  */
 
 import { Cloneable } from "../lang/Cloneable";
+import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { ReadonlyMatrixLike } from "./Matrix";
@@ -207,42 +208,6 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /**
-     * Creates a result matrix initialized with the given component values. This is used internally to create result
-     * matrices returned by the various methods.
-     *
-     * @param result - The result matrix to re-use. A new one is created when undefined
-     * @param m11    - Matrix component at row 1 column 1.
-     * @param m12    - Matrix component at row 2 column 1.
-     * @param m13    - Matrix component at row 3 column 1.
-     * @param m21    - Matrix component at row 1 column 2.
-     * @param m22    - Matrix component at row 2 column 2.
-     * @param m23    - Matrix component at row 3 column 2.
-     * @param m31    - Matrix component at row 1 column 3.
-     * @param m32    - Matrix component at row 2 column 3.
-     * @param m33    - Matrix component at row 3 column 3.
-     * @return The result matrix. Either a new one or the specified result matrix.
-     * @hidden
-     */
-    public static createResult<T extends Matrix3Like = Matrix3>(result: T | undefined,
-                m11: number, m12: number, m13: number,
-                m21: number, m22: number, m23: number,
-                m31: number, m32: number, m33: number
-            ): T {
-        if (result != null) {
-            result[0] = m11; result[1] = m12; result[2] = m13;
-            result[3] = m21; result[4] = m22; result[5] = m23;
-            result[6] = m31; result[7] = m32; result[8] = m33;
-            return result;
-        } else {
-            return new Matrix3(
-                m11, m12, m13,
-                m21, m22, m23,
-                m31, m32, m33
-            ) as unknown as T;
-        }
-    }
-
-    /**
      * Creates a new matrix from the given JSON array.
      *
      * @param components - Array with the 9 matrix components.
@@ -258,41 +223,17 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /** @inheritDoc */
-    public toJSON(fractionDigits?: number): Matrix3JSON {
-        if (fractionDigits != null) {
-            return [
-                +this[0].toFixed(fractionDigits), +this[1].toFixed(fractionDigits), +this[2].toFixed(fractionDigits),
-                +this[3].toFixed(fractionDigits), +this[4].toFixed(fractionDigits), +this[5].toFixed(fractionDigits),
-                +this[6].toFixed(fractionDigits), +this[7].toFixed(fractionDigits), +this[8].toFixed(fractionDigits)
-            ];
-        } else {
-            return [
-                this[0], this[1], this[2],
-                this[3], this[4], this[5],
-                this[6], this[7], this[8]
-            ];
-        }
+    public toJSON(): Matrix3JSON {
+        return [
+            this[0], this[1], this[2],
+            this[3], this[4], this[5],
+            this[6], this[7], this[8]
+        ];
     }
 
-    /**
-     * Checks if the given matrix is equal to this one. By default the values are checked for exact matches. Use
-     * the optional `fractionDigits` parameter to specify the compare precision.
-     *
-     * @param object         - The object to check for equality.
-     * @param fractionDigits - Optional parameter specifying the number of fraction digits to compare for the
-     *                         equality check.
-     * @return True if object is equal, false if not.
-     */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        const other = obj as Matrix3;
-        if (obj == null || other.equals !== this.equals) {
-            return false;
-        }
-        if (fractionDigits != null) {
-            return this.every((value, index) => value.toFixed(fractionDigits) === other[index].toFixed(fractionDigits));
-        } else {
-            return this.every((value, index) => value === other[index]);
-        }
+    /** @inheritDoc */
+    public equals(other: unknown): boolean {
+        return isEqual(this, other, other => this.every((value, index) => value === other[index]));
     }
 
     /** @inheritDoc */

@@ -125,16 +125,8 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public toJSON(fractionDigits?: number): Vector3JSON {
-        if (fractionDigits != null) {
-            return [
-                +this[0].toFixed(fractionDigits),
-                +this[1].toFixed(fractionDigits),
-                +this[2].toFixed(fractionDigits)
-            ];
-        } else {
-            return [ this[0], this[1], this[2] ];
-        }
+    public toJSON(): Vector3JSON {
+        return [ this[0], this[1], this[2] ];
     }
 
     public static fromJSON(json: Vector3JSON): Vector3 {
@@ -142,16 +134,8 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        return isEqual(this, obj, other => {
-            if (fractionDigits != null) {
-                return this[0].toFixed(fractionDigits) === other[0].toFixed(fractionDigits)
-                    && this[1].toFixed(fractionDigits) === other[1].toFixed(fractionDigits)
-                    && this[2].toFixed(fractionDigits) === other[2].toFixed(fractionDigits);
-            } else {
-                return this[0] === other[0] && this[1] === other[1] && this[2] === other[2];
-            }
-        });
+    public equals(obj: unknown): boolean {
+        return isEqual(this, obj, other => this[0] === other[0] && this[1] === other[1] && this[2] === other[2]);
     }
 
     /** @inheritDoc */

@@ -73,17 +73,6 @@ export interface ReadonlyMatrix<
             Rows extends number = 2 | 3 | 4
         > extends ReadonlyMatrixLike<Columns, Rows>, Equatable, Serializable<number[]> {
     /**
-     * Checks if the given matrix is equal to this one. By default the values are checked for exact matches. Use
-     * the optional `fractionDigits` parameter to specify the compare precision.
-     *
-     * @param object         - The object to check for equality.
-     * @param fractionDigits - Optional parameter specifying the number of fraction digits to compare for the
-     *                         equality check.
-     * @return True if object is equal, false if not.
-     */
-    equals(obj: unknown, fractionDigits?: number): boolean;
-
-    /**
      * Checks if matrix is identity.
      *
      * @return True if identity, false if not.

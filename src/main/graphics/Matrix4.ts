@@ -4,6 +4,7 @@
  */
 
 import { Cloneable } from "../lang/Cloneable";
+import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { ReadonlyMatrixLike } from "./Matrix";
@@ -305,25 +306,9 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         return DOMMatrix.fromMatrix(this);
     }
 
-    /**
-     * Checks if the given matrix is equal to this one. By default the values are checked for exact matches. Use
-     * the optional `fractionDigits` parameter to specify the compare precision.
-     *
-     * @param object         - The object to check for equality.
-     * @param fractionDigits - Optional parameter specifying the number of fraction digits to compare for the
-     *                         equality check.
-     * @return True if object is equal, false if not.
-     */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        const other = obj as Matrix4;
-        if (obj == null || other.equals !== this.equals) {
-            return false;
-        }
-        if (fractionDigits != null) {
-            return this.every((value, index) => value.toFixed(fractionDigits) === other[index].toFixed(fractionDigits));
-        } else {
-            return this.every((value, index) => value === other[index]);
-        }
+    /** @inheritDoc */
+    public equals(other: unknown): boolean {
+        return isEqual(this, other, other => this.every((value, index) => value === other[index]));
     }
 
     /** @inheritDoc */

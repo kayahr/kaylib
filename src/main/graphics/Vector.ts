@@ -75,25 +75,8 @@ export interface ReadonlyVector<Size extends number = 2 | 3 | 4> extends Readonl
      */
     dot(v: ReadonlyVectorLike<Size>): number;
 
-    /**
-     * Serializes the object to the given JSON object.
-     *
-     * @param fractionDigits - Optional number of maximum fraction digits to round the vector components to. By default
-     *                         the values are not rounded.
-     * @return The serialized JSON object.
-     */
-    toJSON(fractionDigits?: number): number[];
-
-    /**
-     * Checks if the given vector is equal to this one. By default the component values are checked for exact matches.
-     * Use the optional `fractionDigits` parameter to specify the compare precision.
-     *
-     * @param object         - The object to check for equality.
-     * @param fractionDigits - Optional parameter specifying the number of fraction digits to compare for the
-     *                         equality check.
-     * @return True if object is equal, false if not.
-     */
-    equals(obj: unknown, fractionDigits?: number): boolean;
+    /** @inheritDoc  */
+    toJSON(): number[];
 
     /**
      * Returns a human-readable string representation of the vector.

@@ -3,6 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
+import { formatNumber } from "../util/string";
 import { isMatrixLike, ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike } from "./Vector";
 
@@ -38,10 +39,6 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
         return args.length === 1 && isMatrixLike(args[0]);
     }
 
-    protected isResult<T extends unknown>(result?: T): this is T {
-        return result === this;
-    }
-
     /**
      * Helper method to set matrix elements from any set of numbers and vector-like structures.
      *
@@ -63,10 +60,10 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
     /**
      * Returns a human-readable string representation of the matrix.
      *
-     * @param maxFractionDigits - Optional number of maximum fraction digits to use in the string. Defaults to 5.
+     * @param maximumFractionDigits - Optional number of maximum fraction digits to use in the string. Defaults to 5.
      * @return The human-readable string representation of the matrix.
      */
-    public toString(maxFractionDigits = 5): string {
-        return `[ ${Array.from(this).map(v => +v.toFixed(maxFractionDigits)).join(", ")} ]`;
+    public toString(maximumFractionDigits = 5): string {
+        return `[ ${Array.from(this).map(v => formatNumber(v, { maximumFractionDigits })).join(", ")} ]`;
     }
 }

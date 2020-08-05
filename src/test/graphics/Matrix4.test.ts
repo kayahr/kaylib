@@ -56,6 +56,31 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("toString", () => {
+        it("returns string representation of matrix", () => {
+            const m = new Matrix4(
+                1.234567890, -2.345678901, 3.456789012, 1,
+                4.567890123, -5.678901234, 6.789012345, 2,
+                7.890123456, -8.901234567, 9.012345678, 3,
+                4, 5, 6, 7
+            );
+            expect(m.toString()).toBe("[ 1.23457, -2.34568, 3.45679, 1, "
+                + "4.56789, -5.6789, 6.78901, 2, "
+                + "7.89012, -8.90123, 9.01235, 3, "
+                + "4, 5, 6, 7 ]");
+        });
+        it("allows custom number of maximum fraction digits", () => {
+            const m = new Matrix4(
+                1.234567890, -2.345678901, 3.456789012, 1,
+                4.567890123, -5.678901234, 6.789012345, 2,
+                7.890123456, -8.901234567, 9.012345678, 3,
+                4, 5, 6, 7
+            );
+            expect(m.toString(2)).toBe("[ 1.23, -2.35, 3.46, 1, 4.57, -5.68, 6.79, 2, 7.89, -8.9, 9.01, "
+                + "3, 4, 5, 6, 7 ]");
+        });
+    });
+
     describe("getDeterminant", () => {
         it("returns the matrix determinant", () => {
             expect(new Matrix4(6, 3, 1, 7, 20, -3, 5, 8, 30, 12, -10, 4, 9, -5, -9, 2).getDeterminant()).toBe(28346);

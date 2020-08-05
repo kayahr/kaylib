@@ -137,12 +137,8 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public toJSON(fractionDigits?: number): Vector2JSON {
-        if (fractionDigits != null) {
-            return [ +this[0].toFixed(fractionDigits), +this[1].toFixed(fractionDigits) ];
-        } else {
-            return [ this[0], this[1] ];
-        }
+    public toJSON(): Vector2JSON {
+        return [ this[0], this[1] ];
     }
 
     /**
@@ -156,15 +152,8 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        return isEqual(this, obj, other => {
-            if (fractionDigits != null) {
-                return this[0].toFixed(fractionDigits) === other[0].toFixed(fractionDigits)
-                    && this[1].toFixed(fractionDigits) === other[1].toFixed(fractionDigits);
-            } else {
-                return this[0] === other[0] && this[1] === other[1];
-            }
-        });
+    public equals(obj: unknown): boolean {
+        return isEqual(this, obj, other => this[0] === other[0] && this[1] === other[1]);
     }
 
     /** @inheritDoc */

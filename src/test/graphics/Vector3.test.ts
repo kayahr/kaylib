@@ -110,13 +110,6 @@ describe("Vector3", () => {
         it("returns array with the vector components", () => {
             expect(new Vector3(-6, 1, 2.123456789).toJSON()).toEqual([ -6, 1, 2.1234567165374756 ]);
         });
-        it("returns array with the vector components with given number of fraction digits", () => {
-            expect(new Vector3(-9.145451, 1.1234567, -2.827634687).toJSON(2)).toEqual([ -9.15, 1.12, -2.83 ]);
-        });
-        it("supports reducing precision for equality check", () => {
-            expect(new Vector3(1.23456, -2.34567, 34.9876).equals(new Vector3(1.231, -2.349, 34.988), 2)).toBe(true);
-            expect(new Vector3(1.23456, -2.34567, 34.9876).equals(new Vector3(1.231, -2.349, 34.988), 3)).toBe(false);
-        });
     });
 
     describe("fromJSON", () => {

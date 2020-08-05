@@ -173,17 +173,8 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public toJSON(fractionDigits?: number): Vector4JSON {
-        if (fractionDigits != null) {
-            return [
-                +this[0].toFixed(fractionDigits),
-                +this[1].toFixed(fractionDigits),
-                +this[2].toFixed(fractionDigits),
-                +this[3].toFixed(fractionDigits)
-            ];
-        } else {
-            return [ this[0], this[1], this[2], this[3] ];
-        }
+    public toJSON(): Vector4JSON {
+        return [ this[0], this[1], this[2], this[3] ];
     }
 
     public static fromJSON(json: Vector4JSON): Vector4 {
@@ -191,17 +182,10 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public equals(obj: unknown, fractionDigits?: number): boolean {
-        return isEqual(this, obj, other => {
-            if (fractionDigits != null) {
-                return this[0].toFixed(fractionDigits) === other[0].toFixed(fractionDigits)
-                    && this[1].toFixed(fractionDigits) === other[1].toFixed(fractionDigits)
-                    && this[2].toFixed(fractionDigits) === other[2].toFixed(fractionDigits)
-                    && this[3].toFixed(fractionDigits) === other[3].toFixed(fractionDigits);
-            } else {
-                return this[0] === other[0] && this[1] === other[1] && this[2] === other[2] && this[3] === other[3];
-            }
-        });
+    public equals(obj: unknown): boolean {
+        return isEqual(this, obj, other =>
+            this[0] === other[0] && this[1] === other[1] && this[2] === other[2] && this[3] === other[3]
+        );
     }
 
     /** @inheritDoc */

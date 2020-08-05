@@ -77,9 +77,6 @@ describe("Vector2", () => {
         it("returns array with the vector components", () => {
             expect(new Vector2(1, 2.123456789).toJSON()).toEqual([ 1, 2.1234567165374756 ]);
         });
-        it("returns array with the vector components with given number of fraction digits", () => {
-            expect(new Vector2(1.1234567, -2.827634687).toJSON(2)).toEqual([ 1.12, -2.83 ]);
-        });
     });
 
     describe("fromJSON", () => {
@@ -108,10 +105,6 @@ describe("Vector2", () => {
                 new Vector2(1, 3),
                 new Vector2(3, 2)
             ]);
-        });
-        it("supports reducing precision for equality check", () => {
-            expect(new Vector2(1.23456, -2.34567).equals(new Vector2(1.231, -2.349), 2)).toBe(true);
-            expect(new Vector2(1.23456, -2.34567).equals(new Vector2(1.231, -2.349), 3)).toBe(false);
         });
     });
 

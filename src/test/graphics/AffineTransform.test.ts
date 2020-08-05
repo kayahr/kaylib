@@ -173,17 +173,6 @@ describe("AffineTransform", () => {
                 7, 8
             ]);
         });
-        it("returns array with the matrix components with given number of fraction digits", () => {
-            expect(new AffineTransform(
-                1.1234567, -2.827634687,
-                5.499, -444.192938,
-                678.8283, -0.4491,
-            ).toJSON(2)).toEqual([
-                1.12, -2.83,
-                5.5, -444.19,
-                678.83, -0.45
-            ]);
-        });
     });
 
     describe("fromJSON", () => {
@@ -191,6 +180,23 @@ describe("AffineTransform", () => {
             const m = AffineTransform.fromJSON([ 2, 3, 4, 5, 6, 7 ]);
             expect(m).toBeInstanceOf(AffineTransform);
             expect(m.toJSON()).toEqual([ 2, 3, 4, 5, 6, 7 ]);
+        });
+    });
+
+    describe("toString", () => {
+        it("returns string representation of matrix", () => {
+            const m = new AffineTransform(
+                1.234567890, -2.345678901, 3.456789012,
+                4.567890123, -5.678901234, 6.789012345
+            );
+            expect(m.toString()).toBe("[ 1.23457, -2.34568, 3.45679, 4.56789, -5.6789, 6.78901 ]");
+        });
+        it("allows custom number of maximum fraction digits", () => {
+            const m = new AffineTransform(
+                1.234567890, -2.345678901, 3.456789012,
+                4.567890123, -5.678901234, 6.789012345
+            );
+            expect(m.toString(2)).toBe("[ 1.23, -2.35, 3.46, 4.57, -5.68, 6.79 ]");
         });
     });
 
@@ -206,26 +212,6 @@ describe("AffineTransform", () => {
                 new AffineTransform(1, 2, 3, 4, 0, 6),
                 new AffineTransform(1, 2, 3, 4, 5, 0)
             ]);
-        });
-        it("supports reducing precision for equality check", () => {
-            expect(new AffineTransform(
-                1.23456, -2.34567,
-                1.23456, -2.34567,
-                1.23456, -2.34567
-            ).equals(new AffineTransform(
-                1.231, -2.349,
-                1.231, -2.349,
-                1.231, -2.349
-            ), 2)).toBe(true);
-            expect(new AffineTransform(
-                1.23456, -2.34567,
-                1.23456, -2.34567,
-                1.23456, -2.34567
-            ).equals(new AffineTransform(
-                1.231, -2.349,
-                1.231, -2.349,
-                1.231, -2.349
-            ), 3)).toBe(false);
         });
     });
 

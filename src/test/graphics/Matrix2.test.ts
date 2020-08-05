@@ -131,9 +131,6 @@ describe("Matrix2", () => {
         it("returns array with the matrix components", () => {
             expect(new Matrix2(1, 2.123456789, 3, 4).toJSON()).toEqual([ 1, 2.1234567165374756, 3, 4 ]);
         });
-        it("returns array with the matrix components with given number of fraction digits", () => {
-            expect(new Matrix2(1.1234567, -2.827634687, 9.998, 5.499).toJSON(2)).toEqual([ 1.12, -2.83, 10, 5.5 ]);
-        });
     });
 
     describe("fromJSON", () => {
@@ -141,6 +138,23 @@ describe("Matrix2", () => {
             const m = Matrix2.fromJSON([ 2, 3, 4, 5 ]);
             expect(m).toBeInstanceOf(Matrix2);
             expect(m.toJSON()).toEqual([ 2, 3, 4, 5 ]);
+        });
+    });
+
+    describe("toString", () => {
+        it("returns string representation of matrix", () => {
+            const m = new Matrix2(
+                1.234567890, -2.345678901,
+                -3.456789012, 4.567890123
+            );
+            expect(m.toString()).toBe("[ 1.23457, -2.34568, -3.45679, 4.56789 ]");
+        });
+        it("allows custom number of maximum fraction digits", () => {
+            const m = new Matrix2(
+                1.234567890, -2.345678901,
+                -3.456789012, 4.567890123
+            );
+            expect(m.toString(2)).toBe("[ 1.23, -2.35, -3.46, 4.57 ]");
         });
     });
 
@@ -152,12 +166,6 @@ describe("Matrix2", () => {
                 new Matrix2(1, 5, 3, 4),
                 new Matrix2(5, 2, 3, 4)
             ]);
-        });
-        it("supports reducing precision for equality check", () => {
-            expect(new Matrix2(1.23456, -2.34567, 1.23456, -2.34567).equals(
-                new Matrix2(1.231, -2.349, 1.231, -2.349), 2)).toBe(true);
-            expect(new Matrix2(1.23456, -2.34567, 1.23456, -2.34567).equals(
-                new Matrix2(1.231, -2.349, 1.231, -2.349), 3)).toBe(false);
         });
     });
 
