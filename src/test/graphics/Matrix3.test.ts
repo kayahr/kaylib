@@ -245,16 +245,6 @@ describe("Matrix3", () => {
         it("inverts the matrix", () => {
             const m = new Matrix3(1, 5, 3, 10, 9, 8, 4, 6, 2);
             const result = m.invert();
-            expect(result).not.toBe(m);
-            expect(result.toJSON()).toEqualCloseTo([
-                -0.294118,  0.0784314,  0.127451,
-                 0.117647, -0.0980392,  0.215686,
-                 0.235294,  0.1372550, -0.401961
-            ]);
-        });
-        it("can use source as result", () => {
-            const m = new Matrix3(1, 5, 3, 10, 9, 8, 4, 6, 2);
-            const result = m.invert(m);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([
                 -0.294118,  0.0784314,  0.127451,
@@ -268,16 +258,6 @@ describe("Matrix3", () => {
         it("transposes the matrix", () => {
             const m = new Matrix3(1, 5, 3, 7, 9, 8, 4, 6, 2);
             const result = m.transpose();
-            expect(result).not.toBe(m);
-            expect(result.toJSON()).toEqual([
-                1, 7, 4,
-                5, 9, 6,
-                3, 8, 2
-            ]);
-        });
-        it("can use source as result", () => {
-            const m = new Matrix3(1, 5, 3, 7, 9, 8, 4, 6, 2);
-            const result = m.transpose(m);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqual([
                 1, 7, 4,
@@ -291,16 +271,6 @@ describe("Matrix3", () => {
         it("adjugates the matrix", () => {
             const m = new Matrix3(6, 3, 1, 7, 20, -3, 5, 8, 30);
             const result = m.adjugate();
-            expect(result).not.toBe(m);
-            expect(result.toJSON()).toEqual([
-                 624, -82, -29,
-                -225, 175,  25,
-                 -44, -33,  99
-            ]);
-        });
-        it("can use source as result", () => {
-            const m = new Matrix3(6, 3, 1, 7, 20, -3, 5, 8, 30);
-            const result = m.adjugate(m);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqual([
                  624, -82, -29,
@@ -314,14 +284,14 @@ describe("Matrix3", () => {
         it("adds given value", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
             const result = m.add(2);
-            expect(result).not.toBe(m);
+            expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([ 3, 4, 5, 6, 7, 8, 9, 10, 11 ]);
         });
         it("adds given matrix", () => {
             const a = new Matrix3(20, 3, 40, 5, 60, 7, 80, 9, 100);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.add(b);
-            expect(result).not.toBe(a);
+            expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([ 23, 43, 45, 65, 67, 87, 89, 109, 111 ]);
         });
     });
@@ -330,14 +300,14 @@ describe("Matrix3", () => {
         it("subtracts given value", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
             const result = m.sub(2);
-            expect(result).not.toBe(m);
+            expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([ -1, 0, 1, 2, 3, 4, 5, 6, 7 ]);
         });
         it("subtracts given matrix", () => {
             const a = new Matrix3(20, 3, 40, 5, 60, 7, 80, 9, 100);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.sub(b);
-            expect(result).not.toBe(a);
+            expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([ 17, -37, 35, -55, 53, -73, 71, -91, 89 ]);
         });
     });
@@ -347,16 +317,8 @@ describe("Matrix3", () => {
             const a = new Matrix3(20, 3, 40, 5, 60, 7, 80, 9, 100);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.mul(b);
-            expect(result).not.toBe(a);
-            expect(result.toJSON()).toEqualCloseTo([ 660, 2454, 900, 7635, 1320, 10449, 1560, 6126, 2160 ]);
-        });
-        it("can use source as result", () => {
-            const a = new Matrix3(20, 3, 40, 5, 60, 7, 80, 9, 100);
-            const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
-            const result = a.mul(b, a);
             expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([ 660, 2454, 900, 7635, 1320, 10449, 1560, 6126, 2160 ]);
-            expect(b.toJSON()).toEqualCloseTo([ 3, 40, 5, 60, 7, 80, 9, 100, 11 ]);
         });
     });
 
@@ -364,14 +326,14 @@ describe("Matrix3", () => {
         it("multiplies matrix with a factor", () => {
             const m = new Matrix3(20, -3, 40, -5, 60, -7, 80, -9, 100);
             const result = m.compMul(-2);
-            expect(result).not.toBe(m);
+            expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([ -40, 6, -80, 10, -120, 14, -160, 18, -200 ]);
         });
         it("multiplies matrix with another matrix", () => {
             const a = new Matrix3(20, -3, 40, -5, 60, -7, 80, -9, 100);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.compMul(b);
-            expect(result).not.toBe(a);
+            expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([ 60, -120, 200, -300, 420, -560, 720, -900, 1100 ]);
         });
     });
@@ -381,16 +343,8 @@ describe("Matrix3", () => {
             const a = new Matrix3(660, 2454, 900, 7635, 1320, 10449, 1560, 6126, 2160);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.div(b);
-            expect(result).not.toBe(a);
-            expect(result.toJSON()).toEqualCloseTo([ 20, 3, 40, 5, 60, 7, 80, 9, 100 ]);
-        });
-        it("can use source as matrix", () => {
-            const a = new Matrix3(660, 2454, 900, 7635, 1320, 10449, 1560, 6126, 2160);
-            const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
-            const result = a.div(b, a);
             expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([ 20, 3, 40, 5, 60, 7, 80, 9, 100 ]);
-            expect(b.toJSON()).toEqualCloseTo([ 3, 40, 5, 60, 7, 80, 9, 100, 11 ]);
         });
     });
 
@@ -398,14 +352,14 @@ describe("Matrix3", () => {
         it("divides matrix by scalar", () => {
             const m = new Matrix3(20, -3, 40, -5, 60, -7, 80, -9, 100);
             const result = m.compDiv(2);
-            expect(result).not.toBe(m);
+            expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([ 10, -1.5, 20, -2.5, 30, -3.5, 40, -4.5, 50 ]);
         });
         it("divides matrix by another matrix component-wise", () => {
             const a = new Matrix3(20, -3, 40, -5, 60, -7, 80, -9, 100);
             const b = new Matrix3(3, 40, 5, 60, 7, 80, 9, 100, 11);
             const result = a.compDiv(b);
-            expect(result).not.toBe(a);
+            expect(result).toBe(a);
             expect(result.toJSON()).toEqualCloseTo([
                  6.66667, -0.07500,  8.00000,
                 -0.08333,  8.57143, -0.08750,

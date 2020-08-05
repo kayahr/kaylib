@@ -8,7 +8,7 @@ import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../util/math";
 import { AbstractVector } from "./AbstractVector";
-import { ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlySquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
 /**
@@ -155,26 +155,6 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
         return new Vector2(...json);
     }
 
-    /**
-     * Creates a result vector initialized with the given component values. This is used internally to create result
-     * vectors returned by the various methods.
-     *
-     * @param result - The result vector to re-use. A new one is created when undefined.
-     * @param x - The X component value.
-     * @param y - The Y component value.
-     * @return The result vector. Either a new one or the specified result vector.
-     * @hidden
-     */
-    public static createResult<T extends Vector2Like = Vector2>(result: T | undefined, x: number, y: number): T {
-        if (result != null) {
-            result[0] = x;
-            result[1] = y;
-            return result;
-        } else {
-            return new Vector2(x, y) as unknown as T;
-        }
-    }
-
     /** @inheritDoc */
     public equals(obj: unknown, fractionDigits?: number): boolean {
         return isEqual(this, obj, other => {
@@ -203,65 +183,79 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public negate<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            -this[0],
-            -this[1]
-        );
+    public negate(): this {
+        this[0] = -this[0];
+        this[1] = -this[1];
+        return this;
     }
 
     /** @inheritDoc */
-    public add<T extends Vector2Like = Vector2>(summand: ReadonlyVectorLike<2> | number, result?: T): T {
+    public add(summand: ReadonlyVectorLike<2> | number): this {
         if (typeof summand === "number") {
-            return Vector2.createResult(result,
-                this[0] + summand,
-                this[1] + summand
-            );
+            this[0] += summand;
+            this[1] += summand;
         } else {
-            return Vector2.createResult(result,
-                this[0] + summand[0],
-                this[1] + summand[1]
-            );
+            this[0] += summand[0];
+            this[1] += summand[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public sub<T extends Vector2Like = Vector2>(subtrahend: ReadonlyVectorLike<2> | number, result?: T): T {
+    public sub(subtrahend: ReadonlyVectorLike<2> | number): this {
         if (typeof subtrahend === "number") {
-            return Vector2.createResult(result,
-                this[0] - subtrahend,
-                this[1] - subtrahend
-            );
+            this[0] -= subtrahend;
+            this[1] -= subtrahend;
         } else {
-            return Vector2.createResult(result,
-                this[0] - subtrahend[0],
-                this[1] - subtrahend[1]
-            );
+            this[0] -= subtrahend[0];
+            this[1] -= subtrahend[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public mul<T extends Vector2Like = Vector2>(arg: ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public mul(arg: ReadonlySquareMatrixLike<2>): this {
         const x = this[0];
         const y = this[1];
-        return Vector2.createResult(result,
-            x * arg[0] + y * arg[2],
-            x * arg[1] + y * arg[3]
-        );
+        this[0] = x * arg[0] + y * arg[2];
+        this[1] = x * arg[1] + y * arg[3];
+        return this;
     }
 
     /** @inheritDoc */
-    public transposeMul<T extends Vector2Like = Vector2>(arg: ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public transposeMul(arg: ReadonlySquareMatrixLike<2>): this {
         const x = this[0];
         const y = this[1];
-        return Vector2.createResult(result,
-            x * arg[0] + y * arg[1],
-            x * arg[2] + y * arg[3]
-        );
+        this[0] = x * arg[0] + y * arg[1];
+        this[1] = x * arg[2] + y * arg[3];
+        return this;
     }
 
     /** @inheritDoc */
-    public div<T extends Vector2Like = Vector2>(arg: ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public div(arg: ReadonlySquareMatrixLike<2>): this {
+        const b11 = arg[0], b12 = arg[1];
+        const b21 = arg[2], b22 = arg[3];
+
+        // d = determinant(b)
+        const d = b11 * b22 - b12 * b21;
+
+        // c = invert(b)
+        const c11 = b22 / d;
+        const c12 = -b12 / d;
+        const c21 = -b21 / d;
+        const c22 = b11 / d;
+
+        // this = this * c
+        const x = this[0];
+        const y = this[1];
+        this[0] = x * c11 + y * c21;
+        this[1] = x * c12 + y * c22;
+
+        return this;
+    }
+
+    /** @inheritDoc */
+    public transposeDiv(arg: ReadonlySquareMatrixLike<2>): this {
         const b11 = arg[0], b12 = arg[1];
         const b21 = arg[2], b22 = arg[3];
 
@@ -276,506 +270,412 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
 
         const x = this[0];
         const y = this[1];
-        return Vector2.createResult(result,
-            x * c11 + y * c21,
-            x * c12 + y * c22
-        );
+        this[0] = x * c11 + y * c12;
+        this[1] = x * c21 + y * c22;
+        return this;
     }
 
     /** @inheritDoc */
-    public transposeDiv<T extends Vector2Like = Vector2>(arg: ReadonlyMatrixLike<2, 2>, result?: T): T {
-        const b11 = arg[0], b12 = arg[1];
-        const b21 = arg[2], b22 = arg[3];
-
-        // d = determinant(b)
-        const d = b11 * b22 - b12 * b21;
-
-        // c = invert(b)
-        const c11 = b22 / d;
-        const c12 = -b12 / d;
-        const c21 = -b21 / d;
-        const c22 = b11 / d;
-
-        const x = this[0];
-        const y = this[1];
-        return Vector2.createResult(result,
-            x * c11 + y * c12,
-            x * c21 + y * c22
-        );
-    }
-
-    /** @inheritDoc */
-    public compMul<T extends Vector2Like = Vector2>(factor: ReadonlyVectorLike<2> | number, result?: T): T {
+    public compMul(factor: ReadonlyVectorLike<2> | number): this {
         if (typeof factor === "number") {
-            return Vector2.createResult(result,
-                this[0] * factor,
-                this[1] * factor
-            );
+            this[0] *= factor;
+            this[1] *= factor;
         } else {
-            return Vector2.createResult(result,
-                this[0] * factor[0],
-                this[1] * factor[1]
-            );
+            this[0] *= factor[0];
+            this[1] *= factor[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public compDiv<T extends Vector2Like = Vector2>(divisor: ReadonlyVectorLike<2> | number, result?: T): T {
+    public compDiv(divisor: ReadonlyVectorLike<2> | number): this {
         if (typeof divisor === "number") {
-            return Vector2.createResult(result,
-                this[0] / divisor,
-                this[1] / divisor
-            );
+            this[0] /= divisor;
+            this[1] /= divisor;
         } else {
-            return Vector2.createResult(result,
-                this[0] / divisor[0],
-                this[1] / divisor[1]
-            );
+            this[0] /= divisor[0];
+            this[1] /= divisor[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public reflect<T extends Vector2Like = Vector2>(normal: ReadonlyVectorLike<2>, result?: T): T {
-        const dot2 = (normal[0] * this[0] + normal[1] * this[1]) * 2;
-        return Vector2.createResult(result,
-            this[0] - normal[0] * dot2,
-            this[1] - normal[1] * dot2
-        );
+    public reflect(normal: ReadonlyVectorLike<2>): this {
+        const x = this[0], y = this[1];
+        const nx = normal[0], ny = normal[1];
+        const dot2 = (nx * x + ny * y) * 2;
+        this[0] = x - nx * dot2;
+        this[1] = y - ny * dot2;
+        return this;
     }
 
     /** @inheritDoc */
-    public refract<T extends Vector2Like = Vector2>(normal: ReadonlyVectorLike<2>, eta: number, result?: T): T {
+    public refract(normal: ReadonlyVectorLike<2>, eta: number): this {
         const x = this[0], y = this[1];
         const nx = normal[0], ny = normal[1];
         const dot = x * nx + y * ny;
         const k = 1.0 - eta * eta * (1.0 - dot * dot);
         if (k < 0.0) {
-            return Vector2.createResult(result, 0, 0);
+            this[0] = this[1] = 0;
         } else {
             const f = eta * dot + Math.sqrt(k);
-            return Vector2.createResult(result,
-                x * eta - nx * f,
-                y * eta - ny * f
-            );
+            this[0] = x * eta - nx * f;
+            this[1] = y * eta - ny * f;
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public normalize<T extends Vector2Like = Vector2>(result?: T): T {
-        return this.compDiv(this.getLength(), result);
+    public normalize(): this {
+        const len = Math.sqrt(this[0] ** 2 + this[1] ** 2);
+        this[0] /= len;
+        this[1] /= len;
+        return this;
     }
 
     /** @inheritDoc */
-    public radians<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            radians(this[0]),
-            radians(this[1])
-        );
+    public radians(): this {
+        this[0] = radians(this[0]);
+        this[1] = radians(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public degrees<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            degrees(this[0]),
-            degrees(this[1])
-        );
+    public degrees(): this {
+        this[0] = degrees(this[0]);
+        this[1] = degrees(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public sin<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.sin(this[0]),
-            Math.sin(this[1])
-        );
+    public sin(): this {
+        this[0] = Math.sin(this[0]);
+        this[1] = Math.sin(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public cos<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.cos(this[0]),
-            Math.cos(this[1])
-        );
+    public cos(): this {
+        this[0] = Math.cos(this[0]);
+        this[1] = Math.cos(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public tan<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.tan(this[0]),
-            Math.tan(this[1])
-        );
+    public tan(): this {
+        this[0] = Math.tan(this[0]);
+        this[1] = Math.tan(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public asin<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.asin(this[0]),
-            Math.asin(this[1])
-        );
+    public asin(): this {
+        this[0] = Math.asin(this[0]);
+        this[1] = Math.asin(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public acos<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.acos(this[0]),
-            Math.acos(this[1])
-        );
+    public acos(): this {
+        this[0] = Math.acos(this[0]);
+        this[1] = Math.acos(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public atan<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.atan(this[0]),
-            Math.atan(this[1])
-        );
+    public atan(): this {
+        this[0] = Math.atan(this[0]);
+        this[1] = Math.atan(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public atan2<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number, result?: T): T {
+    public atan2(v: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
-            return Vector2.createResult(result,
-                Math.atan2(this[0], v),
-                Math.atan2(this[1], v)
-            );
+            this[0] = Math.atan2(this[0], v);
+            this[1] = Math.atan2(this[1], v);
         } else {
-            return Vector2.createResult(result,
-                Math.atan2(this[0], v[0]),
-                Math.atan2(this[1], v[1])
-            );
+            this[0] = Math.atan2(this[0], v[0]);
+            this[1] = Math.atan2(this[1], v[1]);
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public sinh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.sinh(this[0]),
-            Math.sinh(this[1])
-        );
+    public sinh(): this {
+        this[0] = Math.sinh(this[0]);
+        this[1] = Math.sinh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public cosh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.cosh(this[0]),
-            Math.cosh(this[1])
-        );
+    public cosh(): this {
+        this[0] = Math.cosh(this[0]);
+        this[1] = Math.cosh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public tanh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.tanh(this[0]),
-            Math.tanh(this[1])
-        );
+    public tanh(): this {
+        this[0] = Math.tanh(this[0]);
+        this[1] = Math.tanh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public asinh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.asinh(this[0]),
-            Math.asinh(this[1])
-        );
+    public asinh(): this {
+        this[0] = Math.asinh(this[0]);
+        this[1] = Math.asinh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public acosh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.acosh(this[0]),
-            Math.acosh(this[1])
-        );
+    public acosh(): this {
+        this[0] = Math.acosh(this[0]);
+        this[1] = Math.acosh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public atanh<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.atanh(this[0]),
-            Math.atanh(this[1])
-        );
+    public atanh(): this {
+        this[0] = Math.atanh(this[0]);
+        this[1] = Math.atanh(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public pow<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number, result?: T): T {
+    public pow(v: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
-            return Vector2.createResult(result,
-                this[0] ** v,
-                this[1] ** v
-            );
+            this[0] = this[0] ** v;
+            this[1] = this[1] ** v;
         } else {
-            return Vector2.createResult(result,
-                this[0] ** v[0],
-                this[1] ** v[1]
-            );
+            this[0] = this[0] ** v[0];
+            this[1] = this[1] ** v[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public exp<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.exp(this[0]),
-            Math.exp(this[1])
-        );
+    public exp(): this {
+        this[0] = Math.exp(this[0]);
+        this[1] = Math.exp(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public log<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.log(this[0]),
-            Math.log(this[1])
-        );
+    public log(): this {
+        this[0] = Math.log(this[0]);
+        this[1] = Math.log(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public exp2<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            2 ** this[0],
-            2 ** this[1]
-        );
+    public exp2(): this {
+        this[0] = 2 ** this[0];
+        this[1] = 2 ** this[1];
+        return this;
     }
 
     /** @inheritDoc */
-    public log2<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.log2(this[0]),
-            Math.log2(this[1])
-        );
+    public log2(): this {
+        this[0] = Math.log2(this[0]);
+        this[1] = Math.log2(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public sqrt<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.sqrt(this[0]),
-            Math.sqrt(this[1])
-        );
+    public sqrt(): this {
+        this[0] = Math.sqrt(this[0]);
+        this[1] = Math.sqrt(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public inverseSqrt<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            1 / Math.sqrt(this[0]),
-            1 / Math.sqrt(this[1])
-        );
+    public inverseSqrt(): this {
+        this[0] = 1 / Math.sqrt(this[0]);
+        this[1] = 1 / Math.sqrt(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public abs<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.abs(this[0]),
-            Math.abs(this[1])
-        );
+    public abs(): this {
+        this[0] = Math.abs(this[0]);
+        this[1] = Math.abs(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public sign<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.sign(this[0]),
-            Math.sign(this[1])
-        );
+    public sign(): this {
+        this[0] = Math.sign(this[0]);
+        this[1] = Math.sign(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public floor<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.floor(this[0]),
-            Math.floor(this[1])
-        );
+    public floor(): this {
+        this[0] = Math.floor(this[0]);
+        this[1] = Math.floor(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public trunc<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.trunc(this[0]),
-            Math.trunc(this[1])
-        );
+    public trunc(): this {
+        this[0] = Math.trunc(this[0]);
+        this[1] = Math.trunc(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public round<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.round(this[0]),
-            Math.round(this[1])
-        );
+    public round(): this {
+        this[0] = Math.round(this[0]);
+        this[1] = Math.round(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public roundEven<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            roundEven(this[0]),
-            roundEven(this[1])
-        );
+    public roundEven(): this {
+        this[0] = roundEven(this[0]);
+        this[1] = roundEven(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public ceil<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            Math.ceil(this[0]),
-            Math.ceil(this[1])
-        );
+    public ceil(): this {
+        this[0] = Math.ceil(this[0]);
+        this[1] = Math.ceil(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public fract<T extends Vector2Like = Vector2>(result?: T): T {
-        return Vector2.createResult(result,
-            fract(this[0]),
-            fract(this[1])
-        );
+    public fract(): this {
+        this[0] = fract(this[0]);
+        this[1] = fract(this[1]);
+        return this;
     }
 
     /** @inheritDoc */
-    public mod<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number, result?: T): T {
+    public mod(v: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
-            return Vector2.createResult(result,
-                this[0] % v,
-                this[1] % v
-            );
+            this[0] = this[0] % v;
+            this[1] = this[1] % v;
         } else {
-            return Vector2.createResult(result,
-                this[0] % v[0],
-                this[1] % v[1]
-            );
+            this[0] = this[0] % v[0];
+            this[1] = this[1] % v[1];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public modf<T extends Vector2Like = Vector2>(i: VectorLike<2>, result?: T): T {
+    public modf(i: VectorLike<2>): this {
         i[0] = this[0] | 0;
         i[1] = this[1] | 0;
-        return Vector2.createResult(result,
-            this[0] % 1,
-            this[1] % 1
-        );
+        this[0] = this[0] % 1;
+        this[1] = this[1] % 1;
+        return this;
     }
 
     /** @inheritDoc */
-    public min<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number, result?: T): T {
+    public min(v: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
-            return Vector2.createResult(result,
-                Math.min(this[0], v),
-                Math.min(this[1], v)
-            );
+            this[0] = Math.min(this[0], v);
+            this[1] = Math.min(this[1], v);
         } else {
-            return Vector2.createResult(result,
-                Math.min(this[0], v[0]),
-                Math.min(this[1], v[1])
-            );
+            this[0] = Math.min(this[0], v[0]);
+            this[1] = Math.min(this[1], v[1]);
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public max<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number, result?: T): T {
+    public max(v: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
-            return Vector2.createResult(result,
-                Math.max(this[0], v),
-                Math.max(this[1], v)
-            );
+            this[0] = Math.max(this[0], v);
+            this[1] = Math.max(this[1], v);
         } else {
-            return Vector2.createResult(result,
-                Math.max(this[0], v[0]),
-                Math.max(this[1], v[1])
-            );
+            this[0] = Math.max(this[0], v[0]);
+            this[1] = Math.max(this[1], v[1]);
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public clamp<T extends Vector2Like = Vector2>(min: ReadonlyVectorLike<2> | number,
-            max: ReadonlyVectorLike<2> | number, result?: T): T {
+    public clamp(min: ReadonlyVectorLike<2> | number,
+            max: ReadonlyVectorLike<2> | number): this {
         if (typeof min === "number") {
             if (typeof max === "number") {
-                return Vector2.createResult(result,
-                    clamp(this[0], min, max),
-                    clamp(this[1], min, max)
-                );
+                this[0] = clamp(this[0], min, max);
+                this[1] = clamp(this[1], min, max);
             } else {
-                return Vector2.createResult(result,
-                    clamp(this[0], min, max[0]),
-                    clamp(this[1], min, max[1])
-                );
+                this[0] = clamp(this[0], min, max[0]);
+                this[1] = clamp(this[1], min, max[1]);
             }
         } else {
             if (typeof max === "number") {
-                return Vector2.createResult(result,
-                    clamp(this[0], min[0], max),
-                    clamp(this[1], min[1], max)
-                );
+                this[0] = clamp(this[0], min[0], max);
+                this[1] = clamp(this[1], min[1], max);
             } else {
-                return Vector2.createResult(result,
-                    clamp(this[0], min[0], max[0]),
-                    clamp(this[1], min[1], max[1])
-                );
+                this[0] = clamp(this[0], min[0], max[0]);
+                this[1] = clamp(this[1], min[1], max[1]);
             }
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public mix<T extends Vector2Like = Vector2>(v: ReadonlyVectorLike<2> | number,
-            blend: ReadonlyVectorLike<2> | number, result?: T): T {
+    public mix(v: ReadonlyVectorLike<2> | number,
+            blend: ReadonlyVectorLike<2> | number): this {
         if (typeof v === "number") {
             if (typeof blend === "number") {
-                return Vector2.createResult(result,
-                    mix(this[0], v, blend),
-                    mix(this[1], v, blend)
-                );
+                this[0] = mix(this[0], v, blend);
+                this[1] = mix(this[1], v, blend);
             } else {
-                return Vector2.createResult(result,
-                    mix(this[0], v, blend[0]),
-                    mix(this[1], v, blend[1])
-                );
+                this[0] = mix(this[0], v, blend[0]);
+                this[1] = mix(this[1], v, blend[1]);
             }
         } else {
             if (typeof blend === "number") {
-                return Vector2.createResult(result,
-                    mix(this[0], v[0], blend),
-                    mix(this[1], v[1], blend)
-                );
+                this[0] = mix(this[0], v[0], blend);
+                this[1] = mix(this[1], v[1], blend);
             } else {
-                return Vector2.createResult(result,
-                    mix(this[0], v[0], blend[0]),
-                    mix(this[1], v[1], blend[1])
-                );
+                this[0] = mix(this[0], v[0], blend[0]);
+                this[1] = mix(this[1], v[1], blend[1]);
             }
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public step<T extends Vector2Like = Vector2>(edge: ReadonlyVectorLike<2> | number, result?: T): T {
+    public step(edge: ReadonlyVectorLike<2> | number): this {
         if (typeof edge === "number") {
-            return Vector2.createResult(result,
-                step(edge, this[0]),
-                step(edge, this[1])
-            );
+            this[0] = step(edge, this[0]);
+            this[1] = step(edge, this[1]);
         } else {
-            return Vector2.createResult(result,
-                step(edge[0], this[0]),
-                step(edge[1], this[1])
-            );
+            this[0] = step(edge[0], this[0]);
+            this[1] = step(edge[1], this[1]);
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public smoothStep<T extends Vector2Like = Vector2>(edge1: ReadonlyVectorLike<2> | number,
-            edge2: ReadonlyVectorLike<2> | number, result?: T): T {
+    public smoothStep(edge1: ReadonlyVectorLike<2> | number,
+            edge2: ReadonlyVectorLike<2> | number): this {
         if (typeof edge1 === "number") {
             if (typeof edge2 === "number") {
-                return Vector2.createResult(result,
-                    smoothStep(edge1, edge2, this[0]),
-                    smoothStep(edge1, edge2, this[1])
-                );
+                this[0] = smoothStep(edge1, edge2, this[0]);
+                this[1] = smoothStep(edge1, edge2, this[1]);
             } else {
-                return Vector2.createResult(result,
-                    smoothStep(edge1, edge2[0], this[0]),
-                    smoothStep(edge1, edge2[1], this[1])
-                );
+                this[0] = smoothStep(edge1, edge2[0], this[0]);
+                this[1] = smoothStep(edge1, edge2[1], this[1]);
             }
         } else {
             if (typeof edge2 === "number") {
-                return Vector2.createResult(result,
-                    smoothStep(edge1[0], edge2, this[0]),
-                    smoothStep(edge1[1], edge2, this[1])
-                );
+                this[0] = smoothStep(edge1[0], edge2, this[0]);
+                this[1] = smoothStep(edge1[1], edge2, this[1]);
             } else {
-                return Vector2.createResult(result,
-                    smoothStep(edge1[0], edge2[0], this[0]),
-                    smoothStep(edge1[1], edge2[1], this[1])
-                );
+                this[0] = smoothStep(edge1[0], edge2[0], this[0]);
+                this[1] = smoothStep(edge1[1], edge2[1], this[1]);
             }
         }
+        return this;
     }
 }

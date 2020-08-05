@@ -185,15 +185,6 @@ describe("Matrix2", () => {
         it("inverts the matrix", () => {
             const m = new Matrix2(1, 2, 4, 7);
             const r = m.invert();
-            expect(r).not.toBe(m);
-            expect(r.toJSON()).toEqual([
-                -7,  2,
-                 4, -1
-            ]);
-        });
-        it("can use source matrix as result matrix", () => {
-            const m = new Matrix2(1, 2, 4, 7);
-            const r = m.invert(m);
             expect(r).toBe(m);
             expect(r.toJSON()).toEqual([
                 -7,  2,
@@ -206,7 +197,7 @@ describe("Matrix2", () => {
         it("transposes the matrix", () => {
             const m = new Matrix2(1, 2, 4, 7);
             const r = m.transpose();
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqual([
                 1, 4,
                 2, 7
@@ -218,7 +209,7 @@ describe("Matrix2", () => {
         it("adjugates the matrix", () => {
             const m = new Matrix2(1, 2, 4, 7);
             const r = m.adjugate();
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqual([
                  7, -4,
                 -2,  1
@@ -230,14 +221,14 @@ describe("Matrix2", () => {
         it("adds given value", () => {
             const m = new Matrix2(1, 2, 3, 4);
             const r = m.add(2);
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqualCloseTo([ 3, 4, 5, 6 ]);
         });
         it("adds given matrix", () => {
             const a = new Matrix2(20, 3, 40, 5);
             const b = new Matrix2(3, 40, 5, 60);
             const r = a.add(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ 23, 43, 45, 65 ]);
         });
     });
@@ -246,14 +237,14 @@ describe("Matrix2", () => {
         it("subtracts given value", () => {
             const m = new Matrix2(1, 2, 3, 4);
             const r = m.sub(2);
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqualCloseTo([ -1, 0, 1, 2 ]);
         });
         it("subtracts given matrix", () => {
             const a = new Matrix2(20, 3, 40, 5);
             const b = new Matrix2(3, 40, 5, 60);
             const r = a.sub(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ 17, -37, 35, -55 ]);
         });
     });
@@ -263,7 +254,7 @@ describe("Matrix2", () => {
             const a = new Matrix2(20, 3, 40, 5);
             const b = new Matrix2(3, 40, 5, 60);
             const r = a.mul(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ 1660, 209, 2500, 315 ]);
         });
     });
@@ -272,14 +263,14 @@ describe("Matrix2", () => {
         it("multiplies matrix with a factor", () => {
             const m = new Matrix2(1, -2, 3, -4);
             const r = m.compMul(-2);
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqualCloseTo([ -2, 4, -6, 8 ]);
         });
         it("multiplies matrix with another matrix", () => {
             const a = new Matrix2(20, 3, 40, 5);
             const b = new Matrix2(3, 40, 5, 60);
             const r = a.compMul(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ 20 * 3, 3 * 40, 40 * 5, 5 * 60 ]);
         });
     });
@@ -289,7 +280,7 @@ describe("Matrix2", () => {
             const a = new Matrix2(2, -4, 6, -8);
             const b = new Matrix2(-10, 11, -12, 13);
             const r = a.div(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ -20, 18, -18, 16 ]);
         });
     });
@@ -298,14 +289,14 @@ describe("Matrix2", () => {
         it("divides matrix by scalar", () => {
             const m = new Matrix2(2, -4, 6, -8);
             const r = m.compDiv(2);
-            expect(r).not.toBe(m);
+            expect(r).toBe(m);
             expect(r.toJSON()).toEqualCloseTo([ 1, -2, 3, -4 ]);
         });
         it("divides matrix by another matrix component-wise", () => {
             const a = new Matrix2(3 * 2, 4 * 3, 5 * 4, 6 * 5);
             const b = new Matrix2(2, 3, 4, 5);
             const r = a.compDiv(b);
-            expect(r).not.toBe(a);
+            expect(r).toBe(a);
             expect(r.toJSON()).toEqualCloseTo([ 3, 4, 5, 6 ]);
         });
     });

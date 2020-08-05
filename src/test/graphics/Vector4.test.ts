@@ -249,7 +249,7 @@ describe("Vector4", () => {
         it("returns negated vector", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.negate();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ -1, -2, -3, -4 ]);
         });
     });
@@ -258,7 +258,7 @@ describe("Vector4", () => {
         it("returns component-wise sum of vector and scalar", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.add(5);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 6, 7, 8, 9 ]);
         });
         it("returns component-wise sum of two vectors", () => {
@@ -273,7 +273,7 @@ describe("Vector4", () => {
         it("returns component-wise difference of vector and scalar", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.sub(5);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ -4, -3, -2, -1 ]);
         });
         it("returns component-wise difference of two vectors", () => {
@@ -288,7 +288,7 @@ describe("Vector4", () => {
         it("returns component-wise division of vector and scalar", () => {
             const v = new Vector4(20, 10, 30, 60);
             const result = v.compDiv(2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 10, 5, 15, 30 ]);
         });
         it("returns component-wise division of two vectors", () => {
@@ -303,7 +303,7 @@ describe("Vector4", () => {
         it("returns component-wise multiplication of vector and scalar", () => {
             const v = new Vector4(20, 10, 5, 6);
             const result = v.compMul(2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 40, 20, 10, 12 ]);
         });
         it("returns component-wise multiplication of two vectors", () => {
@@ -317,7 +317,7 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const m = new Matrix4(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
             const result = v.mul(m);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 110, 166, 222, 278 ]);
         });
         */
@@ -357,7 +357,7 @@ describe("Vector4", () => {
         it("normalizes the vector", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.normalize();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.182574, 0.365148, 0.547723, 0.730297 ]);
         });
     });
@@ -367,7 +367,7 @@ describe("Vector4", () => {
             const normal = new Vector4(5, 6, 7, 8).normalize();
             const v = new Vector4(1, 2, 3, 4);
             const result = v.reflect(normal);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -3.02299, -2.82759, -2.63218, -2.43678 ]);
         });
     });
@@ -378,7 +378,7 @@ describe("Vector4", () => {
             const v = new Vector4(3, 32, 1, 31);
             const eta = 4;
             const result = v.refract(normal, eta);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 11.9284, 127.973, 4.04937, 123.973 ]);
             expect(new Vector4(20, 12, 23, 6).refract(new Vector4(-0.330352, -0.594633, 0.409636, 0.607847), 34)
                 .toJSON()).toEqual([ 0, 0, 0, 0 ]);
@@ -389,7 +389,7 @@ describe("Vector4", () => {
         it("converts all vector components from degrees to radians", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.radians();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.0174533, 0.0349066, 0.0523599, 0.0698132 ]);
         });
     });
@@ -398,7 +398,7 @@ describe("Vector4", () => {
         it("converts all vector components from radians to degrees", () => {
             const v = new Vector4(0.0174533, 0.0349066, 0.0523599, 0.0698132);
             const result = v.degrees();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 1, 2, 3, 4 ]);
         });
     });
@@ -407,7 +407,7 @@ describe("Vector4", () => {
         it("calculates sine for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.sin();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.198669, 0.783327, 0.479426, 0.0998334 ]);
         });
     });
@@ -416,7 +416,7 @@ describe("Vector4", () => {
         it("calculates cosine for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.cos();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.980067, 0.62161, 0.877583, 0.995004 ]);
         });
     });
@@ -425,7 +425,7 @@ describe("Vector4", () => {
         it("calculates tangent for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.tan();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.20271, 1.26016, 0.546302, 0.100335 ]);
         });
     });
@@ -434,7 +434,7 @@ describe("Vector4", () => {
         it("calculates arc sine for all components", () => {
             const v = new Vector4(0.198669, 0.783327, 0.479426, 0.0998334);
             const result = v.asin();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.1 ]);
         });
     });
@@ -443,7 +443,7 @@ describe("Vector4", () => {
         it("calculates arc cosine for all components", () => {
             const v = new Vector4(0.980067, 0.62161, 0.877583, 0.995004);
             const result = v.acos();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.0999999 ]);
         });
     });
@@ -452,7 +452,7 @@ describe("Vector4", () => {
         it("calculates arc tangent for all components", () => {
             const v = new Vector4(0.20271, 1.26016, 0.546302, 0.100335);
             const result = v.atan();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.1 ]);
         });
     });
@@ -462,13 +462,13 @@ describe("Vector4", () => {
             const v1 = new Vector4(1, 2, 3, 4);
             const v2 = new Vector4(4, 5, 6, 7);
             const result = v1.atan2(v2);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 0.244979, 0.380506, 0.463648, 0.519146 ]);
         });
         it("calculates atan2 for all components with number as argument", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.atan2(3);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.321751, 0.588007, 0.7854, 0.9273 ]);
         });
     });
@@ -477,7 +477,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic sine for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.sinh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.201336, 1.02652, 0.521095, 0.100167 ]);
         });
     });
@@ -486,7 +486,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic cosine for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.cosh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 1.02007, 1.43309, 1.12763, 1.005 ]);
         });
     });
@@ -495,7 +495,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic tangent for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.tanh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.197375, 0.716298, 0.462117, 0.099668 ]);
         });
     });
@@ -504,7 +504,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic arc sine for all components", () => {
             const v = new Vector4(0.201336, 1.02652, 0.521095, 0.100167);
             const result = v.asinh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.1 ]);
         });
     });
@@ -513,7 +513,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic arc cosine for all components", () => {
             const v = new Vector4(1.02007, 1.43309, 1.12763, 1.005);
             const result = v.acosh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.1 ]);
         });
     });
@@ -522,7 +522,7 @@ describe("Vector4", () => {
         it("calculates hyperbolic arc tangent for all components", () => {
             const v = new Vector4(0.197375, 0.716298, 0.462117, 0.099668);
             const result = v.atanh();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.2, 0.9, 0.5, 0.1 ]);
         });
     });
@@ -532,13 +532,13 @@ describe("Vector4", () => {
             const v1 = new Vector4(2, 3, 4, 5);
             const v2 = new Vector4(3, 2, 1, 4);
             const result = v1.pow(v2);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 8, 9, 4, 625 ]);
         });
         it("calculates the base to the exponent power for all components with number as argument", () => {
             const v = new Vector4(2, 3, 4, 5);
             const result = v.pow(4);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 16, 81, 256, 625 ]);
         });
     });
@@ -547,7 +547,7 @@ describe("Vector4", () => {
         it("calculates e^x for all components", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.exp();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 2.71828, 7.38906, 20.086, 54.5981 ]);
         });
     });
@@ -556,7 +556,7 @@ describe("Vector4", () => {
         it("calculates the natural logarithm for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.log();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -1.60944, -0.105361, -0.693147, -2.30259 ]);
         });
     });
@@ -565,7 +565,7 @@ describe("Vector4", () => {
         it("calculates 2^x for all components", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.exp2();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 2, 4, 8, 16 ]);
         });
     });
@@ -574,7 +574,7 @@ describe("Vector4", () => {
         it("calculates the base 2 logarithm for all components", () => {
             const v = new Vector4(0.2, 0.9, 0.5, 0.1);
             const result = v.log2();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -2.32193, -0.152003, -1, -3.32193 ]);
         });
     });
@@ -583,7 +583,7 @@ describe("Vector4", () => {
         it("calculates the square root for all components", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.sqrt();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 1, 1.41421, 1.73205, 2 ]);
         });
     });
@@ -592,7 +592,7 @@ describe("Vector4", () => {
         it("calculates the inverse square root for all components", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.inverseSqrt();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 1, 0.707107, 0.57735, 0.5 ]);
         });
     });
@@ -601,7 +601,7 @@ describe("Vector4", () => {
         it("calculates the absolute values for all components", () => {
             const v = new Vector4(-1.5, 2.2, -1.3, 3.4);
             const result = v.abs();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 1.5, 2.2, 1.3, 3.4 ]);
         });
     });
@@ -610,7 +610,7 @@ describe("Vector4", () => {
         it("calculates the sign for all components", () => {
             const v = new Vector4(-1.5, 2.2, -1.3, 3.4);
             const result = v.sign();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -1, 1, -1, 1 ]);
         });
     });
@@ -619,7 +619,7 @@ describe("Vector4", () => {
         it("floors all components", () => {
             const v = new Vector4(-1.5, -1.6, -1.4, -0.5);
             const result = v.floor();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -2, -2, -2, -1 ]);
         });
     });
@@ -628,7 +628,7 @@ describe("Vector4", () => {
         it("ceils all components", () => {
             const v = new Vector4(-1.5, -1.6, -1.4, -0.5);
             const result = v.ceil();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -1, -1, -1, -0 ]);
         });
     });
@@ -637,7 +637,7 @@ describe("Vector4", () => {
         it("rounds all components", () => {
             const v = new Vector4(1.5, -1.6, 1.4, -0.5);
             const result = v.round();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 2, -2, 1, 0 ]);
         });
     });
@@ -646,7 +646,7 @@ describe("Vector4", () => {
         it("rounds all components to even numbers", () => {
             const v = new Vector4(-1.5, -1.6, -1.4, -0.5);
             const result = v.roundEven();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -2, -2, -1, 0 ]);
         });
     });
@@ -655,7 +655,7 @@ describe("Vector4", () => {
         it("truncates all components", () => {
             const v = new Vector4(-1.5, -1.6, -1.4, -0.5);
             const result = v.trunc();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -1, -1, -1, -0 ]);
         });
     });
@@ -664,7 +664,7 @@ describe("Vector4", () => {
         it("replaces all components with their fractional parts", () => {
             const v = new Vector4(-1.5, -1.6, -1.4, -0.5);
             const result = v.fract();
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.5, 0.4, 0.6, 0.5 ]);
         });
     });
@@ -674,13 +674,13 @@ describe("Vector4", () => {
             const v1 = new Vector4(167, 151, 200, 301);
             const v2 = new Vector4(145, 133, 194, 294);
             const result = v1.mod(v2);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 22, 18, 6, 7 ]);
         });
         it("calculates the modulus of all components with number as argument", () => {
             const v = new Vector4(167, 151, 361, 512);
             const result = v.mod(145);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 22, 6, 71, 77 ]);
         });
     });
@@ -690,7 +690,7 @@ describe("Vector4", () => {
             const v = new Vector4(-9.6441, 41.423, -0.001, 4.9191);
             const i = new Vector4();
             const result = v.modf(i);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -0.6441, 0.423, -0.001, 0.9191 ]);
             expect(i.toJSON()).toEqualCloseTo([ -9, 41, 0, 4 ]);
         });
@@ -701,13 +701,13 @@ describe("Vector4", () => {
             const v1 = new Vector4(10, 20, 30, 40);
             const v2 = new Vector4(5, 45, 100, 34);
             const result = v1.min(v2);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 5, 20, 30, 34 ]);
         });
         it("returns the minimum components from vector and number argument", () => {
             const v = new Vector4(10, 20, 30, 4);
             const result = v.min(15);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 10, 15, 15, 4 ]);
         });
     });
@@ -717,13 +717,13 @@ describe("Vector4", () => {
             const v1 = new Vector4(10, 20, 30, 40);
             const v2 = new Vector4(5, 45, 100, 34);
             const result = v1.max(v2);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 10, 45, 100, 40 ]);
         });
         it("returns the maximum components from vector and number argument", () => {
             const v = new Vector4(10, 20, 30, 4);
             const result = v.max(15);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 15, 20, 30, 15 ]);
         });
     });
@@ -734,7 +734,7 @@ describe("Vector4", () => {
             const min = new Vector4(15, 10, 40, 20);
             const max = new Vector4(30, 18, 50, 30);
             const result = v.clamp(min, max);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 15, 18, 40, 30 ]);
         });
         it("clamps the vector components by min and max number", () => {
@@ -742,7 +742,7 @@ describe("Vector4", () => {
             const min = 11;
             const max = 39;
             const result = v.clamp(min, max);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 11, 20, 30, 39 ]);
         });
         it("clamps the vector components by min vector and max number", () => {
@@ -750,7 +750,7 @@ describe("Vector4", () => {
             const min = new Vector4(15, 10, 17, 1);
             const max = 19;
             const result = v.clamp(min, max);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 15, 19, 19, 19 ]);
         });
         it("clamps the vector components by min number and max vector", () => {
@@ -758,7 +758,7 @@ describe("Vector4", () => {
             const min = 15;
             const max = new Vector4(16, 17, 40, 39);
             const result = v.clamp(min, max);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 15, 17, 30, 39 ]);
         });
     });
@@ -769,7 +769,7 @@ describe("Vector4", () => {
             const v2 = new Vector4(15, 30, 40, -60);
             const blend = new Vector4(0.5, 0.8, 0.1, 0.2);
             const result = v1.mix(v2, blend);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 12.5, 28, 31, -44 ]);
         });
         it("mixes the vector component with a target number and a blend vector", () => {
@@ -777,7 +777,7 @@ describe("Vector4", () => {
             const n = 20;
             const blend = new Vector4(0.25, 0.75, 0.5, 0.1);
             const result = v.mix(n, blend);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 5.75, 17.5, 25, 6.5 ]);
         });
         it("mixes the vector component with a vector using a numeric blend value", () => {
@@ -785,7 +785,7 @@ describe("Vector4", () => {
             const v2 = new Vector4(10, 20, 30, 40);
             const blend = 0.75;
             const result = v1.mix(v2, blend);
-            expect(result).not.toBe(v1);
+            expect(result).toBe(v1);
             expect(result.toJSON()).toEqualCloseTo([ 5, 10, 15, 20 ]);
         });
         it("mixes the vector component with a target number and a numeric blend value", () => {
@@ -793,7 +793,7 @@ describe("Vector4", () => {
             const n = 10;
             const blend = 0.5;
             const result = v.mix(n, blend);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0, -5, -10, -15 ]);
         });
     });
@@ -803,13 +803,13 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const edge = new Vector4(3, 2, 1, -1);
             const result = v.step(edge);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 0, 1, 1, 1 ]);
         });
         it("returns 0 if lower or 1 if higher than edge value for each component", () => {
             const v = new Vector4(3, 2, 1, -1);
             const result = v.step(2.5);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 1, 0, 0, 0 ]);
             expect(new Vector4(2, 3, 4, 5).step(2.5).toJSON()).toEqual([ 0, 1, 1, 1 ]);
         });
@@ -821,7 +821,7 @@ describe("Vector4", () => {
             const edge1 = new Vector4(3, 1, 5, 3);
             const edge2 = new Vector4(5, 2, 6, 4);
             const result = v.smoothStep(edge1, edge2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 0, 1, 0, 1 ]);
         });
         it("returns 0 if lower than 1st edge value or 1 if higher than 2nd edge vector for each component", () => {
@@ -829,7 +829,7 @@ describe("Vector4", () => {
             const edge1 = 2.5;
             const edge2 = new Vector4(5, 2.6, 3.9, 4);
             const result = v.smoothStep(edge1, edge2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 0, 1, 1, 1 ]);
             expect(new Vector4(6, 2.4, 2.3, -100).smoothStep(edge1, edge2).toJSON()).toEqual([ 1, 0, 0, 0 ]);
         });
@@ -838,7 +838,7 @@ describe("Vector4", () => {
             const edge1 = new Vector4(3, 1, 7, 8);
             const edge2 = 4;
             const result = v.smoothStep(edge1, edge2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 0, 1, 1, 1 ]);
             expect(new Vector4(6, 0.5, -20, -300).smoothStep(edge1, edge2).toJSON()).toEqual([ 1, 0, 0, 0 ]);
         });
@@ -847,7 +847,7 @@ describe("Vector4", () => {
             const edge1 = 3;
             const edge2 = 4;
             const result = v.smoothStep(edge1, edge2);
-            expect(result).not.toBe(v);
+            expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 0, 1, 1, 1 ]);
             expect(new Vector4(5, 2, -1, 2.9).smoothStep(edge1, edge2).toJSON()).toEqual([ 1, 0, 0, 0 ]);
         });
@@ -864,13 +864,6 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const m = new Matrix4(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
             const result = v.mul(m);
-            expect(result).not.toBe(v);
-            expect(result.toJSON()).toEqual([ 188, 202, 216, 230 ]);
-        });
-        it("can use source as result", () => {
-            const v = new Vector4(2, 3, 4, 5);
-            const m = new Matrix4(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
-            const result = v.mul(m, v);
             expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 188, 202, 216, 230 ]);
         });
@@ -881,13 +874,6 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const m = new Matrix4(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
             const result = v.transposeMul(m);
-            expect(result).not.toBe(v);
-            expect(result.toJSON()).toEqual([ 110, 166, 222, 278 ]);
-        });
-        it("can use source as result", () => {
-            const v = new Vector4(2, 3, 4, 5);
-            const m = new Matrix4(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
-            const result = v.transposeMul(m, v);
             expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 110, 166, 222, 278 ]);
         });
@@ -898,13 +884,6 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const m = new Matrix4(20, 18, 16, 14, 12, 10, 7, 6, 8, 9, 11, 13, 15, 17, 19, 21);
             const result = v.div(m);
-            expect(result).not.toBe(v);
-            expect(result.toJSON()).toEqualCloseTo([ -0.157143, 0, 0, 0.342857 ]);
-        });
-        it("can use source as result", () => {
-            const v = new Vector4(2, 3, 4, 5);
-            const m = new Matrix4(20, 18, 16, 14, 12, 10, 7, 6, 8, 9, 11, 13, 15, 17, 19, 21);
-            const result = v.div(m, v);
             expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ -0.157143, 0, 0, 0.342857 ]);
         });
@@ -915,13 +894,6 @@ describe("Vector4", () => {
             const v = new Vector4(2, 3, 4, 5);
             const m = new Matrix4(20, 18, 16, 14, 12, 10, 7, 6, 8, 9, 11, 13, 15, 17, 19, 21);
             const result = v.transposeDiv(m);
-            expect(result).not.toBe(v);
-            expect(result.toJSON()).toEqualCloseTo([ 0.6, 0.2, -2.6, 2 ]);
-        });
-        it("can use source as result", () => {
-            const v = new Vector4(2, 3, 4, 5);
-            const m = new Matrix4(20, 18, 16, 14, 12, 10, 7, 6, 8, 9, 11, 13, 15, 17, 19, 21);
-            const result = v.transposeDiv(m, v);
             expect(result).toBe(v);
             expect(result.toJSON()).toEqualCloseTo([ 0.6, 0.2, -2.6, 2 ]);
         });

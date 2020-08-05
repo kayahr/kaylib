@@ -6,7 +6,8 @@
 import { Cloneable } from "../lang/Cloneable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
-import { Matrix, MatrixLike, ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike } from "./Vector";
 
 /**
@@ -17,12 +18,12 @@ export type Matrix2JSON = [
     number, number
 ];
 
-export type Matrix2Like = MatrixLike<2, 2>;
+export type Matrix2Like = SquareMatrixLike<2>;
 
 /**
  * 2x2 matrix using 32 bit floating point components.
  */
-export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializable<Matrix2JSON>,
+export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Serializable<Matrix2JSON>,
         Cloneable<Matrix2> {
     /** The number of columns. */
     public readonly columns: 2;
@@ -165,29 +166,6 @@ export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializ
     }
 
     /**
-     * Creates a result matrix initialized with the given component values. This is used internally to create result
-     * matrices returned by the various methods.
-     *
-     * @param result - The result matrix to re-use. A new one is created when undefined
-     * @param m11    - Matrix component at row 1 column 1.
-     * @param m12    - Matrix component at row 2 column 1.
-     * @param m21    - Matrix component at row 1 column 2.
-     * @param m22    - Matrix component at row 2 column 2.
-     * @return The result matrix. Either a new one or the specified result matrix.
-     * @hidden
-     */
-    public static createResult<T extends Matrix2Like = Matrix2>(result: T | undefined,
-            m11: number, m12: number, m21: number, m22: number): T {
-        if (result != null) {
-            result[0] = m11; result[1] = m12;
-            result[2] = m21; result[3] = m22;
-            return result;
-        } else {
-            return new Matrix2(m11, m12, m21, m22) as unknown as T;
-        }
-    }
-
-    /**
      * Creates a new matrix from the given JSON array.
      *
      * @param components - Array with the 4 matrix components.
@@ -244,87 +222,75 @@ export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializ
     }
 
     /** @inheritDoc */
-    public add<T extends Matrix2Like = Matrix2>(summand: number, result?: T): T;
+    public add(summand: number): this;
 
     /** @inheritDoc */
-    public add<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+    public add(matrix: ReadonlySquareMatrixLike<2>): this;
 
-    public add<T extends Matrix2Like = Matrix2>(arg: number | ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public add(arg: number | ReadonlySquareMatrixLike<2>): this {
         if (typeof arg === "number") {
-            return Matrix2.createResult(result,
-                this[0] + arg, this[1] + arg,
-                this[2] + arg, this[3] + arg
-            );
+            this[0] += arg; this[1] += arg;
+            this[2] += arg; this[3] += arg;
         } else {
-            return Matrix2.createResult(result,
-                this[0] + arg[0], this[1] + arg[1],
-                this[2] + arg[2], this[3] + arg[3]
-            );
+            this[0] += arg[0]; this[1] += arg[1];
+            this[2] += arg[2]; this[3] += arg[3];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public sub<T extends Matrix2Like = Matrix2>(subtrahend: number, result?: T): T;
+    public sub(subtrahend: number): this;
 
     /** @inheritDoc */
-    public sub<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+    public sub(matrix: ReadonlySquareMatrixLike<2>): this;
 
-    public sub<T extends Matrix2Like = Matrix2>(arg: number | ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public sub(arg: number | ReadonlySquareMatrixLike<2>): this {
         if (typeof arg === "number") {
-            return Matrix2.createResult(result,
-                this[0] - arg, this[1] - arg,
-                this[2] - arg, this[3] - arg
-            );
+            this[0] -= arg; this[1] -= arg;
+            this[2] -= arg; this[3] -= arg;
         } else {
-            return Matrix2.createResult(result,
-                this[0] - arg[0], this[1] - arg[1],
-                this[2] - arg[2], this[3] - arg[3]
-            );
+            this[0] -= arg[0]; this[1] -= arg[1];
+            this[2] -= arg[2]; this[3] -= arg[3];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public compMul<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+    public compMul(matrix: ReadonlySquareMatrixLike<2>): this;
 
     /** @inheritDoc */
-    public compMul<T extends Matrix2Like = Matrix2>(factor: number, result?: T): T;
+    public compMul(factor: number): this;
 
-    public compMul<T extends Matrix2Like = Matrix2>(arg: ReadonlyMatrixLike<2, 2> | number, result?: T): T {
+    public compMul(arg: ReadonlySquareMatrixLike<2> | number): this {
         if (typeof arg === "number") {
-            return Matrix2.createResult(result,
-                this[0] * arg, this[1] * arg,
-                this[2] * arg, this[3] * arg
-            );
+            this[0] *= arg; this[1] *= arg;
+            this[2] *= arg; this[3] *= arg;
         } else {
-            return Matrix2.createResult(result,
-                this[0] * arg[0], this[1] * arg[1],
-                this[2] * arg[2], this[3] * arg[3]
-            );
+            this[0] *= arg[0]; this[1] *= arg[1];
+            this[2] *= arg[2]; this[3] *= arg[3];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public compDiv<T extends Matrix2Like = Matrix2>(matrix: ReadonlyMatrixLike<2, 2>, result?: T): T;
+    public compDiv(matrix: ReadonlySquareMatrixLike<2>): this;
 
     /** @inheritDoc */
-    public compDiv<T extends Matrix2Like = Matrix2>(divisor: number, result?: T): T;
+    public compDiv(divisor: number): this;
 
-    public compDiv<T extends Matrix2Like = Matrix2>(arg: ReadonlyMatrixLike<2, 2> | number, result?: T): T {
+    public compDiv(arg: ReadonlySquareMatrixLike<2> | number): this {
         if (typeof arg === "number") {
-            return Matrix2.createResult(result,
-                this[0] / arg, this[1] / arg,
-                this[2] / arg, this[3] / arg
-            );
+            this[0] /= arg; this[1] /= arg;
+            this[2] /= arg; this[3] /= arg;
         } else {
-            return Matrix2.createResult(result,
-                this[0] / arg[0], this[1] / arg[1],
-                this[2] / arg[2], this[3] / arg[3]
-            );
+            this[0] /= arg[0]; this[1] /= arg[1];
+            this[2] /= arg[2]; this[3] /= arg[3];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public mul<T extends Matrix2Like = Matrix2>(other: ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public mul(other: ReadonlySquareMatrixLike<2>): this {
         const a11 = this[0], a12 = this[1];
         const a21 = this[2], a22 = this[3];
         const b11 = other[0], b12 = other[1];
@@ -332,14 +298,17 @@ export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializ
 
         // | a11 a12 | * | b11 b12 | = | a11b11+a21b12 a12b11+a22b12 |
         // | a21 a22 |   | b21 b22 |   | a11b21+a21b22 a12b21+a22b22 |
-        return Matrix2.createResult(result,
-            a11 * b11 + a21 * b12, a12 * b11 + a22 * b12,
-            a11 * b21 + a21 * b22, a12 * b21 + a22 * b22
-        );
+        this[0] = a11 * b11 + a21 * b12;
+        this[1] = a12 * b11 + a22 * b12;
+        this[2] = a11 * b21 + a21 * b22;
+        this[3] = a12 * b21 + a22 * b22;
+
+        return this;
     }
 
     /** @inheritDoc */
-    public div<T extends Matrix2Like = Matrix2>(other: ReadonlyMatrixLike<2, 2>, result?: T): T {
+    public div(other: ReadonlySquareMatrixLike<2>): this {
+        // a = this, b = other
         const a11 = this[0], a12 = this[1];
         const a21 = this[2], a22 = this[3];
         const b11 = other[0], b12 = other[1];
@@ -352,11 +321,13 @@ export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializ
         const c11 =  b22 / d, c12 = -b12 / d;
         const c21 = -b21 / d, c22 =  b11 / d;
 
-        // result = this * c
-        return Matrix2.createResult(result,
-            a11 * c11 + a21 * c12, a12 * c11 + a22 * c12,
-            a11 * c21 + a21 * c22, a12 * c21 + a22 * c22
-        );
+        // this = this * c
+        this[0] = a11 * c11 + a21 * c12;
+        this[1] = a12 * c11 + a22 * c12;
+        this[2] = a11 * c21 + a21 * c22;
+        this[3] = a12 * c21 + a22 * c22;
+
+        return this;
     }
 
     /** @inheritDoc */
@@ -365,29 +336,32 @@ export class Matrix2 extends AbstractMatrix<4> implements Matrix<2, 2>, Serializ
     }
 
     /** @inheritDoc */
-    public invert<T extends Matrix2Like = Matrix2>(result?: T): T {
+    public invert(): this {
         const m11 = this[0], m12 = this[1];
         const m21 = this[2], m22 = this[3];
         const d = m11 * m22 - m12 * m21;
-        return Matrix2.createResult(result,
-             m22 / d, -m12 / d,
-            -m21 / d,  m11 / d
-        );
+        this[0] = m22 / d;
+        this[1] = -m12 / d;
+        this[2] = -m21 / d;
+        this[3] = m11 / d;
+        return this;
     }
 
     /** @inheritDoc */
-    public transpose<T extends Matrix2Like = Matrix2>(result?: T): T {
-        return Matrix2.createResult(result,
-            this[0], this[2],
-            this[1], this[3]
-        );
+    public transpose(): this {
+        const tmp = this[1];
+        this[1] = this[2];
+        this[2] = tmp;
+        return this;
     }
 
     /** @inheritDoc */
-    public adjugate<T extends Matrix2Like = Matrix2>(result?: T): T {
-        return Matrix2.createResult(result,
-             this[3], -this[2],
-            -this[1],  this[0]
-        );
+    public adjugate(): this {
+        const m11 = this[0], m12 = this[1];
+        this[0] = this[3];
+        this[1] = -this[2];
+        this[2] = -m12;
+        this[3] = m11;
+        return this;
     }
 }

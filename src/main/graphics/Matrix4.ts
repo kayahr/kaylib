@@ -6,7 +6,8 @@
 import { Cloneable } from "../lang/Cloneable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
-import { Matrix, MatrixLike, ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike } from "./Vector";
 import { Vector4 } from "./Vector4";
 
@@ -20,12 +21,12 @@ export type Matrix4JSON = [
     number, number, number, number
 ];
 
-export type Matrix4Like = MatrixLike<4, 4>;
+export type Matrix4Like = SquareMatrixLike<4>;
 
 /**
  * 4x4 matrix using 32 bit floating point components.
  */
-export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Serializable<Matrix4JSON>,
+export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Serializable<Matrix4JSON>,
         Cloneable<Matrix4> {
     /** The number of columns. */
     public readonly columns: 4;
@@ -266,52 +267,6 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
     }
 
     /**
-     * Creates a result matrix initialized with the given component values. This is used internally to create result
-     * matrices returned by the various methods.
-     *
-     * @param result - The result matrix to re-use. A new one is created when undefined
-     * @param m11    - Matrix component at row 1 column 1.
-     * @param m12    - Matrix component at row 2 column 1.
-     * @param m13    - Matrix component at row 3 column 1.
-     * @param m14    - Matrix component at row 4 column 1.
-     * @param m21    - Matrix component at row 1 column 2.
-     * @param m22    - Matrix component at row 2 column 2.
-     * @param m23    - Matrix component at row 3 column 2.
-     * @param m24    - Matrix component at row 4 column 2.
-     * @param m31    - Matrix component at row 1 column 3.
-     * @param m32    - Matrix component at row 2 column 3.
-     * @param m33    - Matrix component at row 3 column 3.
-     * @param m34    - Matrix component at row 4 column 3.
-     * @param m41    - Matrix component at row 1 column 4.
-     * @param m42    - Matrix component at row 2 column 4.
-     * @param m43    - Matrix component at row 3 column 4.
-     * @param m44    - Matrix component at row 4 column 4.
-     * @return The result matrix. Either a new one or the specified result matrix.
-     * @hidden
-     */
-    public static createResult<T extends Matrix4Like = Matrix4>(result: T | undefined,
-                m11: number, m12: number, m13: number, m14: number,
-                m21: number, m22: number, m23: number, m24: number,
-                m31: number, m32: number, m33: number, m34: number,
-                m41: number, m42: number, m43: number, m44: number
-            ): T {
-        if (result != null) {
-            result[ 0] = m11; result[ 1] = m12; result[ 2] = m13; result[ 3] = m14;
-            result[ 4] = m21; result[ 5] = m22; result[ 6] = m23; result[ 7] = m24;
-            result[ 8] = m31; result[ 9] = m32; result[10] = m33; result[11] = m34;
-            result[12] = m41; result[13] = m42; result[14] = m43; result[15] = m44;
-            return result;
-        } else {
-            return new Matrix4(
-                m11, m12, m13, m14,
-                m21, m22, m23, m24,
-                m31, m32, m33, m34,
-                m41, m42, m43, m44
-            ) as unknown as T;
-        }
-    }
-
-    /**
      * Creates a new matrix from the given JSON array.
      *
      * @param components - Array with the 16 matrix components.
@@ -389,143 +344,139 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
     }
 
     /** @inheritDoc */
-    public add<T extends Matrix4Like = Matrix4>(summand: number, result?: T): T;
+    public add(summand: number): this;
 
     /** @inheritDoc */
-    public add<T extends Matrix4Like = Matrix4>(matrix: ReadonlyMatrixLike<4, 4>, result?: T): T;
+    public add(matrix: ReadonlySquareMatrixLike<4>): this;
 
-    public add<T extends Matrix4Like = Matrix4>(arg: number | ReadonlyMatrixLike<4, 4>, result?: T): T {
+    public add(arg: number | ReadonlySquareMatrixLike<4>): this {
         if (typeof arg === "number") {
-            return Matrix4.createResult(result,
-                this[ 0] + arg, this[ 1] + arg, this[ 2] + arg, this[ 3] + arg,
-                this[ 4] + arg, this[ 5] + arg, this[ 6] + arg, this[ 7] + arg,
-                this[ 8] + arg, this[ 9] + arg, this[10] + arg, this[11] + arg,
-                this[12] + arg, this[13] + arg, this[14] + arg, this[15] + arg
-            );
+            this[ 0] += arg; this[ 1] += arg; this[ 2] += arg; this[ 3] += arg;
+            this[ 4] += arg; this[ 5] += arg; this[ 6] += arg; this[ 7] += arg;
+            this[ 8] += arg; this[ 9] += arg; this[10] += arg; this[11] += arg;
+            this[12] += arg; this[13] += arg; this[14] += arg; this[15] += arg;
         } else {
-            return Matrix4.createResult(result,
-                this[ 0] + arg[ 0], this[ 1] + arg[ 1], this[ 2] + arg[ 2], this[ 3] + arg[ 3],
-                this[ 4] + arg[ 4], this[ 5] + arg[ 5], this[ 6] + arg[ 6], this[ 7] + arg[ 7],
-                this[ 8] + arg[ 8], this[ 9] + arg[ 9], this[10] + arg[10], this[11] + arg[11],
-                this[12] + arg[12], this[13] + arg[13], this[14] + arg[14], this[15] + arg[15]
-            );
+            this[ 0] += arg[ 0]; this[ 1] += arg[ 1]; this[ 2] += arg[ 2]; this[ 3] += arg[ 3];
+            this[ 4] += arg[ 4]; this[ 5] += arg[ 5]; this[ 6] += arg[ 6]; this[ 7] += arg[ 7];
+            this[ 8] += arg[ 8]; this[ 9] += arg[ 9]; this[10] += arg[10]; this[11] += arg[11];
+            this[12] += arg[12]; this[13] += arg[13]; this[14] += arg[14]; this[15] += arg[15];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public sub<T extends Matrix4Like = Matrix4>(subtrahend: number, result?: T): T;
+    public sub(subtrahend: number): this;
 
     /** @inheritDoc */
-    public sub<T extends Matrix4Like = Matrix4>(matrix: ReadonlyMatrixLike<4, 4>, result?: T): T;
+    public sub(matrix: ReadonlySquareMatrixLike<4>): this;
 
-    public sub<T extends Matrix4Like = Matrix4>(arg: number | ReadonlyMatrixLike<4, 4>, result?: T): T {
+    public sub(arg: number | ReadonlySquareMatrixLike<4>): this {
         if (typeof arg === "number") {
-            return Matrix4.createResult(result,
-                this[ 0] - arg, this[ 1] - arg, this[ 2] - arg, this[ 3] - arg,
-                this[ 4] - arg, this[ 5] - arg, this[ 6] - arg, this[ 7] - arg,
-                this[ 8] - arg, this[ 9] - arg, this[10] - arg, this[11] - arg,
-                this[12] - arg, this[13] - arg, this[14] - arg, this[15] - arg
-            );
+            this[ 0] -= arg; this[ 1] -= arg; this[ 2] -= arg; this[ 3] -= arg;
+            this[ 4] -= arg; this[ 5] -= arg; this[ 6] -= arg; this[ 7] -= arg;
+            this[ 8] -= arg; this[ 9] -= arg; this[10] -= arg; this[11] -= arg;
+            this[12] -= arg; this[13] -= arg; this[14] -= arg; this[15] -= arg;
         } else {
-            return Matrix4.createResult(result,
-                this[ 0] - arg[ 0], this[ 1] - arg[ 1], this[ 2] - arg[ 2], this[ 3] - arg[ 3],
-                this[ 4] - arg[ 4], this[ 5] - arg[ 5], this[ 6] - arg[ 6], this[ 7] - arg[ 7],
-                this[ 8] - arg[ 8], this[ 9] - arg[ 9], this[10] - arg[10], this[11] - arg[11],
-                this[12] - arg[12], this[13] - arg[13], this[14] - arg[14], this[15] - arg[15]
-            );
+            this[ 0] -= arg[ 0]; this[ 1] -= arg[ 1]; this[ 2] -= arg[ 2]; this[ 3] -= arg[ 3];
+            this[ 4] -= arg[ 4]; this[ 5] -= arg[ 5]; this[ 6] -= arg[ 6]; this[ 7] -= arg[ 7];
+            this[ 8] -= arg[ 8]; this[ 9] -= arg[ 9]; this[10] -= arg[10]; this[11] -= arg[11];
+            this[12] -= arg[12]; this[13] -= arg[13]; this[14] -= arg[14]; this[15] -= arg[15];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public compMul<T extends Matrix4Like = Matrix4>(matrix: ReadonlyMatrixLike<4, 4>, result?: T): T;
+    public compMul(matrix: ReadonlySquareMatrixLike<4>): this;
 
     /** @inheritDoc */
-    public compMul<T extends Matrix4Like = Matrix4>(factor: number, result?: T): T;
+    public compMul(factor: number): this;
 
-    public compMul<T extends Matrix4Like = Matrix4>(arg: ReadonlyMatrixLike<4, 4> | number, result?: T): T {
+    public compMul(arg: ReadonlySquareMatrixLike<4> | number): this {
         if (typeof arg === "number") {
-            return Matrix4.createResult(result,
-                this[ 0] * arg, this[ 1] * arg, this[ 2] * arg, this[ 3] * arg,
-                this[ 4] * arg, this[ 5] * arg, this[ 6] * arg, this[ 7] * arg,
-                this[ 8] * arg, this[ 9] * arg, this[10] * arg, this[11] * arg,
-                this[12] * arg, this[13] * arg, this[14] * arg, this[15] * arg
-            );
+            this[ 0] *= arg; this[ 1] *= arg; this[ 2] *= arg; this[ 3] *= arg;
+            this[ 4] *= arg; this[ 5] *= arg; this[ 6] *= arg; this[ 7] *= arg;
+            this[ 8] *= arg; this[ 9] *= arg; this[10] *= arg; this[11] *= arg;
+            this[12] *= arg; this[13] *= arg; this[14] *= arg; this[15] *= arg;
         } else {
-            return Matrix4.createResult(result,
-                this[ 0] * arg[ 0], this[ 1] * arg[ 1], this[ 2] * arg[ 2], this[ 3] * arg[ 3],
-                this[ 4] * arg[ 4], this[ 5] * arg[ 5], this[ 6] * arg[ 6], this[ 7] * arg[ 7],
-                this[ 8] * arg[ 8], this[ 9] * arg[ 9], this[10] * arg[10], this[11] * arg[11],
-                this[12] * arg[12], this[13] * arg[13], this[14] * arg[14], this[15] * arg[15]
-            );
+            this[ 0] *= arg[ 0]; this[ 1] *= arg[ 1]; this[ 2] *= arg[ 2]; this[ 3] *= arg[ 3];
+            this[ 4] *= arg[ 4]; this[ 5] *= arg[ 5]; this[ 6] *= arg[ 6]; this[ 7] *= arg[ 7];
+            this[ 8] *= arg[ 8]; this[ 9] *= arg[ 9]; this[10] *= arg[10]; this[11] *= arg[11];
+            this[12] *= arg[12]; this[13] *= arg[13]; this[14] *= arg[14]; this[15] *= arg[15];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public compDiv<T extends Matrix4Like = Matrix4>(matrix: ReadonlyMatrixLike<4, 4>, result?: T): T;
+    public compDiv(matrix: ReadonlySquareMatrixLike<4>): this;
 
     /** @inheritDoc */
-    public compDiv<T extends Matrix4Like = Matrix4>(divisor: number, result?: T): T;
+    public compDiv(divisor: number): this;
 
-    public compDiv<T extends Matrix4Like = Matrix4>(arg: ReadonlyMatrixLike<4, 4> | number, result?: T): T {
+    public compDiv(arg: ReadonlySquareMatrixLike<4> | number): this {
         if (typeof arg === "number") {
-            return Matrix4.createResult(result,
-                this[ 0] / arg, this[ 1] / arg, this[ 2] / arg, this[ 3] / arg,
-                this[ 4] / arg, this[ 5] / arg, this[ 6] / arg, this[ 7] / arg,
-                this[ 8] / arg, this[ 9] / arg, this[10] / arg, this[11] / arg,
-                this[12] / arg, this[13] / arg, this[14] / arg, this[15] / arg
-            );
+            this[ 0] /= arg; this[ 1] /= arg; this[ 2] /= arg; this[ 3] /= arg;
+            this[ 4] /= arg; this[ 5] /= arg; this[ 6] /= arg; this[ 7] /= arg;
+            this[ 8] /= arg; this[ 9] /= arg; this[10] /= arg; this[11] /= arg;
+            this[12] /= arg; this[13] /= arg; this[14] /= arg; this[15] /= arg;
         } else {
-            return Matrix4.createResult(result,
-                this[ 0] / arg[ 0], this[ 1] / arg[ 1], this[ 2] / arg[ 2], this[ 3] / arg[ 3],
-                this[ 4] / arg[ 4], this[ 5] / arg[ 5], this[ 6] / arg[ 6], this[ 7] / arg[ 7],
-                this[ 8] / arg[ 8], this[ 9] / arg[ 9], this[10] / arg[10], this[11] / arg[11],
-                this[12] / arg[12], this[13] / arg[13], this[14] / arg[14], this[15] / arg[15]
-            );
+            this[ 0] /= arg[ 0]; this[ 1] /= arg[ 1]; this[ 2] /= arg[ 2]; this[ 3] /= arg[ 3];
+            this[ 4] /= arg[ 4]; this[ 5] /= arg[ 5]; this[ 6] /= arg[ 6]; this[ 7] /= arg[ 7];
+            this[ 8] /= arg[ 8]; this[ 9] /= arg[ 9]; this[10] /= arg[10]; this[11] /= arg[11];
+            this[12] /= arg[12]; this[13] /= arg[13]; this[14] /= arg[14]; this[15] /= arg[15];
         }
+        return this;
     }
 
     /** @inheritDoc */
-    public mul<T extends Matrix4Like = Matrix4>(other: ReadonlyMatrixLike<4, 4>, result?: T): T {
+    public mul(other: ReadonlySquareMatrixLike<4>): this {
+        // a = this
         const a11 = this[ 0], a12 = this[ 1], a13 = this[ 2], a14 = this[ 3];
         const a21 = this[ 4], a22 = this[ 5], a23 = this[ 6], a24 = this[ 7];
         const a31 = this[ 8], a32 = this[ 9], a33 = this[10], a34 = this[11];
         const a41 = this[12], a42 = this[13], a43 = this[14], a44 = this[15];
+
+        // b = other
         const b11 = other[ 0], b12 = other[ 1], b13 = other[ 2], b14 = other[ 3];
         const b21 = other[ 4], b22 = other[ 5], b23 = other[ 6], b24 = other[ 7];
         const b31 = other[ 8], b32 = other[ 9], b33 = other[10], b34 = other[11];
         const b41 = other[12], b42 = other[13], b43 = other[14], b44 = other[15];
 
-        return Matrix4.createResult(result,
-            a11 * b11 + a21 * b12 + a31 * b13 + a41 * b14,
-            a12 * b11 + a22 * b12 + a32 * b13 + a42 * b14,
-            a13 * b11 + a23 * b12 + a33 * b13 + a43 * b14,
-            a14 * b11 + a24 * b12 + a34 * b13 + a44 * b14,
-            a11 * b21 + a21 * b22 + a31 * b23 + a41 * b24,
-            a12 * b21 + a22 * b22 + a32 * b23 + a42 * b24,
-            a13 * b21 + a23 * b22 + a33 * b23 + a43 * b24,
-            a14 * b21 + a24 * b22 + a34 * b23 + a44 * b24,
-            a11 * b31 + a21 * b32 + a31 * b33 + a41 * b34,
-            a12 * b31 + a22 * b32 + a32 * b33 + a42 * b34,
-            a13 * b31 + a23 * b32 + a33 * b33 + a43 * b34,
-            a14 * b31 + a24 * b32 + a34 * b33 + a44 * b34,
-            a11 * b41 + a21 * b42 + a31 * b43 + a41 * b44,
-            a12 * b41 + a22 * b42 + a32 * b43 + a42 * b44,
-            a13 * b41 + a23 * b42 + a33 * b43 + a43 * b44,
-            a14 * b41 + a24 * b42 + a34 * b43 + a44 * b44
-        );
+        // this = a * b;
+        this[ 0] = a11 * b11 + a21 * b12 + a31 * b13 + a41 * b14;
+        this[ 1] = a12 * b11 + a22 * b12 + a32 * b13 + a42 * b14;
+        this[ 2] = a13 * b11 + a23 * b12 + a33 * b13 + a43 * b14;
+        this[ 3] = a14 * b11 + a24 * b12 + a34 * b13 + a44 * b14;
+        this[ 4] = a11 * b21 + a21 * b22 + a31 * b23 + a41 * b24;
+        this[ 5] = a12 * b21 + a22 * b22 + a32 * b23 + a42 * b24;
+        this[ 6] = a13 * b21 + a23 * b22 + a33 * b23 + a43 * b24;
+        this[ 7] = a14 * b21 + a24 * b22 + a34 * b23 + a44 * b24;
+        this[ 8] = a11 * b31 + a21 * b32 + a31 * b33 + a41 * b34;
+        this[ 9] = a12 * b31 + a22 * b32 + a32 * b33 + a42 * b34;
+        this[10] = a13 * b31 + a23 * b32 + a33 * b33 + a43 * b34;
+        this[11] = a14 * b31 + a24 * b32 + a34 * b33 + a44 * b34;
+        this[12] = a11 * b41 + a21 * b42 + a31 * b43 + a41 * b44;
+        this[13] = a12 * b41 + a22 * b42 + a32 * b43 + a42 * b44;
+        this[14] = a13 * b41 + a23 * b42 + a33 * b43 + a43 * b44;
+        this[15] = a14 * b41 + a24 * b42 + a34 * b43 + a44 * b44;
+
+        return this;
     }
 
     /** @inheritDoc */
-    public div<T extends Matrix4Like = Matrix4>(other: ReadonlyMatrixLike<4, 4>, result?: T): T {
+    public div(other: ReadonlySquareMatrixLike<4>): this {
+        // a = this
         const a11 = this[ 0], a12 = this[ 1], a13 = this[ 2], a14 = this[ 3];
         const a21 = this[ 4], a22 = this[ 5], a23 = this[ 6], a24 = this[ 7];
         const a31 = this[ 8], a32 = this[ 9], a33 = this[10], a34 = this[11];
         const a41 = this[12], a42 = this[13], a43 = this[14], a44 = this[15];
+
+        // b = other
         const b11 = other[ 0], b12 = other[ 1], b13 = other[ 2], b14 = other[ 3];
         const b21 = other[ 4], b22 = other[ 5], b23 = other[ 6], b24 = other[ 7];
         const b31 = other[ 8], b32 = other[ 9], b33 = other[10], b34 = other[11];
         const b41 = other[12], b42 = other[13], b43 = other[14], b44 = other[15];
 
+        // Some intermediate calculations so they are only done once
         const b11b22 = b11 * b22, b11b23 = b11 * b23, b11b24 = b11 * b24, b12b21 = b12 * b21;
         const b12b23 = b12 * b23, b12b24 = b12 * b24, b13b21 = b13 * b21, b13b22 = b13 * b22;
         const b13b24 = b13 * b24, b14b21 = b14 * b21, b14b22 = b14 * b22, b14b23 = b14 * b23;
@@ -559,25 +510,25 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const c43 = (b13b22 * b41 - b12b23 * b41 - b13b21 * b42 + b11b23 * b42 + b12b21 * b43 - b11b22 * b43) / d;
         const c44 = (b12b23 * b31 - b13b22 * b31 + b13b21 * b32 - b11b23 * b32 - b12b21 * b33 + b11b22 * b33) / d;
 
-        // result = this * c
-        return Matrix4.createResult(result,
-            a11 * c11 + a21 * c12 + a31 * c13 + a41 * c14,
-            a12 * c11 + a22 * c12 + a32 * c13 + a42 * c14,
-            a13 * c11 + a23 * c12 + a33 * c13 + a43 * c14,
-            a14 * c11 + a24 * c12 + a34 * c13 + a44 * c14,
-            a11 * c21 + a21 * c22 + a31 * c23 + a41 * c24,
-            a12 * c21 + a22 * c22 + a32 * c23 + a42 * c24,
-            a13 * c21 + a23 * c22 + a33 * c23 + a43 * c24,
-            a14 * c21 + a24 * c22 + a34 * c23 + a44 * c24,
-            a11 * c31 + a21 * c32 + a31 * c33 + a41 * c34,
-            a12 * c31 + a22 * c32 + a32 * c33 + a42 * c34,
-            a13 * c31 + a23 * c32 + a33 * c33 + a43 * c34,
-            a14 * c31 + a24 * c32 + a34 * c33 + a44 * c34,
-            a11 * c41 + a21 * c42 + a31 * c43 + a41 * c44,
-            a12 * c41 + a22 * c42 + a32 * c43 + a42 * c44,
-            a13 * c41 + a23 * c42 + a33 * c43 + a43 * c44,
-            a14 * c41 + a24 * c42 + a34 * c43 + a44 * c44
-        );
+        // this = this * c
+        this[ 0] = a11 * c11 + a21 * c12 + a31 * c13 + a41 * c14;
+        this[ 1] = a12 * c11 + a22 * c12 + a32 * c13 + a42 * c14;
+        this[ 2] = a13 * c11 + a23 * c12 + a33 * c13 + a43 * c14;
+        this[ 3] = a14 * c11 + a24 * c12 + a34 * c13 + a44 * c14;
+        this[ 4] = a11 * c21 + a21 * c22 + a31 * c23 + a41 * c24;
+        this[ 5] = a12 * c21 + a22 * c22 + a32 * c23 + a42 * c24;
+        this[ 6] = a13 * c21 + a23 * c22 + a33 * c23 + a43 * c24;
+        this[ 7] = a14 * c21 + a24 * c22 + a34 * c23 + a44 * c24;
+        this[ 8] = a11 * c31 + a21 * c32 + a31 * c33 + a41 * c34;
+        this[ 9] = a12 * c31 + a22 * c32 + a32 * c33 + a42 * c34;
+        this[10] = a13 * c31 + a23 * c32 + a33 * c33 + a43 * c34;
+        this[11] = a14 * c31 + a24 * c32 + a34 * c33 + a44 * c34;
+        this[12] = a11 * c41 + a21 * c42 + a31 * c43 + a41 * c44;
+        this[13] = a12 * c41 + a22 * c42 + a32 * c43 + a42 * c44;
+        this[14] = a13 * c41 + a23 * c42 + a33 * c43 + a43 * c44;
+        this[15] = a14 * c41 + a24 * c42 + a34 * c43 + a44 * c44;
+
+        return this;
     }
 
     /** @inheritDoc */
@@ -603,7 +554,7 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
     }
 
     /** @inheritDoc */
-    public invert<T extends Matrix4Like = Matrix4>(result?: T): T {
+    public invert(): this {
         const m11 = this[ 0], m12 = this[ 1], m13 = this[ 2], m14 = this[ 3];
         const m21 = this[ 4], m22 = this[ 5], m23 = this[ 6], m24 = this[ 7];
         const m31 = this[ 8], m32 = this[ 9], m33 = this[10], m34 = this[11];
@@ -623,40 +574,55 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
                 + m12m21 * m34m43 - m11m22 * m34m43 - m13m22 * m31m44 + m12m23 * m31m44
                 + m13m21 * m32m44 - m11m23 * m32m44 - m12m21 * m33m44 + m11m22 * m33m44;
 
-        return Matrix4.createResult(result,
-            (m23 * m34m42 - m24 * m33m42 + m24 * m32m43 - m22 * m34m43 - m23 * m32m44 + m22 * m33m44) / d,
-            (m14 * m33m42 - m13 * m34m42 - m14 * m32m43 + m12 * m34m43 + m13 * m32m44 - m12 * m33m44) / d,
-            (m13m24 * m42 - m14m23 * m42 + m14m22 * m43 - m12m24 * m43 - m13m22 * m44 + m12m23 * m44) / d,
-            (m14m23 * m32 - m13m24 * m32 - m14m22 * m33 + m12m24 * m33 + m13m22 * m34 - m12m23 * m34) / d,
-            (m24 * m33m41 - m23 * m34m41 - m24 * m31m43 + m21 * m34m43 + m23 * m31m44 - m21 * m33m44) / d,
-            (m13 * m34m41 - m14 * m33m41 + m14 * m31m43 - m11 * m34m43 - m13 * m31m44 + m11 * m33m44) / d,
-            (m14m23 * m41 - m13m24 * m41 - m14m21 * m43 + m11m24 * m43 + m13m21 * m44 - m11m23 * m44) / d,
-            (m13m24 * m31 - m14m23 * m31 + m14m21 * m33 - m11m24 * m33 - m13m21 * m34 + m11m23 * m34) / d,
-            (m22 * m34m41 - m24 * m32m41 + m24 * m31m42 - m21 * m34m42 - m22 * m31m44 + m21 * m32m44) / d,
-            (m14 * m32m41 - m12 * m34m41 - m14 * m31m42 + m11 * m34m42 + m12 * m31m44 - m11 * m32m44) / d,
-            (m12m24 * m41 - m14m22 * m41 + m14m21 * m42 - m11m24 * m42 - m12m21 * m44 + m11m22 * m44) / d,
-            (m14m22 * m31 - m12m24 * m31 - m14m21 * m32 + m11m24 * m32 + m12m21 * m34 - m11m22 * m34) / d,
-            (m23 * m32m41 - m22 * m33m41 - m23 * m31m42 + m21 * m33m42 + m22 * m31m43 - m21 * m32m43) / d,
-            (m12 * m33m41 - m13 * m32m41 + m13 * m31m42 - m11 * m33m42 - m12 * m31m43 + m11 * m32m43) / d,
-            (m13m22 * m41 - m12m23 * m41 - m13m21 * m42 + m11m23 * m42 + m12m21 * m43 - m11m22 * m43) / d,
-            (m12m23 * m31 - m13m22 * m31 + m13m21 * m32 - m11m23 * m32 - m12m21 * m33 + m11m22 * m33) / d
-        );
+        this[ 0] = (m23 * m34m42 - m24 * m33m42 + m24 * m32m43 - m22 * m34m43 - m23 * m32m44 + m22 * m33m44) / d;
+        this[ 1] = (m14 * m33m42 - m13 * m34m42 - m14 * m32m43 + m12 * m34m43 + m13 * m32m44 - m12 * m33m44) / d;
+        this[ 2] = (m13m24 * m42 - m14m23 * m42 + m14m22 * m43 - m12m24 * m43 - m13m22 * m44 + m12m23 * m44) / d;
+        this[ 3] = (m14m23 * m32 - m13m24 * m32 - m14m22 * m33 + m12m24 * m33 + m13m22 * m34 - m12m23 * m34) / d;
+        this[ 4] = (m24 * m33m41 - m23 * m34m41 - m24 * m31m43 + m21 * m34m43 + m23 * m31m44 - m21 * m33m44) / d;
+        this[ 5] = (m13 * m34m41 - m14 * m33m41 + m14 * m31m43 - m11 * m34m43 - m13 * m31m44 + m11 * m33m44) / d;
+        this[ 6] = (m14m23 * m41 - m13m24 * m41 - m14m21 * m43 + m11m24 * m43 + m13m21 * m44 - m11m23 * m44) / d;
+        this[ 7] = (m13m24 * m31 - m14m23 * m31 + m14m21 * m33 - m11m24 * m33 - m13m21 * m34 + m11m23 * m34) / d;
+        this[ 8] = (m22 * m34m41 - m24 * m32m41 + m24 * m31m42 - m21 * m34m42 - m22 * m31m44 + m21 * m32m44) / d;
+        this[ 9] = (m14 * m32m41 - m12 * m34m41 - m14 * m31m42 + m11 * m34m42 + m12 * m31m44 - m11 * m32m44) / d;
+        this[10] = (m12m24 * m41 - m14m22 * m41 + m14m21 * m42 - m11m24 * m42 - m12m21 * m44 + m11m22 * m44) / d;
+        this[11] = (m14m22 * m31 - m12m24 * m31 - m14m21 * m32 + m11m24 * m32 + m12m21 * m34 - m11m22 * m34) / d;
+        this[12] = (m23 * m32m41 - m22 * m33m41 - m23 * m31m42 + m21 * m33m42 + m22 * m31m43 - m21 * m32m43) / d;
+        this[13] = (m12 * m33m41 - m13 * m32m41 + m13 * m31m42 - m11 * m33m42 - m12 * m31m43 + m11 * m32m43) / d;
+        this[14] = (m13m22 * m41 - m12m23 * m41 - m13m21 * m42 + m11m23 * m42 + m12m21 * m43 - m11m22 * m43) / d;
+        this[15] = (m12m23 * m31 - m13m22 * m31 + m13m21 * m32 - m11m23 * m32 - m12m21 * m33 + m11m22 * m33) / d;
+
+        return this;
     }
 
     /** @inheritDoc */
-    public transpose<T extends Matrix4Like = Matrix4>(result?: T): T {
-        return Matrix4.createResult(result,
-            this[0], this[4], this[ 8], this[12],
-            this[1], this[5], this[ 9], this[13],
-            this[2], this[6], this[10], this[14],
-            this[3], this[7], this[11], this[15]
-        );
+    public transpose(): this {
+        const m12 = this[1];
+        const m13 = this[2];
+        const m14 = this[3];
+        const m23 = this[6];
+        const m24 = this[7];
+        const m34 = this[11];
+
+        this[ 1] = this[4];
+        this[ 2] = this[8];
+        this[ 3] = this[12];
+        this[ 4] = m12;
+        this[ 6] = this[9];
+        this[ 7] = this[13];
+        this[ 8] = m13;
+        this[ 9] = m23;
+        this[11] = this[14];
+        this[12] = m14;
+        this[13] = m24;
+        this[14] = m34;
+
+        return this;
     }
 
     /**
      * Converts this matrix into the "adjoint matrix".
      */
-    public adjugate<T extends Matrix4Like = Matrix4>(result?: T): T {
+    public adjugate(): this {
         const m11 = this[ 0], m12 = this[ 1], m13 = this[ 2], m14 = this[ 3];
         const m21 = this[ 4], m22 = this[ 5], m23 = this[ 6], m24 = this[ 7];
         const m31 = this[ 8], m32 = this[ 9], m33 = this[10], m34 = this[11];
@@ -669,24 +635,24 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const m32m43 = m32 * m43, m32m44 = m32 * m44, m33m41 = m33 * m41, m33m42 = m33 * m42;
         const m33m44 = m33 * m44, m34m41 = m34 * m41, m34m42 = m34 * m42, m34m43 = m34 * m43;
 
-        return Matrix4.createResult(result,
-            m34m42 * m23 - m33m42 * m24 + m32m43 * m24 - m34m43 * m22 - m32m44 * m23 + m33m44 * m22,
-            m33m41 * m24 - m34m41 * m23 - m31m43 * m24 + m34m43 * m21 + m31m44 * m23 - m33m44 * m21,
-            m34m41 * m22 - m32m41 * m24 + m31m42 * m24 - m34m42 * m21 - m31m44 * m22 + m32m44 * m21,
-            m32m41 * m23 - m33m41 * m22 - m31m42 * m23 + m33m42 * m21 + m31m43 * m22 - m32m43 * m21,
-            m33m42 * m14 - m34m42 * m13 - m32m43 * m14 + m34m43 * m12 + m32m44 * m13 - m33m44 * m12,
-            m34m41 * m13 - m33m41 * m14 + m31m43 * m14 - m34m43 * m11 - m31m44 * m13 + m33m44 * m11,
-            m32m41 * m14 - m34m41 * m12 - m31m42 * m14 + m34m42 * m11 + m31m44 * m12 - m32m44 * m11,
-            m33m41 * m12 - m32m41 * m13 + m31m42 * m13 - m33m42 * m11 - m31m43 * m12 + m32m43 * m11,
-            m13m24 * m42 - m14m23 * m42 + m14m22 * m43 - m12m24 * m43 - m13m22 * m44 + m12m23 * m44,
-            m14m23 * m41 - m13m24 * m41 - m14m21 * m43 + m11m24 * m43 + m13m21 * m44 - m11m23 * m44,
-            m12m24 * m41 - m14m22 * m41 + m14m21 * m42 - m11m24 * m42 - m12m21 * m44 + m11m22 * m44,
-            m13m22 * m41 - m12m23 * m41 - m13m21 * m42 + m11m23 * m42 + m12m21 * m43 - m11m22 * m43,
-            m14m23 * m32 - m13m24 * m32 - m14m22 * m33 + m12m24 * m33 + m13m22 * m34 - m12m23 * m34,
-            m13m24 * m31 - m14m23 * m31 + m14m21 * m33 - m11m24 * m33 - m13m21 * m34 + m11m23 * m34,
-            m14m22 * m31 - m12m24 * m31 - m14m21 * m32 + m11m24 * m32 + m12m21 * m34 - m11m22 * m34,
-            m12m23 * m31 - m13m22 * m31 + m13m21 * m32 - m11m23 * m32 - m12m21 * m33 + m11m22 * m33
-        );
+        this[ 0] = m34m42 * m23 - m33m42 * m24 + m32m43 * m24 - m34m43 * m22 - m32m44 * m23 + m33m44 * m22;
+        this[ 1] = m33m41 * m24 - m34m41 * m23 - m31m43 * m24 + m34m43 * m21 + m31m44 * m23 - m33m44 * m21;
+        this[ 2] = m34m41 * m22 - m32m41 * m24 + m31m42 * m24 - m34m42 * m21 - m31m44 * m22 + m32m44 * m21;
+        this[ 3] = m32m41 * m23 - m33m41 * m22 - m31m42 * m23 + m33m42 * m21 + m31m43 * m22 - m32m43 * m21;
+        this[ 4] = m33m42 * m14 - m34m42 * m13 - m32m43 * m14 + m34m43 * m12 + m32m44 * m13 - m33m44 * m12;
+        this[ 5] = m34m41 * m13 - m33m41 * m14 + m31m43 * m14 - m34m43 * m11 - m31m44 * m13 + m33m44 * m11;
+        this[ 6] = m32m41 * m14 - m34m41 * m12 - m31m42 * m14 + m34m42 * m11 + m31m44 * m12 - m32m44 * m11;
+        this[ 7] = m33m41 * m12 - m32m41 * m13 + m31m42 * m13 - m33m42 * m11 - m31m43 * m12 + m32m43 * m11;
+        this[ 8] = m13m24 * m42 - m14m23 * m42 + m14m22 * m43 - m12m24 * m43 - m13m22 * m44 + m12m23 * m44;
+        this[ 9] = m14m23 * m41 - m13m24 * m41 - m14m21 * m43 + m11m24 * m43 + m13m21 * m44 - m11m23 * m44;
+        this[10] = m12m24 * m41 - m14m22 * m41 + m14m21 * m42 - m11m24 * m42 - m12m21 * m44 + m11m22 * m44;
+        this[11] = m13m22 * m41 - m12m23 * m41 - m13m21 * m42 + m11m23 * m42 + m12m21 * m43 - m11m22 * m43;
+        this[12] = m14m23 * m32 - m13m24 * m32 - m14m22 * m33 + m12m24 * m33 + m13m22 * m34 - m12m23 * m34;
+        this[13] = m13m24 * m31 - m14m23 * m31 + m14m21 * m33 - m11m24 * m33 - m13m21 * m34 + m11m23 * m34;
+        this[14] = m14m22 * m31 - m12m24 * m31 - m14m21 * m32 + m11m24 * m32 + m12m21 * m34 - m11m22 * m34;
+        this[15] = m12m23 * m31 - m13m22 * m31 + m13m21 * m32 - m11m23 * m32 - m12m21 * m33 + m11m22 * m33;
+
+        return this;
     }
 
     /**
@@ -696,24 +662,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      * @param dy - The Y translation.
      * @param dz - The Z translation.
      */
-    public translate<T extends Matrix4Like = Matrix4>(dx: number, dy: number, dz: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[12] += dx * this[0] + dy * this[4] + dz * this[8];
-            this[13] += dx * this[1] + dy * this[5] + dz * this[9];
-            this[14] += dx * this[2] + dy * this[6] + dz * this[10];
-            this[15] += dx * this[3] + dy * this[7] + dz * this[11];
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0], this[ 1], this[ 2], this[ 3],
-                this[ 4], this[ 5], this[ 6], this[ 7],
-                this[ 8], this[ 9], this[10], this[11],
-                this[12] + dx * this[0] + dy * this[4] + dz * this[8],
-                this[13] + dx * this[1] + dy * this[5] + dz * this[9],
-                this[14] + dx * this[2] + dy * this[6] + dz * this[10],
-                this[15] + dx * this[3] + dy * this[7] + dz * this[11]
-            );
-        }
+    public translate(dx: number, dy: number, dz: number): this {
+        this[12] += dx * this[0] + dy * this[4] + dz * this[8];
+        this[13] += dx * this[1] + dy * this[5] + dz * this[9];
+        this[14] += dx * this[2] + dy * this[6] + dz * this[10];
+        this[15] += dx * this[3] + dy * this[7] + dz * this[11];
+        return this;
     }
 
     /**
@@ -721,21 +675,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param d - The X translation delta.
      */
-    public translateX<T extends Matrix4Like = Matrix4>(d: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[12] += d * this[0];
-            this[13] += d * this[1];
-            this[14] += d * this[2];
-            this[15] += d * this[3];
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0],               this[ 1],               this[ 2],               this[ 3],
-                this[ 4],               this[ 5],               this[ 6],               this[ 7],
-                this[ 8],               this[ 9],               this[10],               this[11],
-                this[12] + d * this[0], this[13] + d * this[1], this[14] + d * this[2], this[15] + d * this[3]
-            );
-        }
+    public translateX(d: number): this {
+        this[12] += d * this[0];
+        this[13] += d * this[1];
+        this[14] += d * this[2];
+        this[15] += d * this[3];
+        return this;
     }
 
     /**
@@ -743,21 +688,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param d - The Y translation delta.
      */
-    public translateY<T extends Matrix4Like = Matrix4>(d: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[12] += d * this[4];
-            this[13] += d * this[5];
-            this[14] += d * this[6];
-            this[15] += d * this[7];
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0],               this[ 1],               this[ 2],               this[ 3],
-                this[ 4],               this[ 5],               this[ 6],               this[ 7],
-                this[ 8],               this[ 9],               this[10],               this[11],
-                this[12] + d * this[4], this[13] + d * this[5], this[14] + d * this[6], this[15] + d * this[7]
-            );
-        }
+    public translateY(d: number): this {
+        this[12] += d * this[4];
+        this[13] += d * this[5];
+        this[14] += d * this[6];
+        this[15] += d * this[7];
+        return this;
     }
 
     /**
@@ -765,35 +701,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param d - The translation delta.
      */
-    public translateZ<T extends Matrix4Like = Matrix4>(d: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[12] += d * this[ 8];
-            this[13] += d * this[ 9];
-            this[14] += d * this[10];
-            this[15] += d * this[11];
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0],               this[ 1],               this[ 2],                this[ 3],
-                this[ 4],               this[ 5],               this[ 6],                this[ 7],
-                this[ 8],               this[ 9],               this[10],                this[11],
-                this[12] + d * this[8], this[13] + d * this[9], this[14] + d * this[10], this[15] + d * this[11]
-            );
-        }
-    }
-
-    /**
-     * Scales this matrix by the specified factor.
-     *
-     * @param s - The scale factor.
-     */
-    public scale<T extends Matrix4Like = Matrix4>(s: number, result?: T): T {
-        return Matrix4.createResult(result,
-            this[ 0] * s, this[ 1] * s, this[ 2] * s, this[ 3] * s,
-            this[ 4] * s, this[ 5] * s, this[ 6] * s, this[ 7] * s,
-            this[ 8] * s, this[ 9] * s, this[10] * s, this[11] * s,
-            this[12],     this[13],     this[14],     this[15]
-        );
+    public translateZ(d: number): this {
+        this[12] += d * this[ 8];
+        this[13] += d * this[ 9];
+        this[14] += d * this[10];
+        this[15] += d * this[11];
+        return this;
     }
 
     /**
@@ -803,13 +716,20 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      * @param sy - Optional Y scale factor. Defaults to X scale factor.
      * @param sz - Optional Z scale factor. Defaults to X scale factor.
      */
-    public scaleXYZ<T extends Matrix4Like = Matrix4>(sx: number, sy: number, sz: number, result?: T): T {
-        return Matrix4.createResult(result,
-            this[ 0] * sx, this[ 1] * sx, this[ 2] * sx, this[ 3] * sx,
-            this[ 4] * sy, this[ 5] * sy, this[ 6] * sy, this[ 7] * sy,
-            this[ 8] * sz, this[ 9] * sz, this[10] * sz, this[11] * sz,
-            this[12],      this[13],      this[14],      this[15]
-        );
+    public scale(sx: number, sy = sx, sz = sx): this {
+        this[ 0] *= sx;
+        this[ 1] *= sx;
+        this[ 2] *= sx;
+        this[ 3] *= sx;
+        this[ 4] *= sy;
+        this[ 5] *= sy;
+        this[ 6] *= sy;
+        this[ 7] *= sy;
+        this[ 8] *= sz;
+        this[ 9] *= sz;
+        this[10] *= sz;
+        this[11] *= sz;
+        return this;
     }
 
     /**
@@ -817,21 +737,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param s - The scale factor.
      */
-    public scaleX<T extends Matrix4Like = Matrix4>(s: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[0] *= s;
-            this[1] *= s;
-            this[2] *= s;
-            this[3] *= s;
-            return this;
-        }  else {
-            return Matrix4.createResult(result,
-                this[ 0] * s,   this[ 1] * s,   this[ 2] * s,   this[ 3] * s,
-                this[ 4],       this[ 5],       this[ 6],       this[ 7],
-                this[ 8],       this[ 9],       this[10],       this[11],
-                this[12],       this[13],       this[14],       this[15]
-            );
-        }
+    public scaleX(s: number): this {
+        this[0] *= s;
+        this[1] *= s;
+        this[2] *= s;
+        this[3] *= s;
+        return this;
     }
 
     /**
@@ -839,21 +750,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param s - The scale factor.
      */
-    public scaleY<T extends Matrix4Like = Matrix4>(s: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[4] *= s;
-            this[5] *= s;
-            this[6] *= s;
-            this[7] *= s;
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0],       this[ 1],       this[ 2],       this[ 3],
-                this[ 4] * s,   this[ 5] * s,   this[ 6] * s,   this[ 7] * s,
-                this[ 8],       this[ 9],       this[10],       this[11],
-                this[12],       this[13],       this[14],       this[15]
-            );
-        }
+    public scaleY(s: number): this {
+        this[4] *= s;
+        this[5] *= s;
+        this[6] *= s;
+        this[7] *= s;
+        return this;
     }
 
     /**
@@ -861,21 +763,12 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param s - The scale factor.
      */
-    public scaleZ<T extends Matrix4Like = Matrix4>(s: number, result?: T): T {
-        if (this.isResult(result)) {
-            this[ 8] *= s;
-            this[ 9] *= s;
-            this[10] *= s;
-            this[11] *= s;
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[ 0],       this[ 1],       this[ 2],       this[ 3],
-                this[ 4],       this[ 5],       this[ 6],       this[ 7],
-                this[ 8] * s,   this[ 9] * s,   this[10] * s,   this[11] * s,
-                this[12],       this[13],       this[14],       this[15]
-            );
-        }
+    public scaleZ(s: number): this {
+        this[ 8] *= s;
+        this[ 9] *= s;
+        this[10] *= s;
+        this[11] *= s;
+        return this;
     }
 
     /**
@@ -884,7 +777,7 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      * @param angle - The rotation angle in RAD.
      * @param axis  - The normalized rotation axis.
      */
-    public rotate<T extends Matrix4Like = Matrix4>(angle: number, axis: Vector4, result?: T): T {
+    public rotate(angle: number, axis: Vector4): this {
         const c = Math.cos(angle);
         const s = Math.sin(angle);
         const x = axis.x;
@@ -909,21 +802,20 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const n12 = txy + zs,   n22 = ty * y + c, n32 = tyz - xs;
         const n13 = txz - ys,   n23 = tyz + xs,   n33 = t * z * z + c;
 
-        return Matrix4.createResult(result,
-            m11 * n11 + m21 * n12 + m31 * n13,
-            m12 * n11 + m22 * n12 + m32 * n13,
-            m13 * n11 + m23 * n12 + m33 * n13,
-            m14 * n11 + m24 * n12 + m34 * n13,
-            m11 * n21 + m21 * n22 + m31 * n23,
-            m12 * n21 + m22 * n22 + m32 * n23,
-            m13 * n21 + m23 * n22 + m33 * n23,
-            m14 * n21 + m24 * n22 + m34 * n23,
-            m11 * n31 + m21 * n32 + m31 * n33,
-            m12 * n31 + m22 * n32 + m32 * n33,
-            m13 * n31 + m23 * n32 + m33 * n33,
-            m14 * n31 + m24 * n32 + m34 * n33,
-            this[12], this[13], this[14], this[15]
-        );
+        this[ 0] = m11 * n11 + m21 * n12 + m31 * n13;
+        this[ 1] = m12 * n11 + m22 * n12 + m32 * n13;
+        this[ 2] = m13 * n11 + m23 * n12 + m33 * n13;
+        this[ 3] = m14 * n11 + m24 * n12 + m34 * n13;
+        this[ 4] = m11 * n21 + m21 * n22 + m31 * n23;
+        this[ 5] = m12 * n21 + m22 * n22 + m32 * n23;
+        this[ 6] = m13 * n21 + m23 * n22 + m33 * n23;
+        this[ 7] = m14 * n21 + m24 * n22 + m34 * n23;
+        this[ 8] = m11 * n31 + m21 * n32 + m31 * n33;
+        this[ 9] = m12 * n31 + m22 * n32 + m32 * n33;
+        this[10] = m13 * n31 + m23 * n32 + m33 * n33;
+        this[11] = m14 * n31 + m24 * n32 + m34 * n33;
+
+        return this;
     }
 
     /**
@@ -931,7 +823,7 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param angle - The rotation angle in RAD.
      */
-    public rotateX<T extends Matrix4Like = Matrix4>(angle: number, result?: T): T {
+    public rotateX(angle: number): this {
         const s = Math.sin(angle);
         const c = Math.cos(angle);
         const m21 = this[ 4];
@@ -942,30 +834,15 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const m32 = this[10];
         const m33 = this[ 9];
         const m34 = this[11];
-        if (this.isResult(result)) {
-            this[ 4] = m21 * c + m31 * s;
-            this[ 5] = m22 * c + m33 * s;
-            this[ 6] = m23 * c + m32 * s;
-            this[ 7] = m24 * c + m34 * s;
-            this[ 8] = m21 * -s + m31 * c;
-            this[ 9] = m22 * -s + m33 * c;
-            this[10] = m23 * -s + m32 * c;
-            this[11] = m24 * -s + m34 * c;
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                this[0], this[1], this[2], this[3],
-                m21 * c + m31 * s,
-                m22 * c + m33 * s,
-                m23 * c + m32 * s,
-                m24 * c + m34 * s,
-                m21 * -s + m31 * c,
-                m22 * -s + m33 * c,
-                m23 * -s + m32 * c,
-                m24 * -s + m34 * c,
-                this[12], this[13], this[14], this[15]
-            );
-        }
+        this[ 4] = m21 * c + m31 * s;
+        this[ 5] = m22 * c + m33 * s;
+        this[ 6] = m23 * c + m32 * s;
+        this[ 7] = m24 * c + m34 * s;
+        this[ 8] = m21 * -s + m31 * c;
+        this[ 9] = m22 * -s + m33 * c;
+        this[10] = m23 * -s + m32 * c;
+        this[11] = m24 * -s + m34 * c;
+        return this;
     }
 
     /**
@@ -973,7 +850,7 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param angle - The rotation angle in RAD.
      */
-    public rotateY<T extends Matrix4Like = Matrix4>(angle: number, result?: T): T {
+    public rotateY(angle: number): this {
         const s = Math.sin(angle);
         const c = Math.cos(angle);
         const m11 = this[ 0];
@@ -984,30 +861,15 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const m32 = this[ 9];
         const m33 = this[10];
         const m34 = this[11];
-        if (this.isResult(result)) {
-            this[ 0] = m11 * c + m31 * -s;
-            this[ 1] = m12 * c + m32 * -s;
-            this[ 2] = m13 * c + m33 * -s;
-            this[ 3] = m14 * c + m34 * -s;
-            this[ 8] = m11 * s + m31 * c;
-            this[ 9] = m12 * s + m32 * c;
-            this[10] = m13 * s + m33 * c;
-            this[11] = m14 * s + m34 * c;
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                m11 * c + m31 * -s,
-                m12 * c + m32 * -s,
-                m13 * c + m33 * -s,
-                m14 * c + m34 * -s,
-                this[ 4], this[5], this[6], this[7],
-                m11 * s + m31 * c,
-                m12 * s + m32 * c,
-                m13 * s + m33 * c,
-                m14 * s + m34 * c,
-                this[12], this[13], this[14], this[15]
-            );
-        }
+        this[ 0] = m11 * c + m31 * -s;
+        this[ 1] = m12 * c + m32 * -s;
+        this[ 2] = m13 * c + m33 * -s;
+        this[ 3] = m14 * c + m34 * -s;
+        this[ 8] = m11 * s + m31 * c;
+        this[ 9] = m12 * s + m32 * c;
+        this[10] = m13 * s + m33 * c;
+        this[11] = m14 * s + m34 * c;
+        return this;
     }
 
     /**
@@ -1015,7 +877,7 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
      *
      * @param angle - The rotation angle in RAD.
      */
-    public rotateZ<T extends Matrix4Like = Matrix4>(angle: number, result?: T): T {
+    public rotateZ(angle: number): this {
         const s = Math.sin(angle);
         const c = Math.cos(angle);
         const m11 = this[0];
@@ -1026,29 +888,14 @@ export class Matrix4 extends AbstractMatrix<16> implements Matrix<4, 4>, Seriali
         const m22 = this[5];
         const m23 = this[6];
         const m24 = this[7];
-        if (this.isResult(result)) {
-            this[0] = m11 * c + m21 * s;
-            this[1] = m12 * c + m22 * s;
-            this[2] = m13 * c + m23 * s;
-            this[3] = m14 * c + m24 * s;
-            this[4] = m11 * -s + m21 * c;
-            this[5] = m12 * -s + m22 * c;
-            this[6] = m13 * -s + m23 * c;
-            this[7] = m14 * -s + m24 * c;
-            return this;
-        } else {
-            return Matrix4.createResult(result,
-                m11 * c + m21 * s,
-                m12 * c + m22 * s,
-                m13 * c + m23 * s,
-                m14 * c + m24 * s,
-                m11 * -s + m21 * c,
-                m12 * -s + m22 * c,
-                m13 * -s + m23 * c,
-                m14 * -s + m24 * c,
-                this[8], this[9], this[10], this[11],
-                this[12], this[13], this[14], this[15]
-            );
-        }
+        this[0] = m11 * c + m21 * s;
+        this[1] = m12 * c + m22 * s;
+        this[2] = m13 * c + m23 * s;
+        this[3] = m14 * c + m24 * s;
+        this[4] = m11 * -s + m21 * c;
+        this[5] = m12 * -s + m22 * c;
+        this[6] = m13 * -s + m23 * c;
+        this[7] = m14 * -s + m24 * c;
+        return this;
     }
 }

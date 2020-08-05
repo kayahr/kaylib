@@ -111,122 +111,122 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
     /**
      * Negates this vector.
      */
-    negate<T extends VectorLike<Size>>(result?: T): T;
+    negate(): this;
 
     /**
      * Adds the given vector or scalar to this vector.
      *
      * @param summand - The vector or scalar to add to this vector.
      */
-    add<T extends VectorLike<Size>>(summand: ReadonlyVectorLike<Size> | number, result?: T): T;
+    add(summand: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Subtracts the given vector or scalar from this vector.
      *
      * @param subtrahend - The vector or scalar to subtract from this vector.
      */
-    sub<T extends VectorLike<Size>>(subtrahend: ReadonlyVectorLike<Size> | number, result?: T): T;
+    sub(subtrahend: ReadonlyVectorLike<Size> | number): this;
 
     /**
-     * Multiplies this vector with the specified matrix (In GLSL: `result = matrix * this`).
+     * Multiplies this vector with the specified matrix (In GLSL: `this = matrix * this`).
      *
      * @param matrix - The matrix to multiply this vector with.
      */
-    mul<T extends VectorLike<Size>>(matrix: ReadonlyMatrixLike<Size, Size>, result?: T): T;
+    mul(matrix: ReadonlyMatrixLike<Size, Size>): this;
 
     /**
-     * Multiplies this vector with the transpose of the given matrix (In GLSL: `result = this * matrix`).
+     * Multiplies this vector with the transpose of the given matrix (In GLSL: `this = this * matrix`).
      *
      * @param matrix - The matrix to multiply this vector with.
      */
-    transposeMul<T extends VectorLike<Size>>(matrix: ReadonlyMatrixLike<Size, Size>, result?: T): T;
+    transposeMul(matrix: ReadonlyMatrixLike<Size, Size>): this;
 
     /**
-     * Multiplies this vector with the inverse of the specified matrix (In GLSL: `result = matrix / this`).
+     * Multiplies this vector with the inverse of the specified matrix (In GLSL: `this = matrix / this`).
      *
      * @param matrix - The matrix to divide this vector by.
      */
-    div<T extends VectorLike<Size>>(matrix: ReadonlyMatrixLike<Size, Size>, result?: T): T;
+    div(matrix: ReadonlyMatrixLike<Size, Size>): this;
 
     /**
-     * Multiplies this vector with the inverted transpose of the given matrix (In GLSL: `result = this / matrix`).
+     * Multiplies this vector with the inverted transpose of the given matrix (In GLSL: `this = this / matrix`).
      *
      * @param matrix - The matrix to multiply this vector with.
      */
-    transposeDiv<T extends VectorLike<Size>>(matrix: ReadonlyMatrixLike<Size, Size>, result?: T): T;
+    transposeDiv(matrix: ReadonlyMatrixLike<Size, Size>): this;
 
     /**
      * Multiplies this vector by the given vector or scalar component-wise.
      *
      * @param factor - The vector or scalar to multiply this vector by.
      */
-    compMul<T extends VectorLike<Size>>(factor: ReadonlyVectorLike<Size> | number, result?: T): T;
+    compMul(factor: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Divides this vector by the given vector or scalar component-wise.
      *
      * @param divisor - The vector or scalar to divide this vector by.
      */
-    compDiv<T extends VectorLike<Size>>(divisor: ReadonlyVectorLike<Size> | number, result?: T): T;
+    compDiv(divisor: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Reflects this vector at the surface described by the given normal vector.
      *
      * @param normal - The normal vector of the reflecting surface.
      */
-    reflect<T extends VectorLike<Size>>(normal: ReadonlyVectorLike<Size>, result?: T): T;
+    reflect(normal: ReadonlyVectorLike<Size>): this;
 
     /**
      * Refracts this vector at the surface described by the given normal vector.
      *
      * @param normal - The normal vector of the refracting surface.
      */
-    refract<T extends VectorLike<Size>>(normal: ReadonlyVectorLike<Size>, eta: number, result?: T): T;
+    refract(normal: ReadonlyVectorLike<Size>, eta: number): this;
 
     /**
      * Normalizes this vector to a length of 1.
      */
-    normalize<T extends VectorLike<Size>>(result?: T): T;
+    normalize(): this;
 
     /**
      * Converts the vector components from degrees to radians.
      */
-    radians<T extends VectorLike<Size>>(result?: T): T;
+    radians(): this;
 
     /**
      * Converts the vector components from radians to degrees.
      */
-    degrees<T extends VectorLike<Size>>(result?: T): T;
+    degrees(): this;
 
     /**
      * Calculates the sine for each component.
      */
-    sin<T extends VectorLike<Size>>(result?: T): T;
+    sin(): this;
 
     /**
      * Calculates the cosine for each component.
      */
-    cos<T extends VectorLike<Size>>(result?: T): T;
+    cos(): this;
 
     /**
      * Calculates the tangent for each component.
      */
-    tan<T extends VectorLike<Size>>(result?: T): T;
+    tan(): this;
 
     /**
      * Calculates the arc-sine for each component.
      */
-    asin<T extends VectorLike<Size>>(result?: T): T;
+    asin(): this;
 
     /**
      * Calculates the arc-cosine for each component.
      */
-    acos<T extends VectorLike<Size>>(result?: T): T;
+    acos(): this;
 
     /**
      * Calculates the arc-tangent for each component.
      */
-    atan<T extends VectorLike<Size>>(result?: T): T;
+    atan(): this;
 
     /**
      * Calculates the 2-argument arc-tangent for each component.
@@ -234,121 +234,121 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      * @param v - The second argument for the arc-tangent. Either a scalar used for all vector components or
      *            a vector for individual values.
      */
-    atan2<T extends VectorLike<Size>>(v: ReadonlyVectorLike<Size> | number, result?: T): T;
+    atan2(v: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Calculates the hyperbolic sine for each component.
      */
-    sinh<T extends VectorLike<Size>>(result?: T): T;
+    sinh(): this;
 
     /**
      * Calculates the hyperbolic cosine for each component.
      */
-    cosh<T extends VectorLike<Size>>(result?: T): T;
+    cosh(): this;
 
     /**
      * Calculates the hyperbolic tangent for each component.
      */
-    tanh<T extends VectorLike<Size>>(result?: T): T;
+    tanh(): this;
 
     /**
      * Calculates the hyperbolic arc-sine for each component.
      */
-    asinh<T extends VectorLike<Size>>(result?: T): T;
+    asinh(): this;
 
     /**
      * Calculates the hyperbolic arc-cosine for each component.
      */
-    acosh<T extends VectorLike<Size>>(result?: T): T;
+    acosh(): this;
 
     /**
      * Calculates the hyperbolic arc-tangent for each component.
      */
-    atanh<T extends VectorLike<Size>>(result?: T): T;
+    atanh(): this;
 
     /**
      * Calculates the vector components taken to the power of the given exponent.
      *
      * @param exponent - The exponent as a scalar or a vector for individual exponent values.
      */
-    pow<T extends VectorLike<Size>>(exponent: ReadonlyVectorLike<Size> | number, result?: T): T;
+    pow(exponent: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Calculates the constant e raised to the power of the vector components.
      */
-    exp<T extends VectorLike<Size>>(result?: T): T;
+    exp(): this;
 
     /**
      * Calculates the power to which the constant e has to be raised to produce the component values.
      */
-    log<T extends VectorLike<Size>>(result?: T): T;
+    log(): this;
 
     /**
      * Calculates 2 raised to the power of the vector components.
      */
-    exp2<T extends VectorLike<Size>>(result?: T): T;
+    exp2(): this;
 
     /**
      * Calculates the power to which the value 2 has to be raised to produce the component values.
      */
-    log2<T extends VectorLike<Size>>(result?: T): T;
+    log2(): this;
 
     /**
      * Calculates the cosine for each component.
      */
-    sqrt<T extends VectorLike<Size>>(result?: T): T;
+    sqrt(): this;
 
     /**
      * Calculates the square root for each component.
      */
-    inverseSqrt<T extends VectorLike<Size>>(result?: T): T;
+    inverseSqrt(): this;
 
     /**
      * Converts the vector components to their absolute values.
      */
-    abs<T extends VectorLike<Size>>(result?: T): T;
+    abs(): this;
 
     /**
      * Converts the vector components to their sign values (-1, 0 or 1).
      */
-    sign<T extends VectorLike<Size>>(result?: T): T;
+    sign(): this;
 
     /**
      * Rounds all vector components down to the nearest integer.
      */
-    floor<T extends VectorLike<Size>>(result?: T): T;
+    floor(): this;
 
     /**
      * Replaces all vector components with their integer part by removing any fractional digits.
      */
-    trunc<T extends VectorLike<Size>>(result?: T): T;
+    trunc(): this;
 
     /**
      * Rounds all vector components up or down to the nearest integer.
      */
-    round<T extends VectorLike<Size>>(result?: T): T;
+    round(): this;
 
     /**
      * Rounds all vector components to the nearest even integer.
      */
-    roundEven<T extends VectorLike<Size>>(result?: T): T;
+    roundEven(): this;
 
     /**
      * Rounds all vector components up to the nearest integer.
      */
-    ceil<T extends VectorLike<Size>>(result?: T): T;
+    ceil(): this;
 
     /**
      * Replaces all vector components with their fractional value.
      */
-    fract<T extends VectorLike<Size>>(result?: T): T;
+    fract(): this;
 
     /**
      * Calculates the modulo for each component.
      *
      * @param v - The modulo argument. Either a scalar used for all vector components or a vector for individual values.
      */
-    mod<T extends VectorLike<Size>>(v: ReadonlyVectorLike<Size> | number, result?: T): T;
+    mod(v: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Splits the vector components into their integer and fractional parts. The integer parts are stored in the given
@@ -356,7 +356,7 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      *
      * @param i - The vector to write the integer parts of this vector to.
      */
-    modf<T extends VectorLike<Size>>(i: VectorLike<Size>, result?: T): T;
+    modf(i: VectorLike<Size>): this;
 
     /**
      * Clamps the vector components to the given minimum.
@@ -364,7 +364,7 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      * @param min - The minimum value to clamp to. Either a scalar used for all vector components or a vector for
      *              individual values.
      */
-    min<T extends VectorLike<Size>>(min: ReadonlyVectorLike<Size> | number, result?: T): T;
+    min(min: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Clamps the vector components to the given maximum.
@@ -372,7 +372,7 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      * @param max - The maximum value to clamp to. Either a scalar used for all vector components or a vector for
      *              individual values.
      */
-    max<T extends VectorLike<Size>>(max: ReadonlyVectorLike<Size> | number, result?: T): T;
+    max(max: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Clamps the vector components to the given range.
@@ -382,8 +382,7 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      * @param max - The maximum value to clamp to. Either a scalar used for all vector components or a vector for
      *              individual values.
      */
-    clamp<T extends VectorLike<Size>>(min: ReadonlyVectorLike<Size> | number,
-        max: ReadonlyVectorLike<Size> | number, result?: T): T;
+    clamp(min: ReadonlyVectorLike<Size> | number, max: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Linearly interpolates the vector components. The result is stored back into this vector.
@@ -392,15 +391,14 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      *                or a vector for individual values.
      * @param blend - Blend factor (usually between 0.0 and 1.0) used for the linear interpolation.
      */
-    mix<T extends VectorLike<Size>>(v: ReadonlyVectorLike<Size> | number,
-        blend: ReadonlyVectorLike<Size> | number, result?: T): T;
+    mix(v: ReadonlyVectorLike<Size> | number, blend: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Converts the component values to 0 if smaller than given edge or 1 if larger or equal.
      *
      * @param edge - The edge as a scalar used for all vector components or a vector for individual edge values.
      */
-    step<T extends VectorLike<Size>>(edge: ReadonlyVectorLike<Size> | number, result?: T): T;
+    step(edge: ReadonlyVectorLike<Size> | number): this;
 
     /**
      * Converts the component values to 0 if smaller than first edge, 1 if larger than second edge or to a value
@@ -409,6 +407,5 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
      * @param edge1 - The first edge as a scalar used for all vector components or a vector for individual edge values.
      * @param edge2 - The second edge as a scalar used for all vector components or a vector for individual edge values.
      */
-    smoothStep<T extends VectorLike<Size>>(edge1: ReadonlyVectorLike<Size> | number,
-        edge2: ReadonlyVectorLike<Size> | number, result?: T): T;
+    smoothStep(edge1: ReadonlyVectorLike<Size> | number, edge2: ReadonlyVectorLike<Size> | number): this;
 }
