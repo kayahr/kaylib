@@ -76,12 +76,12 @@ export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Seria
             super(4);
             this[0] = this[3] = 1;
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(2, argColumns);
-            const rows = Math.min(2, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 2] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(2, arg.columns);
+            const rows = Math.min(2, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 2] = arg[y + x * argRows];
                 }
             }
         } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
@@ -152,12 +152,12 @@ export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Seria
         if (AbstractMatrix.isInitFromMatrix(args)) {
             this.reset();
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(2, argColumns);
-            const rows = Math.min(2, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 2] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(2, arg.columns);
+            const rows = Math.min(2, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 2] = arg[y + x * argRows];
                 }
             }
             return this;

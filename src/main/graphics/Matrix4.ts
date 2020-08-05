@@ -10,7 +10,6 @@ import { AbstractMatrix } from "./AbstractMatrix";
 import { ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike } from "./Vector";
-import { Vector4 } from "./Vector4";
 
 /**
  * JSON representation of a matrix with 16 floating point components.
@@ -80,12 +79,12 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
             super(16);
             this[0] = this[5] = this[10] = this[15] = 1;
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(4, argColumns);
-            const rows = Math.min(4, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 4] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(4, arg.columns);
+            const rows = Math.min(4, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 4] = arg[y + x * argRows];
                 }
             }
         } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
@@ -253,12 +252,12 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         if (AbstractMatrix.isInitFromMatrix(args)) {
             this.reset();
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(4, argColumns);
-            const rows = Math.min(4, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 4] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(4, arg.columns);
+            const rows = Math.min(4, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 4] = arg[y + x * argRows];
                 }
             }
             return this;
@@ -762,43 +761,50 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
      * @param angle - The rotation angle in RAD.
      * @param axis  - The normalized rotation axis.
      */
-    public rotate(angle: number, axis: Vector4): this {
-        const c = Math.cos(angle);
+    public rotate(angle: number, axis: ReadonlyVectorLike<3>): this {
+        const a11 = this[ 0], a12 = this[ 1], a13 = this[ 2], a14 = this[ 3];
+        const a21 = this[ 4], a22 = this[ 5], a23 = this[ 6], a24 = this[ 7];
+        const a31 = this[ 8], a32 = this[ 9], a33 = this[10], a34 = this[11];
+
         const s = Math.sin(angle);
-        const x = axis.x;
-        const y = axis.y;
-        const z = axis.z;
+        const c = Math.cos(angle);
+        const x = axis[0];
+        const y = axis[1];
+        const z = axis[2];
+        const len = Math.hypot(x, y, z);
+        const nx = x / len;
+        const ny = y / len;
+        const nz = z / len;
         const t = 1 - c;
-        const tx = t * x;
-        const txy = tx * y;
-        const txz = tx * z;
-        const ty = t * y;
-        const tyz = ty * z;
-        const ys = y * s;
-        const zs = z * s;
-        const xs = x * s;
+        const xt = nx * t;
+        const yt = ny * t;
+        const zt = nz * t;
+        const xs = nx * s;
+        const ys = ny * s;
+        const zs = nz * s;
 
-        const m11 = this[ 0], m21 = this[ 4], m31 = this[ 8];
-        const m12 = this[ 1], m22 = this[ 5], m32 = this[ 9];
-        const m13 = this[ 2], m23 = this[ 6], m33 = this[10];
-        const m14 = this[ 3], m24 = this[ 7], m34 = this[11];
+        const b11 = nx * xt + c;
+        const b12 = ny * xt + zs;
+        const b13 = nz * xt - ys;
+        const b21 = nx * yt - zs;
+        const b22 = ny * yt + c;
+        const b23 = nz * yt + xs;
+        const b31 = nx * zt + ys;
+        const b32 = ny * zt - xs;
+        const b33 = nz * zt + c;
 
-        const n11 = tx * x + c, n21 = txy - zs,   n31 = txz + ys;
-        const n12 = txy + zs,   n22 = ty * y + c, n32 = tyz - xs;
-        const n13 = txz - ys,   n23 = tyz + xs,   n33 = t * z * z + c;
-
-        this[ 0] = m11 * n11 + m21 * n12 + m31 * n13;
-        this[ 1] = m12 * n11 + m22 * n12 + m32 * n13;
-        this[ 2] = m13 * n11 + m23 * n12 + m33 * n13;
-        this[ 3] = m14 * n11 + m24 * n12 + m34 * n13;
-        this[ 4] = m11 * n21 + m21 * n22 + m31 * n23;
-        this[ 5] = m12 * n21 + m22 * n22 + m32 * n23;
-        this[ 6] = m13 * n21 + m23 * n22 + m33 * n23;
-        this[ 7] = m14 * n21 + m24 * n22 + m34 * n23;
-        this[ 8] = m11 * n31 + m21 * n32 + m31 * n33;
-        this[ 9] = m12 * n31 + m22 * n32 + m32 * n33;
-        this[10] = m13 * n31 + m23 * n32 + m33 * n33;
-        this[11] = m14 * n31 + m24 * n32 + m34 * n33;
+        this[ 0] = a11 * b11 + a21 * b12 + a31 * b13;
+        this[ 1] = a12 * b11 + a22 * b12 + a32 * b13;
+        this[ 2] = a13 * b11 + a23 * b12 + a33 * b13;
+        this[ 3] = a14 * b11 + a24 * b12 + a34 * b13;
+        this[ 4] = a11 * b21 + a21 * b22 + a31 * b23;
+        this[ 5] = a12 * b21 + a22 * b22 + a32 * b23;
+        this[ 6] = a13 * b21 + a23 * b22 + a33 * b23;
+        this[ 7] = a14 * b21 + a24 * b22 + a34 * b23;
+        this[ 8] = a11 * b31 + a21 * b32 + a31 * b33;
+        this[ 9] = a12 * b31 + a22 * b32 + a32 * b33;
+        this[10] = a13 * b31 + a23 * b32 + a33 * b33;
+        this[11] = a14 * b31 + a24 * b32 + a34 * b33;
 
         return this;
     }

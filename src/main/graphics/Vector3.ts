@@ -353,7 +353,7 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
 
     /** @inheritDoc */
     public normalize(): this {
-        const len = Math.sqrt(this[0] ** 2 + this[1] ** 2 + this[2] ** 2);
+        const len = Math.hypot(this[0], this[1], this[2]);
         this[0] /= len;
         this[1] /= len;
         this[2] /= len;

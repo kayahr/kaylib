@@ -316,7 +316,7 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
 
     /** @inheritDoc */
     public normalize(): this {
-        const len = Math.sqrt(this[0] ** 2 + this[1] ** 2);
+        const len = Math.hypot(this[0], this[1]);
         this[0] /= len;
         this[1] /= len;
         return this;

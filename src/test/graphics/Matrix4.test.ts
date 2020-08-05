@@ -5,8 +5,15 @@
 
 import "@kayahr/jest-matchers";
 
+import { AffineTransform } from "../../main/graphics/AffineTransform";
+import { Matrix2 } from "../../main/graphics/Matrix2";
+import { Matrix2x3 } from "../../main/graphics/Matrix2x3";
+import { Matrix3 } from "../../main/graphics/Matrix3";
+import { Matrix3x2 } from "../../main/graphics/Matrix3x2";
 import { Matrix4 } from "../../main/graphics/Matrix4";
+import { Vector3 } from "../../main/graphics/Vector3";
 import { Vector4 } from "../../main/graphics/Vector4";
+import { isBrowser } from "../../main/util/runtime";
 
 describe("Matrix4", () => {
     describe("constructor", () => {
@@ -54,6 +61,229 @@ describe("Matrix4", () => {
             vector.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
             expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0 ]);
         });
+        it("initializes matrix from other 2x2 matrix", () => {
+            const a = new Matrix2(3, 4, 5, 6);
+            const b = new Matrix4(a);
+            a.set(2, 3, 4, 5);
+            expect(b.toJSON()).toEqual([
+                3, 4, 0, 0,
+                5, 6, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+             ]);
+        });
+        it("initializes matrix from other affine transform", () => {
+            const a = new AffineTransform(3, 4, 5, 6, 7, 8);
+            const b = new Matrix4(a);
+            a.set(2, 3, 4, 5, 6, 7);
+            expect(b.toJSON()).toEqual([
+                3, 4, 0, 0,
+                5, 6, 0, 0,
+                7, 8, 1, 0,
+                0, 0, 0, 1
+             ]);
+        });
+        it("initializes matrix from other 2x3 matrix", () => {
+            const a = new Matrix2x3(3, 4, 5, 6, 7, 8);
+            const b = new Matrix4(a);
+            a.set(2, 3, 4, 5, 6, 7);
+            expect(b.toJSON()).toEqual([
+                3, 4, 5, 0,
+                6, 7, 8, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+             ]);
+        });
+        it("initializes matrix from other 3x2 matrix", () => {
+            const a = new Matrix3x2(3, 4, 5, 6, 7, 8);
+            const b = new Matrix4(a);
+            a.set(2, 3, 4, 5, 6, 7);
+            expect(b.toJSON()).toEqual([
+                3, 4, 0, 0,
+                5, 6, 0, 0,
+                7, 8, 1, 0,
+                0, 0, 0, 1
+             ]);
+        });
+        it("initializes matrix from other 3x3 matrix", () => {
+            const a = new Matrix3(3, 4, 5, 6, 7, 8, 9, 10, 11);
+            const b = new Matrix4(a);
+            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            expect(b.toJSON()).toEqual([
+                3,  4,  5, 0,
+                6,  7,  8, 0,
+                9, 10, 11, 0,
+                0,  0,  0, 1
+             ]);
+        });
+        it("initializes matrix from other 3x3 matrix", () => {
+            const a = new Matrix4(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
+            const b = new Matrix4(a);
+            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            expect(b.toJSON()).toEqual([
+                 3,  4,  5,  6,
+                 7,  8,  9, 10,
+                11, 12, 13, 14,
+                15, 16, 17, 18
+             ]);
+        });
+    });
+
+    describe("m* getters", () => {
+        it("reads the matrix components", () => {
+            const m = new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+            expect(m.m11).toBe(2);
+            expect(m.m12).toBe(3);
+            expect(m.m13).toBe(4);
+            expect(m.m14).toBe(5);
+            expect(m.m21).toBe(6);
+            expect(m.m22).toBe(7);
+            expect(m.m23).toBe(8);
+            expect(m.m24).toBe(9);
+            expect(m.m31).toBe(10);
+            expect(m.m32).toBe(11);
+            expect(m.m33).toBe(12);
+            expect(m.m34).toBe(13);
+            expect(m.m41).toBe(14);
+            expect(m.m42).toBe(15);
+            expect(m.m43).toBe(16);
+            expect(m.m44).toBe(17);
+        });
+    });
+
+    describe("m* setters", () => {
+        it("sets the matrix components", () => {
+            const m = new Matrix4();
+            m.m11 = 2;
+            m.m12 = 4;
+            m.m13 = 6;
+            m.m14 = 8;
+            m.m21 = 10;
+            m.m22 = 12;
+            m.m23 = 14;
+            m.m24 = 16;
+            m.m31 = 18;
+            m.m32 = 20;
+            m.m33 = 22;
+            m.m34 = 24;
+            m.m41 = 26;
+            m.m42 = 28;
+            m.m43 = 30;
+            m.m44 = 32;
+            expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 ]);
+        });
+    });
+
+    describe("set", () => {
+        it("sets the matrix components", () => {
+            const m = new Matrix4();
+            m.set(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32);
+            expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 ]);
+        });
+        it("sets the matrix components from four vectors", () => {
+            const m = new Matrix4();
+            m.set(
+                new Vector4(2, 4, 6, 8),
+                new Vector4(10, 12, 14, 16),
+                new Vector4(18, 20, 22, 24),
+                new Vector4(26, 28, 30, 32)
+            );
+            expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 ]);
+        });
+        it("sets the matrix components from an affine transformation", () => {
+            const m = new Matrix4();
+            m.set(new AffineTransform(2, 4, 6, 8, 10, 12));
+            expect(m.toJSON()).toEqual([
+                 2,  4, 0, 0,
+                 6,  8, 0, 0,
+                10, 12, 1, 0,
+                 0,  0, 0, 1
+            ]);
+        });
+        it("sets the matrix components from an 2x3 matrix", () => {
+            const m = new Matrix4();
+            m.set(new Matrix2x3(2, 4, 6, 8, 10, 12));
+            expect(m.toJSON()).toEqual([
+                 2,  4,  6, 0,
+                 8, 10, 12, 0,
+                 0,  0,  1, 0,
+                 0,  0,  0, 1
+            ]);
+        });
+        it("sets the matrix components from an 3x2 matrix", () => {
+            const m = new Matrix4();
+            m.set(new Matrix3x2(2, 4, 6, 8, 10, 12));
+            expect(m.toJSON()).toEqual([
+                 2,  4, 0, 0,
+                 6,  8, 0, 0,
+                10, 12, 1, 0,
+                 0,  0, 0, 1
+            ]);
+        });
+        it("sets the matrix components from other 2x2 matrix", () => {
+            const m = new Matrix4();
+            m.set(new Matrix2(2, 4, 6, 8));
+            expect(m.toJSON()).toEqual([
+                2, 4, 0, 0,
+                6, 8, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            ]);
+        });
+        it("sets the matrix components from other 3x3 matrix", () => {
+            const m = new Matrix4();
+            m.set(new Matrix3(2, 3, 4, 5, 6, 7, 8, 9, 10));
+            expect(m.toJSON()).toEqual([
+                2, 3,  4, 0,
+                5, 6,  7, 0,
+                8, 9, 10, 0,
+                0, 0,  0, 1
+            ]);
+        });
+        it("sets the matrix components from other 4x4 matrix", () => {
+            const m = new Matrix4();
+            m.set(new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
+            expect(m.toJSON()).toEqual([
+                 2,  3,  4,  5,
+                 6,  7,  8,  9,
+                10, 11, 12, 13,
+                14, 15, 16, 17
+            ]);
+        });
+    });
+
+    describe("clone", () => {
+        it("returns new matrix", () => {
+            const matrix = new Matrix4(6, 7, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const clone = matrix.clone();
+            expect(clone).toBeInstanceOf(Matrix4);
+            expect(clone.toJSON()).toEqual([ 6, 7, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]);
+            expect(clone).not.toBe(matrix);
+        });
+    });
+
+    describe("toJSON()", () => {
+        it("returns array with the matrix components", () => {
+            expect(new Matrix4(
+                1, 2.123456789, 3, -1,
+                4, 5, 6, -2,
+                7, 8, 9, -3,
+                -4, -5, -6, -7
+            ).toJSON()).toEqual([
+                1, 2.1234567165374756, 3, -1,
+                4, 5, 6, -2,
+                7, 8, 9, -3,
+                -4, -5, -6, -7
+            ]);
+        });
+    });
+
+    describe("fromJSON", () => {
+        it("constructs matrix from component array", () => {
+            const m = Matrix4.fromJSON([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+            expect(m).toBeInstanceOf(Matrix4);
+            expect(m.toJSON()).toEqual([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+        });
     });
 
     describe("toString", () => {
@@ -78,6 +308,78 @@ describe("Matrix4", () => {
             );
             expect(m.toString(2)).toBe("[ 1.23, -2.35, 3.46, 1, 4.57, -5.68, 6.79, 2, 7.89, -8.9, 9.01, "
                 + "3, 4, 5, 6, 7 ]");
+        });
+    });
+
+    if (isBrowser()) {
+        describe("fromDOMMatrix", () => {
+            it("creates matrix from a DOMMatrix", () => {
+                const domMatrix = new DOMMatrix([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+                const matrix = Matrix4.fromDOMMatrix(domMatrix);
+                expect(matrix.toJSON()).toEqual([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+            });
+        });
+        describe("toDOMMatrix", () => {
+            it("creates DOMMatrix from matrix", () => {
+                const matrix = new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+                const domMatrix = matrix.toDOMMatrix();
+                expect(domMatrix.toFloat32Array()).toEqual(
+                    new Float32Array([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]));
+            });
+        });
+    }
+
+    describe("equals", () => {
+        it("correctly implements the equality contract", () => {
+            expect(new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)).toBeEquatable([
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+            ], [
+                new Matrix4(0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 0, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 12, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 14, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0, 15, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 16),
+                new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0)
+            ]);
+        });
+    });
+
+    describe("isIdentity", () => {
+        it("returns true if matrix is an identity matrix", () => {
+            expect(new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            ).isIdentity()).toBe(true);
+        });
+        it("returns false if matrix is not an identity matrix", () => {
+            expect(new Matrix4(2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 2, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, 0, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 0, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 2, 1).isIdentity()).toBe(false);
+            expect(new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2).isIdentity()).toBe(false);
         });
     });
 
@@ -244,6 +546,185 @@ describe("Matrix4", () => {
                 0.857143, 0.875000, 0.888889, 0.900000,
                 0.909091, 0.916667, 0.923077, 0.928571,
                 0.933333, 0.937500, 0.941176, 0.944444
+            ]);
+        });
+    });
+
+    describe("translate", () => {
+        it("translates the matrix", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.translate(10, 20, 30);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                  1,   2,   3,   4,
+                  5,   6,   7,   8,
+                  9,  10,  11,  12,
+                393, 454, 515, 576
+            ]);
+        });
+    });
+
+    describe("translateX", () => {
+        it("translates the matrix along the X axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.translateX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,  3,  4,
+                 5,  6,  7,  8,
+                 9, 10, 11, 12,
+                23, 34, 45, 56
+            ]);
+        });
+    });
+
+    describe("translateY", () => {
+        it("translates the matrix along the Y axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.translateY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,  3,  4,
+                 5,  6,  7,  8,
+                 9, 10, 11, 12,
+                63, 74, 85, 96
+            ]);
+        });
+    });
+
+    describe("translateZ", () => {
+        it("translates the matrix along the Z axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.translateZ(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                  1,   2,   3,   4,
+                  5,   6,   7,   8,
+                  9,  10,  11,  12,
+                103, 114, 125, 136
+            ]);
+        });
+    });
+
+    describe("scale", () => {
+        it("scales the matrix by individual scale factors", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.scale(10, 20, 30);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 10,  20,  30,  40,
+                100, 120, 140, 160,
+                270, 300, 330, 360,
+                 13,  14,  15,  16
+            ]);
+        });
+        it("scales the matrix by given scale factor", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.scale(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10,  20,  30,  40,
+                50,  60,  70,  80,
+                90, 100, 110, 120,
+                13,  14,  15,  16
+            ]);
+        });
+    });
+
+    describe("scaleX", () => {
+        it("scales the matrix along the X axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.scaleX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 10, 20, 30, 40,
+                  5,  6,  7,  8,
+                  9, 10, 11, 12,
+                 13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("scaleX", () => {
+        it("scales the matrix along the Y axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.scaleY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                  1,  2,  3,  4,
+                 50, 60, 70, 80,
+                  9, 10, 11, 12,
+                 13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("scaleZ", () => {
+        it("scales the matrix along the Z axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.scaleZ(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                  1,   2,   3,   4,
+                  5,   6,   7,   8,
+                 90, 100, 110, 120,
+                 13,  14,  15,  16
+            ]);
+        });
+    });
+
+    describe("rotate", () => {
+        it("rotates the matrix around the given axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.rotate(0.5, new Vector3(10, 15, -30));
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                -3.21119, -2.955, -2.69882, -2.44264,
+                5.75434, 7.17235, 8.59035, 10.0084,
+                7.97344, 8.9345, 9.89557, 10.8566,
+                13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("rotateX", () => {
+        it("rotates the matrix around the X axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.rotateX(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                1, 2, 3, 4,
+                8.702742576599121, 10.0597505569458, 11.41675853729248, 12.77376651763916,
+                5.501115322113037, 5.899272441864014, 6.29742956161499, 6.695586204528809,
+                13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("rotateY", () => {
+        it("rotates the matrix around the Y axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.rotateY(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                -3.4372472763061523, -3.039090156555176, -2.6409332752227783, -2.2427761554718018,
+                5, 6, 7, 8,
+                8.377668380737305, 9.734676361083984, 11.091684341430664, 12.44869327545166,
+                13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("rotateZ", () => {
+        it("rotates the matrix around the Z axis", () => {
+            const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.rotateZ(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                3.274710178375244, 4.631718158721924, 5.988726615905762,  7.345734596252441,
+                3.908487319946289, 4.306644439697266, 4.704801082611084, 5.1029582023620605,
+                9, 10, 11, 12,
+                13, 14, 15, 16
             ]);
         });
     });

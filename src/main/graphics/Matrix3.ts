@@ -77,12 +77,12 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
             super(9);
             this[0] = this[4] = this[8] = 1;
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(3, argColumns);
-            const rows = Math.min(3, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 3] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(3, arg.columns);
+            const rows = Math.min(3, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 3] = arg[y + x * argRows];
                 }
             }
         } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
@@ -193,12 +193,12 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         if (AbstractMatrix.isInitFromMatrix(args)) {
             this.reset();
             const arg = args[0];
-            const argColumns = arg.columns;
-            const columns = Math.min(3, argColumns);
-            const rows = Math.min(3, arg.rows);
-            for (let x = 0; x < columns; ++x) {
-                for (let y = 0; y < rows; ++y) {
-                    this[x + y * 3] = arg[x + y * argColumns];
+            const argRows = arg.rows;
+            const columns = Math.min(3, arg.columns);
+            const rows = Math.min(3, argRows);
+            for (let y = 0; y < rows; ++y) {
+                for (let x = 0; x < columns; ++x) {
+                    this[y + x * 3] = arg[y + x * argRows];
                 }
             }
             return this;
@@ -269,7 +269,6 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         }
         return this;
     }
-
 
     /** @inheritDoc */
     public sub(subtrahend: number): this;
@@ -548,7 +547,21 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
      * @param angle - The rotation angle in RAD.
      */
     public rotate(angle: number): this {
-        /* TODO */
+        const a11 = this[0], a12 = this[1], a13 = this[2];
+        const a21 = this[3], a22 = this[4], a23 = this[5];
+
+        const s = Math.sin(angle);
+        const c = Math.cos(angle);
+        const b11 =  c, b12 = s;
+        const b21 = -s, b22 = c;
+
+        this[0] = a11 * b11 + a21 * b12;
+        this[1] = a12 * b11 + a22 * b12;
+        this[2] = a13 * b11 + a23 * b12;
+        this[3] = a11 * b21 + a21 * b22;
+        this[4] = a12 * b21 + a22 * b22;
+        this[5] = a13 * b21 + a23 * b22;
+
         return this;
     }
 }

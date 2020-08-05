@@ -357,4 +357,105 @@ describe("Matrix3", () => {
             ]);
         });
     });
+
+    describe("translate", () => {
+        it("translates the matrix", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.translate(10, 20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,   2,   3,
+                 4,   5,   6,
+                97, 128, 159
+            ]);
+        });
+    });
+
+    describe("translateX", () => {
+        it("translates the matrix by given X delta", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.translateX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,  3,
+                 4,  5,  6,
+                17, 28, 39
+            ]);
+        });
+    });
+
+    describe("translateY", () => {
+        it("translates the matrix by given Y delta", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.translateY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,  3,
+                 4,  5,  6,
+                47, 58, 69
+            ]);
+        });
+    });
+
+    describe("scale", () => {
+        it("scales the matrix by given scale factor", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.scale(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10, 20, 30,
+                40, 50, 60,
+                 7,  8,  9
+            ]);
+        });
+        it("scales the matrix by given individual scale factors", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.scale(10, 20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10,  20,  30,
+                80, 100, 120,
+                 7,   8,   9
+            ]);
+        });
+    });
+
+    describe("scaleX", () => {
+        it("scales the matrix by given X scale factor", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.scaleX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10, 20, 30,
+                 4,  5,  6,
+                 7,  8,  9
+            ]);
+        });
+    });
+
+    describe("scaleY", () => {
+        it("scales the matrix by given Y scale factor", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.scaleY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,  3,
+                40, 50, 60,
+                 7,  8,  9
+            ]);
+        });
+    });
+
+    describe("rotate", () => {
+        it("rotates the matrix", () => {
+            const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const result = m.rotate(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                2.7952847480773926, 4.152292728424072, 5.509300708770752,
+                3.030904769897461, 3.4290616512298584, 3.827218770980835,
+                7, 8, 9
+            ]);
+        });
+    });
 });

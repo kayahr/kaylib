@@ -13,21 +13,21 @@ import { ReadonlyVectorLike } from "./Vector";
 /**
  * JSON representation of a 3x2 matrix.
  */
-export type Matrix2x3JSON = [
+export type Matrix3x2JSON = [
     number, number, number,
     number, number, number,
 ];
 
 /**
- * 2x3 matrix using 32 bit floating point components.
+ * 3x2 matrix using 32 bit floating point components.
  */
-export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serializable<Matrix2x3JSON>,
-        Cloneable<Matrix2x3> {
+export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serializable<Matrix3x2JSON>,
+        Cloneable<Matrix3x2> {
     /** The number of columns. */
-    public readonly columns: 2;
+    public readonly columns: 3;
 
     /** The number of rows. */
-    public readonly rows: 3;
+    public readonly rows: 2;
 
     /**
      * Creates a matrix initialized to an identity matrix.
@@ -47,14 +47,14 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
      *
      * @param components - The component values.
      */
-    public constructor(...components: Matrix2x3JSON);
+    public constructor(...components: Matrix3x2JSON);
 
     /**
      * Creates a new matrix with the component values copied from the given column vectors.
      *
      * @param columns - The column vectors.
      */
-    public constructor(...columns: [ ReadonlyVectorLike<3>, ReadonlyVectorLike<3> ]);
+    public constructor(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ]);
 
     /**
      * Creates a new matrix using the given array buffer as component values.
@@ -68,17 +68,17 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
             | SharedArrayBuffer, number? ]) {
         if (args.length === 0) {
             super(6);
-            this[0] = this[4] = 1;
+            this[0] = this[3] = 1;
         } else if (AbstractMatrix.isInitFromMatrix(args)) {
             super(6);
             const arg = args[0];
             const argRows = arg.rows;
             const argColumns = arg.columns;
-            const columns = Math.min(2, argColumns);
-            const rows = Math.min(3, argRows);
+            const columns = Math.min(3, argColumns);
+            const rows = Math.min(2, argRows);
             for (let y = 0; y < rows; ++y) {
                 for (let x = 0; x < columns; ++x) {
-                    this[y + x * rows] = arg[y + x * argRows];
+                    this[y + x * 2] = arg[y + x * argRows];
                 }
             }
         } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
@@ -87,8 +87,8 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
             super(6);
             this.setValues(args);
         }
-        this.columns = 2;
-        this.rows = 3;
+        this.columns = 3;
+        this.rows = 2;
     }
 
     /** Matrix component at row 1 column 1. */
@@ -107,35 +107,35 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
         this[1] = v;
     }
 
-    /** Matrix component at row 3 column 1. */
-    public get m13(): number {
-        return this[2];
-    }
-    public set m13(v: number) {
-        this[2] = v;
-    }
-
     /** Matrix component at row 1 column 2. */
     public get m21(): number {
-        return this[3];
+        return this[2];
     }
     public set m21(v: number) {
-        this[3] = v;
+        this[2] = v;
     }
 
     /** Matrix component at row 2 column 2. */
     public get m22(): number {
-        return this[4];
+        return this[3];
     }
     public set m22(v: number) {
+        this[3] = v;
+    }
+
+    /** Matrix component at row 1 column 3. */
+    public get m31(): number {
+        return this[4];
+    }
+    public set m31(v: number) {
         this[4] = v;
     }
 
-    /** Matrix component at row 3 column 2. */
-    public get m23(): number {
+    /** Matrix component at row 2 column 3. */
+    public get m32(): number {
         return this[5];
     }
-    public set m23(v: number) {
+    public set m32(v: number) {
         this[5] = v;
     }
 
@@ -144,7 +144,7 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
      *
      * @param components - The component values to set.
      */
-    public set(...components: Matrix2x3JSON): this;
+    public set(...components: Matrix3x2JSON): this;
 
     /**
      * Sets the matrix component values from another matrix. If given matrix has smaller dimensions then the missing
@@ -159,7 +159,7 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
      *
      * @param columns - The column vectors.
      */
-    public set(...columns: [ ReadonlyVectorLike<3>, ReadonlyVectorLike<3> ]): this;
+    public set(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ]): this;
 
     public set(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ]): this {
         if (AbstractMatrix.isInitFromMatrix(args)) {
@@ -167,8 +167,8 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
             const arg = args[0];
             const argRows = arg.rows;
             const argColumns = arg.columns;
-            const columns = Math.min(2, argColumns);
-            const rows = Math.min(3, argRows);
+            const columns = Math.min(3, argColumns);
+            const rows = Math.min(2, argRows);
             for (let y = 0; y < rows; ++y) {
                 for (let x = 0; x < columns; ++x) {
                     this[y + x * rows] = arg[y + x * argRows];
@@ -186,17 +186,17 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
      * @param components - Array with the 9 matrix components.
      * @return The created matrix.
      */
-    public static fromJSON(components: Matrix2x3JSON): Matrix2x3 {
-        return new Matrix2x3(...components);
+    public static fromJSON(components: Matrix3x2JSON): Matrix3x2 {
+        return new Matrix3x2(...components);
     }
 
     /** @inheritDoc */
-    public clone(): Matrix2x3 {
-        return new Matrix2x3(this);
+    public clone(): Matrix3x2 {
+        return new Matrix3x2(this);
     }
 
     /** @inheritDoc */
-    public toJSON(): Matrix2x3JSON {
+    public toJSON(): Matrix3x2JSON {
         return [
             this[0], this[1], this[2],
             this[3], this[4], this[5]
@@ -210,14 +210,16 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
 
     /** @inheritDoc */
     public isIdentity(): boolean {
-        return this[0] === 1 && this[1] === 0 && this[2] === 0
-            && this[3] === 0 && this[4] === 1 && this[5] === 0;
+        return this[0] === 1 && this[1] === 0
+            && this[2] === 0 && this[3] === 1
+            && this[4] === 0 && this[5] === 0;
     }
 
     /** @inheritDoc */
     public reset(): this {
-        this[0] = 1; this[1] = 0; this[2] = 0;
-        this[3] = 0; this[4] = 1; this[5] = 0;
+        this[0] = 1; this[1] = 0;
+        this[2] = 0; this[3] = 1;
+        this[4] = 0; this[5] = 0;
         return this;
     }
 }

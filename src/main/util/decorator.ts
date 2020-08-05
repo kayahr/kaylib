@@ -9,7 +9,6 @@
  */
 type Method<T> = (this: T, ...args: any[]) => any;
 
-
 /** The two types of allowed method decorator arguments for call without and with decorator parameter. */
 type MethodDecoratorArgs<T, K, V, P> = [ T, K, TypedPropertyDescriptor<V> ] | [ P ];
 
@@ -78,7 +77,6 @@ type PropertyDecoratorArgs<T, K, P> = [ T, K ] | [ P ];
 function isParameterizedPropertyDecoratorArgs<T, K, O>(args: PropertyDecoratorArgs<T, K, O>): args is [ O ] {
     return args.length < 2;
 }
-
 
 /**
  * Type of a parameterless method decorator. This is pretty much the same as the standard method decorator type
