@@ -5,7 +5,7 @@
 
 import { formatNumber } from "../util/string";
 import { Constructor } from "../util/types";
-import { isMatrixLike, ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike } from "./Vector";
 
 /**
@@ -29,17 +29,6 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
             [ ArrayBuffer | SharedArrayBuffer, number? ]): args is [ ArrayBuffer | SharedArrayBuffer, number? ] {
         const type = args[0].constructor;
         return type === ArrayBuffer || type === SharedArrayBuffer;
-    }
-
-    /**
-     * Helper method to check if constructor arguments are for initializing a matrix from another matrix.
-     *
-     * @param args - The arguments to check.
-     * @return True if arguments are for initializing a matrix from another matrix.
-     */
-    protected static isInitFromMatrix(args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ] |
-            [ ArrayBuffer | SharedArrayBuffer, number? ]): args is [ ReadonlyMatrixLike ] {
-        return args.length === 1 && isMatrixLike(args[0]);
     }
 
     /**
@@ -74,24 +63,6 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
      */
     public setMatrix(matrix: ReadonlyMatrixLike): this {
         return this.reset().copyFromMatrix(matrix);
-    }
-
-    /**
-     * Helper method to set matrix elements from any set of numbers and vector-like structures.
-     *
-     * @param args - Array which can contain numbers and vector like structures to use as matrix elements.
-     */
-    protected setValues(args: Array<number | ReadonlyVectorLike>): this {
-        let i = 0;
-        for (const arg of args) {
-            if (typeof arg === "number") {
-                this[i++] = arg;
-            } else {
-                super.set(arg, i);
-                i += arg.length;
-            }
-        }
-        return this;
     }
 
     /**

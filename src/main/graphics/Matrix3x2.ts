@@ -36,26 +36,11 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
     public constructor();
 
     /**
-     * Creates a new matrix initialized to the given matrix. If given matrix has smaller dimensions then the missing
-     * columns/rows are filled from an identity matrix.
-     *
-     * @param matrix - The matrix to copy the components from.
-     */
-    public constructor(matrix: ReadonlyMatrixLike);
-
-    /**
      * Creates a new matrix initialized to the given component values.
      *
      * @param components - The component values.
      */
     public constructor(...components: Matrix3x2JSON);
-
-    /**
-     * Creates a new matrix with the component values copied from the given column vectors.
-     *
-     * @param columns - The column vectors.
-     */
-    public constructor(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ]);
 
     /**
      * Creates a new matrix using the given array buffer as component values.
@@ -65,31 +50,32 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
      */
     public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
 
-    public constructor(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ] | [ ArrayBuffer
-            | SharedArrayBuffer, number? ]) {
+    public constructor(...args: [] | Matrix3x2JSON | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
         if (args.length === 0) {
             super(6);
             this[0] = this[3] = 1;
-        } else if (AbstractMatrix.isInitFromMatrix(args)) {
-            super(6);
-            const arg = args[0];
-            const argRows = arg.rows;
-            const argColumns = arg.columns;
-            const columns = Math.min(3, argColumns);
-            const rows = Math.min(2, argRows);
-            for (let y = 0; y < rows; ++y) {
-                for (let x = 0; x < columns; ++x) {
-                    this[y + x * 2] = arg[y + x * argRows];
-                }
-            }
         } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
             super(args[0], args[1] ?? 0, 6);
         } else {
-            super(6);
-            this.setValues(args);
+            super(args);
         }
         this.columns = 3;
         this.rows = 2;
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given column vectors.
+     *
+     * @param columns - The column vectors.
+     * @return The created matrix.
+     */
+    public static fromColumns(c1: ReadonlyVectorLike<2>, c2: ReadonlyVectorLike<2>, c3: ReadonlyVectorLike<2>):
+            Matrix3x2 {
+        return new Matrix3x2(
+            c1[0], c1[1],
+            c2[0], c2[1],
+            c3[0], c3[1]
+        );
     }
 
     /**
@@ -155,45 +141,28 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
      *
      * @param components - The component values to set.
      */
-    public set(...components: Matrix3x2JSON): this;
-
-    /**
-     * Sets the matrix component values from another matrix. If given matrix has smaller dimensions then the missing
-     * columns/rows are filled from an identity matrix.
-     *
-     * @param matrix - The matrix to copy the component values from.
-     */
-    public set(matrix: ReadonlyMatrixLike): this;
+    public setComponents(...components: Matrix3x2JSON): this {
+        this[0] = components[0]; this[1] = components[1];
+        this[2] = components[2]; this[3] = components[3];
+        this[4] = components[4]; this[5] = components[5];
+        return this;
+    }
 
     /**
      * Sets the component values by copying them from the given column vectors.
      *
      * @param columns - The column vectors.
      */
-    public set(...columns: [ ReadonlyVectorLike<2>, ReadonlyVectorLike<2>, ReadonlyVectorLike<2> ]): this;
-
-    public set(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ]): this {
-        if (AbstractMatrix.isInitFromMatrix(args)) {
-            this.reset();
-            const arg = args[0];
-            const argRows = arg.rows;
-            const argColumns = arg.columns;
-            const columns = Math.min(3, argColumns);
-            const rows = Math.min(2, argRows);
-            for (let y = 0; y < rows; ++y) {
-                for (let x = 0; x < columns; ++x) {
-                    this[y + x * 2] = arg[y + x * argRows];
-                }
-            }
-            return this;
-        } else {
-            return this.setValues(args);
-        }
+    public setColumns(c1: ReadonlyVectorLike<2>, c2: ReadonlyVectorLike<2>, c3: ReadonlyVectorLike<2>): this {
+        this[0] = c1[0]; this[1] = c1[1];
+        this[2] = c2[0]; this[3] = c2[1];
+        this[4] = c3[0]; this[5] = c3[1];
+        return this;
     }
 
     /** @inheritDoc */
     public clone(): Matrix3x2 {
-        return new Matrix3x2(this);
+        return Matrix3x2.fromMatrix(this);
     }
 
     /** @inheritDoc */

@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { isMatrixLike, Matrix, MatrixLike, ReadonlyMatrix, ReadonlyMatrixLike } from "./Matrix";
+import { Matrix, MatrixLike, ReadonlyMatrix, ReadonlyMatrixLike } from "./Matrix";
 
 /**
  * Interface for a readonly square matrix like data structure.
@@ -15,16 +15,6 @@ export type ReadonlySquareMatrixLike<Dimensions extends number = 2 | 3 | 4> =
  * Interface for a writeable square matrix like data structure.
  */
 export type SquareMatrixLike<Dimensions extends number = 2 | 3 | 4> = MatrixLike<Dimensions, Dimensions>;
-
-/**
- * Checks if given object is a square matrix like structure.
- *
- * @param obj - The object to check.
- * @return True if given object is a square matrix like structure.
- */
-export function isSquareMatrixLike(obj: unknown): obj is SquareMatrixLike {
-    return isMatrixLike(obj) && obj.columns === obj.rows;
-}
 
 /**
  * Interface for a readonly square matrix.

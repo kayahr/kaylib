@@ -55,17 +55,6 @@ export interface MatrixLike<
 }
 
 /**
- * Checks if given object is a matrix-like structure.
- *
- * @param obj - The object to check.
- * @return True if given object is a matrix-like structure.
- */
-export function isMatrixLike(obj: unknown): obj is MatrixLike {
-    return obj != null && typeof (obj as MatrixLike).length === "number"
-        && typeof (obj as MatrixLike).rows === "number" && typeof (obj as MatrixLike).columns === "number";
-}
-
-/**
  * Interface for a readonly matrix.
  */
 export interface ReadonlyMatrix<

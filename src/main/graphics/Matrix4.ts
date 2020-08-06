@@ -7,7 +7,6 @@ import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { AbstractMatrix } from "./AbstractMatrix";
-import { ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike } from "./Vector";
 
@@ -40,27 +39,11 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     public constructor();
 
     /**
-     * Creates a new matrix initialized to the given matrix. If given matrix has smaller dimensions then the missing
-     * columns/rows are filled from an identity matrix.
-     *
-     * @param matrix - The matrix to copy the components from.
-     */
-    public constructor(matrix: ReadonlyMatrixLike);
-
-    /**
      * Creates a new matrix initialized to the given component values.
      *
      * @param components - The component values.
      */
     public constructor(...components: Matrix4JSON);
-
-    /**
-     * Creates a new matrix with the component values copied from the given column vectors.
-     *
-     * @param columns - The column vectors.
-     */
-    public constructor(...columns: [ ReadonlyVectorLike<4>, ReadonlyVectorLike<4>, ReadonlyVectorLike<4>,
-        ReadonlyVectorLike<4> ])
 
     /**
      * Creates a new matrix using the given array buffer as component values.
@@ -70,31 +53,53 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
      */
     public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
 
-    public constructor(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ] |
-            [ ArrayBuffer | SharedArrayBuffer, number? ]) {
+    public constructor(...args: [] | Matrix4JSON | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
         if (args.length === 0) {
             super(16);
             this[0] = this[5] = this[10] = this[15] = 1;
-        } else if (AbstractMatrix.isInitFromMatrix(args)) {
-            super(16);
-            this[0] = this[5] = this[10] = this[15] = 1;
-            const arg = args[0];
-            const argRows = arg.rows;
-            const columns = Math.min(4, arg.columns);
-            const rows = Math.min(4, argRows);
-            for (let y = 0; y < rows; ++y) {
-                for (let x = 0; x < columns; ++x) {
-                    this[y + x * 4] = arg[y + x * argRows];
-                }
-            }
-        } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
+        }  else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
             super(args[0], args[1] ?? 0, 16);
         } else {
-            super(16);
-            this.setValues(args);
+            super(args);
         }
         this.columns = 4;
         this.rows = 4;
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given column vectors.
+     *
+     * @param columns - The column vectors.
+     * @return The created matrix.
+     */
+    public static fromColumns(c1: ReadonlyVectorLike<4>, c2: ReadonlyVectorLike<4>,
+            c3: ReadonlyVectorLike<4>, c4: ReadonlyVectorLike<4>): Matrix4 {
+        return new Matrix4(
+            c1[0], c1[1], c1[2], c1[3],
+            c2[0], c2[1], c2[2], c2[3],
+            c3[0], c3[1], c3[2], c3[3],
+            c4[0], c4[1], c4[2], c4[3]
+        );
+    }
+
+    /**
+     * Creates a new matrix from the given JSON array.
+     *
+     * @param components - Array with the 16 matrix components.
+     * @return The created matrix.
+     */
+    public static fromJSON(components: Matrix4JSON): Matrix4 {
+        return new Matrix4(...components);
+    }
+
+    /**
+     * Creates a new matrix from the given DOM matrix object.
+     *
+     * @aram domMatrix - The DOM matrix object.
+     * @return The created matrix.
+     */
+    public static fromDOMMatrix(domMatrix: DOMMatrix): Matrix4 {
+        return new Matrix4(domMatrix.toFloat32Array().buffer);
     }
 
     /** Matrix component at row 1 column 1. */
@@ -230,65 +235,31 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
      *
      * @param components - The component values to set.
      */
-    public set(...components: Matrix4JSON): this;
-
-    /**
-     * Sets the matrix component values from another matrix. If given matrix has smaller dimensions then the missing
-     * columns/rows are filled from an identity matrix.
-     *
-     * @param matrix - The matrix to copy the component values from.
-     */
-    public set(matrix: ReadonlyMatrixLike): this;
+    public setComponents(...components: Matrix4JSON): this {
+        this[ 0] = components[ 0]; this[ 1] = components[ 1]; this[ 2] = components[ 2]; this[ 3] = components[ 3];
+        this[ 4] = components[ 4]; this[ 5] = components[ 5]; this[ 6] = components[ 6]; this[ 7] = components[ 7];
+        this[ 8] = components[ 8]; this[ 9] = components[ 9]; this[10] = components[10]; this[11] = components[11];
+        this[12] = components[12]; this[13] = components[13]; this[14] = components[14]; this[15] = components[15];
+        return this;
+    }
 
     /**
      * Sets the component values by copying them from the given column vectors.
      *
      * @param columns - The column vectors.
      */
-    public set(...columns: [ ReadonlyVectorLike<4>, ReadonlyVectorLike<4>, ReadonlyVectorLike<4>,
-        ReadonlyVectorLike<4> ]): this;
-
-    public set(...args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ]): this {
-        if (AbstractMatrix.isInitFromMatrix(args)) {
-            this.reset();
-            const arg = args[0];
-            const argRows = arg.rows;
-            const columns = Math.min(4, arg.columns);
-            const rows = Math.min(4, argRows);
-            for (let y = 0; y < rows; ++y) {
-                for (let x = 0; x < columns; ++x) {
-                    this[y + x * 4] = arg[y + x * argRows];
-                }
-            }
-            return this;
-        } else {
-            return this.setValues(args);
-        }
-    }
-
-    /**
-     * Creates a new matrix from the given JSON array.
-     *
-     * @param components - Array with the 16 matrix components.
-     * @return The created matrix.
-     */
-    public static fromJSON(components: Matrix4JSON): Matrix4 {
-        return new Matrix4(...components);
-    }
-
-    /**
-     * Creates a new matrix from the given DOM matrix object.
-     *
-     * @aram domMatrix - The DOM matrix object.
-     * @return The created matrix.
-     */
-    public static fromDOMMatrix(domMatrix: DOMMatrix): Matrix4 {
-        return new Matrix4(domMatrix.toFloat32Array().buffer);
+    public setColumns(c1: ReadonlyVectorLike<4>, c2: ReadonlyVectorLike<4>,
+            c3: ReadonlyVectorLike<4>, c4: ReadonlyVectorLike<4>): this {
+        this[ 0] = c1[0]; this[ 1] = c1[1]; this[ 2] = c1[2]; this[ 3] = c1[3];
+        this[ 4] = c2[0]; this[ 5] = c2[1]; this[ 6] = c2[2]; this[ 7] = c2[3];
+        this[ 8] = c3[0]; this[ 9] = c3[1]; this[10] = c3[2]; this[11] = c3[3];
+        this[12] = c4[0]; this[13] = c4[1]; this[14] = c4[2]; this[15] = c4[3];
+        return this;
     }
 
     /** @inheritDoc */
     public clone(): Matrix4 {
-        return new Matrix4(this);
+        return Matrix4.fromMatrix(this);
     }
 
     /** @inheritDoc */

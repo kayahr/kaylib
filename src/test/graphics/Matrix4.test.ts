@@ -35,8 +35,23 @@ describe("Matrix4", () => {
                 13, 14, 15, 16
             ]);
         });
+        it("initializes matrix from a buffer without offset", () => {
+            const array = new Float32Array(16);
+            const m = new Matrix4(array.buffer);
+            m.setComponents(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            expect(Array.from(array)).toEqual([ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]);
+        });
+        it("initializes matrix from a buffer with offset", () => {
+            const array = new Float32Array(18);
+            const vector = new Matrix4(array.buffer, 4);
+            vector.setComponents(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0 ]);
+        });
+    });
+
+    describe("fromColumns", () => {
         it("initializes matrix from four vectors", () => {
-            const m = new Matrix4(
+            const m = Matrix4.fromColumns(
                 new Vector4(1, 2, 3, 4),
                 new Vector4(5, 6, 7, 8),
                 new Vector4(9, 10, 11, 12),
@@ -49,91 +64,13 @@ describe("Matrix4", () => {
                 13, 14, 15, 16
             ]);
         });
-        it("initializes matrix from a buffer without offset", () => {
-            const array = new Float32Array(16);
-            const m = new Matrix4(array.buffer);
-            m.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-            expect(Array.from(array)).toEqual([ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]);
-        });
-        it("initializes matrix from a buffer with offset", () => {
-            const array = new Float32Array(18);
-            const vector = new Matrix4(array.buffer, 4);
-            vector.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0 ]);
-        });
-        it("initializes matrix from other 2x2 matrix", () => {
-            const a = new Matrix2(3, 4, 5, 6);
-            const b = new Matrix4(a);
-            a.set(2, 3, 4, 5);
-            expect(b.toJSON()).toEqual([
-                3, 4, 0, 0,
-                5, 6, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-             ]);
-        });
-        it("initializes matrix from other affine transform", () => {
-            const a = new AffineTransform(3, 4, 5, 6, 7, 8);
-            const b = new Matrix4(a);
-            a.set(2, 3, 4, 5, 6, 7);
-            expect(b.toJSON()).toEqual([
-                3, 4, 0, 0,
-                5, 6, 0, 0,
-                7, 8, 1, 0,
-                0, 0, 0, 1
-             ]);
-        });
-        it("initializes matrix from other 2x3 matrix", () => {
-            const a = new Matrix2x3(3, 4, 5, 6, 7, 8);
-            const b = new Matrix4(a);
-            a.set(2, 3, 4, 5, 6, 7);
-            expect(b.toJSON()).toEqual([
-                3, 4, 5, 0,
-                6, 7, 8, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-             ]);
-        });
-        it("initializes matrix from other 3x2 matrix", () => {
-            const a = new Matrix3x2(3, 4, 5, 6, 7, 8);
-            const b = new Matrix4(a);
-            a.set(2, 3, 4, 5, 6, 7);
-            expect(b.toJSON()).toEqual([
-                3, 4, 0, 0,
-                5, 6, 0, 0,
-                7, 8, 1, 0,
-                0, 0, 0, 1
-             ]);
-        });
-        it("initializes matrix from other 3x3 matrix", () => {
-            const a = new Matrix3(3, 4, 5, 6, 7, 8, 9, 10, 11);
-            const b = new Matrix4(a);
-            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9);
-            expect(b.toJSON()).toEqual([
-                3,  4,  5, 0,
-                6,  7,  8, 0,
-                9, 10, 11, 0,
-                0,  0,  0, 1
-             ]);
-        });
-        it("initializes matrix from other 3x3 matrix", () => {
-            const a = new Matrix4(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
-            const b = new Matrix4(a);
-            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-            expect(b.toJSON()).toEqual([
-                 3,  4,  5,  6,
-                 7,  8,  9, 10,
-                11, 12, 13, 14,
-                15, 16, 17, 18
-             ]);
-        });
     });
 
     describe("fromMatrix", () => {
         it("initializes matrix from other 2x2 matrix", () => {
             const a = new Matrix2(3, 4, 5, 6);
             const b = Matrix4.fromMatrix(a);
-            a.set(2, 3, 4, 5);
+            a.setComponents(2, 3, 4, 5);
             expect(b.toJSON()).toEqual([
                 3, 4, 0, 0,
                 5, 6, 0, 0,
@@ -144,7 +81,7 @@ describe("Matrix4", () => {
         it("initializes matrix from other affine transform", () => {
             const a = new AffineTransform(3, 4, 5, 6, 7, 8);
             const b = Matrix4.fromMatrix(a);
-            a.set(2, 3, 4, 5, 6, 7);
+            a.setComponents(2, 3, 4, 5, 6, 7);
             expect(b.toJSON()).toEqual([
                 3, 4, 0, 0,
                 5, 6, 0, 0,
@@ -155,7 +92,7 @@ describe("Matrix4", () => {
         it("initializes matrix from other 2x3 matrix", () => {
             const a = new Matrix2x3(3, 4, 5, 6, 7, 8);
             const b = Matrix4.fromMatrix(a);
-            a.set(2, 3, 4, 5, 6, 7);
+            a.setComponents(2, 3, 4, 5, 6, 7);
             expect(b.toJSON()).toEqual([
                 3, 4, 5, 0,
                 6, 7, 8, 0,
@@ -166,7 +103,7 @@ describe("Matrix4", () => {
         it("initializes matrix from other 3x2 matrix", () => {
             const a = new Matrix3x2(3, 4, 5, 6, 7, 8);
             const b = Matrix4.fromMatrix(a);
-            a.set(2, 3, 4, 5, 6, 7);
+            a.setComponents(2, 3, 4, 5, 6, 7);
             expect(b.toJSON()).toEqual([
                 3, 4, 0, 0,
                 5, 6, 0, 0,
@@ -177,7 +114,7 @@ describe("Matrix4", () => {
         it("initializes matrix from other 3x3 matrix", () => {
             const a = new Matrix3(3, 4, 5, 6, 7, 8, 9, 10, 11);
             const b = Matrix4.fromMatrix(a);
-            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            a.setComponents(1, 2, 3, 4, 5, 6, 7, 8, 9);
             expect(b.toJSON()).toEqual([
                 3,  4,  5, 0,
                 6,  7,  8, 0,
@@ -188,7 +125,7 @@ describe("Matrix4", () => {
         it("initializes matrix from other 3x3 matrix", () => {
             const a = new Matrix4(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
             const b = Matrix4.fromMatrix(a);
-            a.set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            a.setComponents(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
             expect(b.toJSON()).toEqual([
                  3,  4,  5,  6,
                  7,  8,  9, 10,
@@ -243,15 +180,18 @@ describe("Matrix4", () => {
         });
     });
 
-    describe("set", () => {
+    describe("setComponents", () => {
         it("sets the matrix components", () => {
             const m = new Matrix4();
-            m.set(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32);
+            m.setComponents(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32);
             expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 ]);
         });
+    });
+
+    describe("setColumns", () => {
         it("sets the matrix components from four vectors", () => {
             const m = new Matrix4();
-            m.set(
+            m.setColumns(
                 new Vector4(2, 4, 6, 8),
                 new Vector4(10, 12, 14, 16),
                 new Vector4(18, 20, 22, 24),
@@ -259,9 +199,12 @@ describe("Matrix4", () => {
             );
             expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 ]);
         });
+    });
+
+    describe("setMatrix", () => {
         it("sets the matrix components from an affine transformation", () => {
             const m = new Matrix4();
-            m.set(new AffineTransform(2, 4, 6, 8, 10, 12));
+            m.setMatrix(new AffineTransform(2, 4, 6, 8, 10, 12));
             expect(m.toJSON()).toEqual([
                  2,  4, 0, 0,
                  6,  8, 0, 0,
@@ -271,7 +214,7 @@ describe("Matrix4", () => {
         });
         it("sets the matrix components from an 2x3 matrix", () => {
             const m = new Matrix4();
-            m.set(new Matrix2x3(2, 4, 6, 8, 10, 12));
+            m.setMatrix(new Matrix2x3(2, 4, 6, 8, 10, 12));
             expect(m.toJSON()).toEqual([
                  2,  4,  6, 0,
                  8, 10, 12, 0,
@@ -281,7 +224,7 @@ describe("Matrix4", () => {
         });
         it("sets the matrix components from an 3x2 matrix", () => {
             const m = new Matrix4();
-            m.set(new Matrix3x2(2, 4, 6, 8, 10, 12));
+            m.setMatrix(new Matrix3x2(2, 4, 6, 8, 10, 12));
             expect(m.toJSON()).toEqual([
                  2,  4, 0, 0,
                  6,  8, 0, 0,
@@ -291,7 +234,7 @@ describe("Matrix4", () => {
         });
         it("sets the matrix components from other 2x2 matrix", () => {
             const m = new Matrix4();
-            m.set(new Matrix2(2, 4, 6, 8));
+            m.setMatrix(new Matrix2(2, 4, 6, 8));
             expect(m.toJSON()).toEqual([
                 2, 4, 0, 0,
                 6, 8, 0, 0,
@@ -301,7 +244,7 @@ describe("Matrix4", () => {
         });
         it("sets the matrix components from other 3x3 matrix", () => {
             const m = new Matrix4();
-            m.set(new Matrix3(2, 3, 4, 5, 6, 7, 8, 9, 10));
+            m.setMatrix(new Matrix3(2, 3, 4, 5, 6, 7, 8, 9, 10));
             expect(m.toJSON()).toEqual([
                 2, 3,  4, 0,
                 5, 6,  7, 0,
@@ -311,7 +254,7 @@ describe("Matrix4", () => {
         });
         it("sets the matrix components from other 4x4 matrix", () => {
             const m = new Matrix4();
-            m.set(new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
+            m.setMatrix(new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
             expect(m.toJSON()).toEqual([
                  2,  3,  4,  5,
                  6,  7,  8,  9,

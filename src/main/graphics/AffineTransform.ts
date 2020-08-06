@@ -62,7 +62,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
 
     /** @inheritDoc */
     public clone(): AffineTransform {
-        return new AffineTransform(this);
+        return AffineTransform.fromMatrix(this);
     }
 
     /** @inheritDoc */

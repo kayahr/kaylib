@@ -29,8 +29,44 @@ describe("AffineTransform", () => {
                  5, 6
             ]);
         });
+        it("initializes matrix from a buffer without offset", () => {
+            const array = new Float32Array(6);
+            const m = new AffineTransform(array.buffer);
+            m.setComponents(1, 2, 3, 4, 5, 6);
+            expect(Array.from(array)).toEqual([ 1, 2, 3, 4, 5, 6 ]);
+        });
+        it("initializes matrix from a buffer with offset", () => {
+            const array = new Float32Array(8);
+            const m = new AffineTransform(array.buffer, 4);
+            m.setComponents(1, 2, 3, 4, 5, 6);
+            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 5, 6, 0 ]);
+        });
+    });
+
+    describe("fromMatrix", () => {
+        it("initializes matrix from other 2x2 matrix", () => {
+            const a = new Matrix2(1, 2, 3, 4);
+            const b = AffineTransform.fromMatrix(a);
+            a.setComponents(2, 3, 4, 5);
+            expect(b.toJSON()).toEqual([ 1, 2, 3, 4, 0, 0 ]);
+        });
+        it("initializes matrix from other 3x3 matrix", () => {
+            const a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            const b = AffineTransform.fromMatrix(a);
+            a.setComponents(2, 3, 4, 5, 6, 7, 8, 9, 10);
+            expect(b.toJSON()).toEqual([ 1, 2, 4, 5, 7, 8 ]);
+        });
+        it("initializes matrix from other 4x4 matrix", () => {
+            const a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const b = AffineTransform.fromMatrix(a);
+            a.setComponents(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+            expect(b.toJSON()).toEqual([ 1, 2, 5, 6, 9, 10 ]);
+        });
+    });
+
+    describe("fromColumns", () => {
         it("initializes matrix from three vectors", () => {
-            const m = new AffineTransform(
+            const m = AffineTransform.fromColumns(
                 new Vector2(1, 2),
                 new Vector2(3, 4),
                 new Vector2(5, 6)
@@ -40,36 +76,6 @@ describe("AffineTransform", () => {
                  3, 4,
                  5, 6
             ]);
-        });
-        it("initializes matrix from a buffer without offset", () => {
-            const array = new Float32Array(6);
-            const m = new AffineTransform(array.buffer);
-            m.set(1, 2, 3, 4, 5, 6);
-            expect(Array.from(array)).toEqual([ 1, 2, 3, 4, 5, 6 ]);
-        });
-        it("initializes matrix from a buffer with offset", () => {
-            const array = new Float32Array(8);
-            const m = new AffineTransform(array.buffer, 4);
-            m.set(1, 2, 3, 4, 5, 6);
-            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 5, 6, 0 ]);
-        });
-        it("initializes matrix from other 2x2 matrix", () => {
-            const a = new Matrix2(1, 2, 3, 4);
-            const b = new AffineTransform(a);
-            a.set(2, 3, 4, 5);
-            expect(b.toJSON()).toEqual([ 1, 2, 3, 4, 0, 0 ]);
-        });
-        it("initializes matrix from other 3x3 matrix", () => {
-            const a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-            const b = new AffineTransform(a);
-            a.set(2, 3, 4, 5, 6, 7, 8, 9, 10);
-            expect(b.toJSON()).toEqual([ 1, 2, 4, 5, 7, 8 ]);
-        });
-        it("initializes matrix from other 4x4 matrix", () => {
-            const a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-            const b = new AffineTransform(a);
-            a.set(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
-            expect(b.toJSON()).toEqual([ 1, 2, 5, 6, 9, 10 ]);
         });
     });
 
@@ -123,30 +129,36 @@ describe("AffineTransform", () => {
         });
     });
 
-    describe("set", () => {
+    describe("setComponents", () => {
         it("sets the matrix components", () => {
             const m = new AffineTransform();
-            m.set(2, 4, 6, 8, 10, 12);
+            m.setComponents(2, 4, 6, 8, 10, 12);
             expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 10, 12 ]);
         });
+    });
+
+    describe("setColumns", () => {
         it("sets the matrix components from three vectors", () => {
             const m = new AffineTransform();
-            m.set(new Vector2(2, 4), new Vector2(8, 10), new Vector2(14, 16));
+            m.setColumns(new Vector2(2, 4), new Vector2(8, 10), new Vector2(14, 16));
             expect(m.toJSON()).toEqual([ 2, 4, 8, 10, 14, 16 ]);
         });
+    });
+
+    describe("setMatrix", () => {
         it("sets the matrix components from other 2x2 matrix", () => {
             const m = new AffineTransform();
-            m.set(new Matrix2(2, 4, 6, 8));
+            m.setMatrix(new Matrix2(2, 4, 6, 8));
             expect(m.toJSON()).toEqual([ 2, 4, 6, 8, 0, 0 ]);
         });
         it("sets the matrix components from other 3x3 matrix", () => {
             const m = new AffineTransform();
-            m.set(new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9));
+            m.setMatrix(new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9));
             expect(m.toJSON()).toEqual([ 1, 2, 4, 5, 7, 8 ]);
         });
         it("sets the matrix components from other 4x4 matrix", () => {
             const m = new AffineTransform();
-            m.set(new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16));
+            m.setMatrix(new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16));
             expect(m.toJSON()).toEqual([ 1, 2, 5, 6, 9, 10 ]);
         });
     });
