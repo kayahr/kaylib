@@ -547,21 +547,14 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
      * @param angle - The rotation angle in RAD.
      */
     public rotate(angle: number): this {
-        const a11 = this[0], a12 = this[1], a13 = this[2];
-        const a21 = this[3], a22 = this[4], a23 = this[5];
-
-        const s = Math.sin(angle);
-        const c = Math.cos(angle);
-        const b11 =  c, b12 = s;
-        const b21 = -s, b22 = c;
-
-        this[0] = a11 * b11 + a21 * b12;
-        this[1] = a12 * b11 + a22 * b12;
-        this[2] = a13 * b11 + a23 * b12;
-        this[3] = a11 * b21 + a21 * b22;
-        this[4] = a12 * b21 + a22 * b22;
-        this[5] = a13 * b21 + a23 * b22;
-
+        const a00 = this[0], a01 = this[1], a02 = this[2], a10 = this[3], a11 = this[4], a12 = this[5];
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[0] = c * a00 + s * a10;
+        this[1] = c * a01 + s * a11;
+        this[2] = c * a02 + s * a12;
+        this[3] = c * a10 - s * a00;
+        this[4] = c * a11 - s * a01;
+        this[5] = c * a12 - s * a02;
         return this;
     }
 }

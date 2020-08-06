@@ -171,7 +171,7 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
             const rows = Math.min(3, argRows);
             for (let y = 0; y < rows; ++y) {
                 for (let x = 0; x < columns; ++x) {
-                    this[y + x * rows] = arg[y + x * argRows];
+                    this[y + x * 3] = arg[y + x * argRows];
                 }
             }
             return this;
@@ -218,6 +218,74 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
     public reset(): this {
         this[0] = 1; this[1] = 0; this[2] = 0;
         this[3] = 0; this[4] = 1; this[5] = 0;
+        return this;
+    }
+
+    /** @inheritDoc */
+    public add(summand: number): this;
+
+    /** @inheritDoc */
+    public add(matrix: ReadonlyMatrixLike<2, 3>): this;
+
+    public add(arg: number | ReadonlyMatrixLike<2, 3>): this {
+        if (typeof arg === "number") {
+            this[0] += arg; this[1] += arg; this[2] += arg;
+            this[3] += arg; this[4] += arg; this[5] += arg;
+        } else {
+            this[0] += arg[0]; this[1] += arg[1]; this[2] += arg[2];
+            this[3] += arg[3]; this[4] += arg[4]; this[5] += arg[5];
+        }
+        return this;
+    }
+
+    /** @inheritDoc */
+    public sub(subtrahend: number): this;
+
+    /** @inheritDoc */
+    public sub(matrix: ReadonlyMatrixLike<2, 3>): this;
+
+    public sub(arg: number | ReadonlyMatrixLike<2, 3>): this {
+        if (typeof arg === "number") {
+            this[0] -= arg; this[1] -= arg; this[2] -= arg;
+            this[3] -= arg; this[4] -= arg; this[5] -= arg;
+        } else {
+            this[0] -= arg[0]; this[1] -= arg[1]; this[2] -= arg[2];
+            this[3] -= arg[3]; this[4] -= arg[4]; this[5] -= arg[5];
+        }
+        return this;
+    }
+
+    /** @inheritDoc */
+    public compMul(matrix: ReadonlyMatrixLike<2, 3>): this;
+
+    /** @inheritDoc */
+    public compMul(factor: number): this;
+
+    public compMul(arg: ReadonlyMatrixLike<2, 3> | number): this {
+        if (typeof arg === "number") {
+            this[0] *= arg; this[1] *= arg; this[2] *= arg;
+            this[3] *= arg; this[4] *= arg; this[5] *= arg;
+        } else {
+            this[0] *= arg[0]; this[1] *= arg[1]; this[2] *= arg[2];
+            this[3] *= arg[3]; this[4] *= arg[4]; this[5] *= arg[5];
+        }
+        return this;
+    }
+
+    /** @inheritDoc */
+    public compDiv(matrix: ReadonlyMatrixLike<2, 3>): this;
+
+    /** @inheritDoc */
+    public compDiv(divisor: number): this;
+
+    public compDiv(arg: ReadonlyMatrixLike<2, 3> | number): this {
+        if (typeof arg === "number") {
+            this[0] /= arg; this[1] /= arg; this[2] /= arg;
+            this[3] /= arg; this[4] /= arg; this[5] /= arg;
+        } else {
+            this[0] /= arg[0]; this[1] /= arg[1]; this[2] /= arg[2];
+            this[3] /= arg[3]; this[4] /= arg[4]; this[5] /= arg[5];
+        }
         return this;
     }
 }

@@ -72,6 +72,8 @@ export interface ReadonlyMatrix<
             Columns extends number = 2 | 3 | 4,
             Rows extends number = 2 | 3 | 4
         > extends ReadonlyMatrixLike<Columns, Rows>, Equatable, Serializable<number[]> {
+    readonly [index: number]: number;
+
     /**
      * Checks if matrix is identity.
      *
@@ -87,6 +89,8 @@ export interface Matrix<
             Columns extends number = 2 | 3 | 4,
             Rows extends number = 2 | 3 | 4,
         > extends ReadonlyMatrix<Columns, Rows>, MatrixLike<Columns, Rows> {
+    [index: number]: number;
+
     /**
      * Resets this matrix to identity.
      */

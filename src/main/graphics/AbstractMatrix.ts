@@ -4,6 +4,7 @@
  */
 
 import { formatNumber } from "../util/string";
+import { Constructor } from "../util/types";
 import { isMatrixLike, ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike } from "./Vector";
 
@@ -15,6 +16,8 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
     public readonly length!: Size;
 
     public readonly columns!: number;
+
+    public readonly rows!: number;
 
     /**
      * Helper method to check if constructor arguments are for initializing a matrix from an array buffer.
@@ -37,6 +40,40 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
     protected static isInitFromMatrix(args: Array<number | ReadonlyVectorLike> | [ ReadonlyMatrixLike ] |
             [ ArrayBuffer | SharedArrayBuffer, number? ]): args is [ ReadonlyMatrixLike ] {
         return args.length === 1 && isMatrixLike(args[0]);
+    }
+
+    /**
+     * Creates a new matrix initialized to the given matrix. If given matrix has smaller dimensions then the missing
+     * columns/rows are filled from an identity matrix.
+     *
+     * @param matrix - The matrix to copy the components from.
+     * @return The created matrix.
+     */
+    public static fromMatrix<T extends AbstractMatrix>(this: Constructor<T>, source: ReadonlyMatrixLike): T {
+        return new this().copyFromMatrix(source);
+    }
+
+    private copyFromMatrix(matrix: ReadonlyMatrixLike): this {
+        const otherRows = matrix.rows;
+        const thisRows = this.rows;
+        const columns = Math.min(this.columns, matrix.columns);
+        const rows = Math.min(thisRows, otherRows);
+        for (let y = 0; y < rows; ++y) {
+            for (let x = 0; x < columns; ++x) {
+                this[y + x * thisRows] = matrix[y + x * otherRows];
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Sets the matrix component values from another matrix. If given matrix has smaller dimensions then the missing
+     * columns/rows are filled from an identity matrix.
+     *
+     * @param matrix - The matrix to copy the component values from.
+     */
+    public setMatrix(matrix: ReadonlyMatrixLike): this {
+        return this.reset().copyFromMatrix(matrix);
     }
 
     /**
@@ -66,4 +103,9 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
     public toString(maximumFractionDigits = 5): string {
         return `[ ${Array.from(this).map(v => formatNumber(v, { maximumFractionDigits })).join(", ")} ]`;
     }
+
+    /**
+     * Resets this matrix to identity.
+     */
+    public abstract reset(): this;
 }

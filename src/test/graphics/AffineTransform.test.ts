@@ -233,6 +233,97 @@ describe("AffineTransform", () => {
         });
     });
 
+    describe("add", () => {
+        it("adds given value", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.add(2);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([ 3, 4, 5, 6, 7, 8 ]);
+        });
+        it("adds given matrix", () => {
+            const a = new AffineTransform(20, 3, 40, 5, 60, 7);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.add(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([ 23, 43, 45, 65, 67, 87 ]);
+        });
+    });
+
+    describe("sub", () => {
+        it("subtracts given value", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.sub(2);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([ -1, 0, 1, 2, 3, 4 ]);
+        });
+        it("subtracts given matrix", () => {
+            const a = new AffineTransform(20, 3, 40, 5, 60, 7);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.sub(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([ 17, -37, 35, -55, 53, -73 ]);
+        });
+    });
+
+     describe("compMul", () => {
+        it("multiplies matrix with a factor", () => {
+            const m = new AffineTransform(20, -3, 40, -5, 60, -7);
+            const result = m.compMul(-2);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([ -40, 6, -80, 10, -120, 14 ]);
+        });
+        it("multiplies matrix with another matrix", () => {
+            const a = new AffineTransform(20, -3, 40, -5, 60, -7);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.compMul(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([ 60, -120, 200, -300, 420, -560 ]);
+        });
+    });
+
+    describe("compDiv", () => {
+        it("divides matrix by scalar", () => {
+            const m = new AffineTransform(20, -3, 40, -5, 60, -7);
+            const result = m.compDiv(2);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([ 10, -1.5, 20, -2.5, 30, -3.5 ]);
+        });
+        it("divides matrix by another matrix component-wise", () => {
+            const a = new AffineTransform(20, -3, 40, -5, 60, -7);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.compDiv(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([
+                 6.66667, -0.07500,  8.00000,
+                -0.08333,  8.57143, -0.08750
+            ]);
+        });
+    });
+
+    describe("mul", () => {
+        it("multiplies matrix with another matrix", () => {
+            const a = new AffineTransform(20, 3, 40, 5, 60, 7);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.mul(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([
+                1660, 209,
+                2500, 315,
+                3400, 428
+            ]);
+        });
+    });
+
+    describe("div", () => {
+        it("divides matrix by another matrix", () => {
+            const a = new AffineTransform(1660, 209, 2500, 315, 3400, 428);
+            const b = new AffineTransform(3, 40, 5, 60, 7, 80);
+            const result = a.div(b);
+            expect(result).toBe(a);
+            expect(result.toJSON()).toEqualCloseTo([ 20, 3, 40, 5, 60, 7 ]);
+        });
+    });
+
     describe("getDeterminant", () => {
         it("returns the matrix determinant", () => {
             expect(new AffineTransform(6, 3, 7, 20, 5, 8).getDeterminant()).toBe(99);
@@ -249,6 +340,107 @@ describe("AffineTransform", () => {
                 -0.2195121943950653, 0.12195122241973877,
                 0.24390244483947754, -0.024390242993831635,
                 -0.5853658318519592, -0.3414634168148041
+            ]);
+        });
+    });
+
+    describe("translate", () => {
+        it("translates the matrix", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.translate(10, 20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,   2,
+                 3,   4,
+                75, 106
+            ]);
+        });
+    });
+
+    describe("translateX", () => {
+        it("translates the matrix by given X delta", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.translateX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,
+                 3,  4,
+                15, 26
+            ]);
+        });
+    });
+
+    describe("translateY", () => {
+        it("translates the matrix by given Y delta", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.translateY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,
+                 3,  4,
+                35, 46
+            ]);
+        });
+    });
+
+    describe("scale", () => {
+        it("scales the matrix by given scale factor", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.scale(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10, 20,
+                30, 40,
+                 5,  6
+            ]);
+        });
+        it("scales the matrix by given individual scale factors", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.scale(10, 20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10, 20,
+                60, 80,
+                 5,  6
+            ]);
+        });
+    });
+
+    describe("scaleX", () => {
+        it("scales the matrix by given X scale factor", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.scaleX(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                10, 20,
+                 3,  4,
+                 5,  6
+            ]);
+        });
+    });
+
+    describe("scaleY", () => {
+        it("scales the matrix by given Y scale factor", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.scaleY(10);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  2,
+                30, 40,
+                 5,  6
+            ]);
+        });
+    });
+
+    describe("rotate", () => {
+        it("rotates the matrix", () => {
+            const m = new AffineTransform(1, 2, 3, 4, 5, 6);
+            const result = m.rotate(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                2.315859079360962, 3.6728672981262207,
+                2.153322219848633, 2.5514791011810303,
+                5, 6
             ]);
         });
     });
