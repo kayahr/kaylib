@@ -58,7 +58,7 @@
         "@jest-runner/electron": "3.0.0",
         "@kayahr/eslint-config": "1.1.0",
         "@kayahr/jest-matchers": "1.0.0",
-        "@types/jest": "26.0.8",
+        "@types/jest": "26.0.9",
         "@typescript-eslint/eslint-plugin": "3.8.0",
         "@typescript-eslint/parser": "3.8.0",
         "chai": "4.2.0",
