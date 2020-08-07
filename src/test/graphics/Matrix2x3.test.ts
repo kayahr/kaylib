@@ -9,8 +9,8 @@ import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Matrix2x3 } from "../../main/graphics/Matrix2x3";
 import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
-import { Vector3 } from "../../main/graphics/Vector3";
 import { Vector2 } from "../../main/graphics/Vector2";
+import { Vector3 } from "../../main/graphics/Vector3";
 
 describe("Matrix2x3", () => {
     describe("constructor", () => {
