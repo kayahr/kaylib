@@ -6,6 +6,7 @@
 import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
+import { IllegalArgumentException, IllegalStateException } from "../util/exception";
 import { StrictArrayBufferLike } from "../util/types";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
@@ -108,6 +109,23 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
      */
     public static fromJSON(components: Matrix3JSON): Matrix3 {
         return new Matrix3(...components);
+    }
+
+    /**
+     * Creates a new matrix from the given DOM matrix object.
+     *
+     * @aram domMatrix - The DOM matrix object. Must be a 2D matrix.
+     * @return The created matrix.
+     */
+    public static fromDOMMatrix(domMatrix: DOMMatrix): Matrix3 {
+        if (!domMatrix.is2D) {
+            throw new IllegalArgumentException("Can only create Matrix3 from 2D DOMMatrix");
+        }
+        return new Matrix3(
+            domMatrix.a, domMatrix.b, 0,
+            domMatrix.c, domMatrix.d, 0,
+            domMatrix.e, domMatrix.f, 1
+        );
     }
 
     /** Matrix component at row 1 column 1. */
@@ -218,6 +236,23 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
             this[3], this[4], this[5],
             this[6], this[7], this[8]
         ];
+    }
+
+    /**
+     * Converts this matrix into a DOM matrix. The matrix must be a 2D affine transformation so the last row must be
+     * 0 0 1.
+     *
+     * @return The created DOM matrix.
+     */
+    public toDOMMatrix(): DOMMatrix {
+        if (this[2] !== 0 || this[5] !== 0 || this[8] !== 1) {
+            throw new IllegalStateException("Can only create DOMMatrix from Matrix3 2D affine transformation");
+        }
+        return new DOMMatrix([
+            this[0], this[1],
+            this[3], this[4],
+            this[6], this[7]
+        ]);
     }
 
     /** @inheritDoc */

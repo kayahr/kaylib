@@ -3,6 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
+import "jest-extended";
 import "@kayahr/jest-matchers";
 
 import { AffineTransform } from "../../main/graphics/AffineTransform";
@@ -11,6 +12,8 @@ import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector2 } from "../../main/graphics/Vector2";
 import { Vector3 } from "../../main/graphics/Vector3";
+import { IllegalArgumentException } from "../../main/util/exception";
+import { isBrowser } from "../../main/util/runtime";
 
 describe("AffineTransform", () => {
     describe("constructor", () => {
@@ -471,4 +474,28 @@ describe("AffineTransform", () => {
             ]);
         });
     });
+
+    if (isBrowser()) {
+        describe("fromDOMMatrix", () => {
+            it("creates matrix from a DOMMatrix", () => {
+                const domMatrix = new DOMMatrix([ 2, 3, 4, 5, 6, 7 ]);
+                const matrix = AffineTransform.fromDOMMatrix(domMatrix);
+                expect(matrix.toJSON()).toEqual([ 2, 3, 4, 5, 6, 7 ]);
+            });
+            it("throws exception when DOMMatrix is not a 2D matrix", () => {
+                const domMatrix = new DOMMatrix([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+                expect(() => AffineTransform.fromDOMMatrix(domMatrix)).toThrowWithMessage(IllegalArgumentException,
+                    "Can only create Matrix3 from 2D DOMMatrix");
+            });
+        });
+        describe("toDOMMatrix", () => {
+            it("creates DOMMatrix from matrix", () => {
+                const matrix = new AffineTransform(2, 3, 4, 5, 6, 7);
+                const domMatrix = matrix.toDOMMatrix();
+                expect(domMatrix.toFloat32Array()).toEqual(
+                    new Float32Array([ 2, 3, 0, 0, 4, 5, 0, 0, 0, 0, 1, 0, 6, 7, 0, 1 ]));
+                expect(domMatrix.is2D).toBe(true);
+            });
+        });
+    }
 });

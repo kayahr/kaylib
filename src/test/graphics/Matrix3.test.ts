@@ -4,11 +4,14 @@
  */
 
 import "@kayahr/jest-matchers";
+import "jest-extended";
 
 import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector3 } from "../../main/graphics/Vector3";
+import { IllegalArgumentException, IllegalStateException } from "../../main/util/exception";
+import { isBrowser } from "../../main/util/runtime";
 
 describe("Matrix3", () => {
     describe("constructor", () => {
@@ -484,4 +487,36 @@ describe("Matrix3", () => {
             ]);
         });
     });
+
+    if (isBrowser()) {
+        describe("fromDOMMatrix", () => {
+            it("creates matrix from a DOMMatrix", () => {
+                const domMatrix = new DOMMatrix([ 2, 3, 4, 5, 6, 7 ]);
+                const matrix = Matrix3.fromDOMMatrix(domMatrix);
+                expect(matrix.toJSON()).toEqual([ 2, 3, 0, 4, 5, 0, 6, 7, 1 ]);
+            });
+            it("throws exception when DOMMatrix is not a 2D matrix", () => {
+                const domMatrix = new DOMMatrix([ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]);
+                expect(() => Matrix3.fromDOMMatrix(domMatrix)).toThrowWithMessage(IllegalArgumentException,
+                    "Can only create Matrix3 from 2D DOMMatrix");
+            });
+        });
+        describe("toDOMMatrix", () => {
+            it("creates DOMMatrix from matrix", () => {
+                const matrix = new Matrix3(2, 3, 0, 4, 5, 0, 6, 7, 1);
+                const domMatrix = matrix.toDOMMatrix();
+                expect(domMatrix.toFloat32Array()).toEqual(
+                    new Float32Array([ 2, 3, 0, 0, 4, 5, 0, 0, 0, 0, 1, 0, 6, 7, 0, 1 ]));
+                expect(domMatrix.is2D).toBe(true);
+            });
+            it("throws exception when matrix is not a 2D affine transformation", () => {
+                expect(() => new Matrix3(2, 3, 1, 5, 6, 0, 8, 9, 1).toDOMMatrix()).toThrowWithMessage(
+                    IllegalStateException, "Can only create DOMMatrix from Matrix3 2D affine transformation");
+                expect(() => new Matrix3(2, 3, 0, 5, 6, 1, 8, 9, 1).toDOMMatrix()).toThrowWithMessage(
+                    IllegalStateException, "Can only create DOMMatrix from Matrix3 2D affine transformation");
+                expect(() => new Matrix3(2, 3, 0, 5, 6, 0, 8, 9, 0).toDOMMatrix()).toThrowWithMessage(
+                    IllegalStateException, "Can only create DOMMatrix from Matrix3 2D affine transformation");
+            });
+        });
+    }
 });

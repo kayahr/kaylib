@@ -5,6 +5,7 @@
 
 import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
+import { IllegalArgumentException } from "../util/exception";
 import { Matrix3x2 } from "./Matrix3x2";
 
 /**
@@ -12,6 +13,23 @@ import { Matrix3x2 } from "./Matrix3x2";
  * This matrix is useful for 2D transformations and is compatible to the transformations done in a Canvas for example.
  */
 export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransform> {
+    /**
+     * Creates a new affine transformation from the given DOM matrix object.
+     *
+     * @aram domMatrix - The DOM matrix object. Must be a 2D matrix.
+     * @return The created affine transformation.
+     */
+    public static fromDOMMatrix(domMatrix: DOMMatrix): AffineTransform {
+        if (!domMatrix.is2D) {
+            throw new IllegalArgumentException("Can only create Matrix3 from 2D DOMMatrix");
+        }
+        return new AffineTransform(
+            domMatrix.a, domMatrix.b,
+            domMatrix.c, domMatrix.d,
+            domMatrix.e, domMatrix.f
+        );
+    }
+
     /** Matrix component at row 1 column 1. */
     public get a(): number {
         return this[0];
@@ -63,6 +81,15 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     /** @inheritDoc */
     public clone(): AffineTransform {
         return AffineTransform.fromMatrix(this);
+    }
+
+    /**
+     * Converts this matrix into a DOM matrix.
+     *
+     * @return The created DOM matrix.
+     */
+    public toDOMMatrix(): DOMMatrix {
+        return new DOMMatrix([ this[0], this[1], this[2], this[3], this[4], this[5] ]);
     }
 
     /** @inheritDoc */
