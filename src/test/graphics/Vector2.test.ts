@@ -7,6 +7,8 @@ import "@kayahr/jest-matchers";
 
 import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Vector2 } from "../../main/graphics/Vector2";
+import { Vector3 } from "../../main/graphics/Vector3";
+import { Vector4 } from "../../main/graphics/Vector4";
 
 describe("Vector2", () => {
     describe("constructor", () => {
@@ -20,43 +22,46 @@ describe("Vector2", () => {
             expect(vector.x).toBe(4);
             expect(vector.y).toBe(5);
         });
-        it("initializes vector to given single numeric value", () => {
-            const vector = new Vector2(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-        });
-        it("initializes vector with 2D vector", () => {
-            const vector = new Vector2(new Vector2(10, 20));
-            expect(vector.x).toBe(10);
-            expect(vector.y).toBe(20);
-        });
         it("initializes vector from a buffer without offset", () => {
             const array = new Float32Array(2);
             const vector = new Vector2(array.buffer);
-            vector.set(1, 2);
+            vector.setComponents(1, 2);
             expect(Array.from(array)).toEqual([ 1, 2 ]);
         });
         it("initializes vector from a buffer with offset", () => {
             const array = new Float32Array(4);
             const vector = new Vector2(array.buffer, 4);
-            vector.set(1, 2);
+            vector.setComponents(1, 2);
             expect(Array.from(array)).toEqual([ 0, 1, 2, 0 ]);
+        });
+    });
+
+    describe("fromVector", () => {
+        it("initializes vector from 2D vector", () => {
+            const vector = Vector2.fromVector(new Vector2(10, 20));
+            expect(vector.x).toBe(10);
+            expect(vector.y).toBe(20);
+        });
+        it("initializes vector from 3D vector", () => {
+            const vector = Vector2.fromVector(new Vector3(10, 20, 30));
+            expect(vector.x).toBe(10);
+            expect(vector.y).toBe(20);
+        });
+        it("initializes vector from 4D vector", () => {
+            const vector = Vector2.fromVector(new Vector4(10, 20, 30, 40));
+            expect(vector.x).toBe(10);
+            expect(vector.y).toBe(20);
         });
     });
 
     describe("set", () => {
         it("sets vector to given numeric values", () => {
-            const vector = new Vector2().set(4, 5);
+            const vector = new Vector2().setComponents(4, 5);
             expect(vector.x).toBe(4);
             expect(vector.y).toBe(5);
         });
-        it("sets vector to given single numeric value", () => {
-            const vector = new Vector2().set(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-        });
         it("sets vector with 2D vector", () => {
-            const vector = new Vector2().set(new Vector2(10, 20));
+            const vector = new Vector2().setVector(new Vector2(10, 20));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
         });

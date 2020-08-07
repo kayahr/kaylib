@@ -38,6 +38,9 @@ export type Immutable<T> = {
     readonly [P in keyof T]: Immutable<T[P]>;
 };
 
+/** More strict ArrayBufferLike type which does not accidentally also match typed arrays */
+export type StrictArrayBufferLike = ArrayBufferLike & { buffer?: undefined };
+
 /** Groups all typed array types into one. */
 export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array
     | Uint32Array | Float32Array | Float64Array;

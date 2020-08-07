@@ -3,6 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
+import { StrictArrayBufferLike } from "../util/types";
 import { ReadonlyVectorLike } from "./Vector";
 
 /**
@@ -19,7 +20,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
      * @return True if arguments are for initializing a vector from an array buffer.
      */
     protected static isInitFromArrayBuffer(args: Array<number | ReadonlyVectorLike> |
-            [ ArrayBuffer | SharedArrayBuffer, number? ]): args is [ ArrayBuffer | SharedArrayBuffer, number? ] {
+            [ StrictArrayBufferLike, number? ]): args is [ StrictArrayBufferLike, number? ] {
         const type = args[0].constructor;
         return type === ArrayBuffer || type === SharedArrayBuffer;
     }
@@ -29,18 +30,16 @@ export abstract class AbstractVector<Size extends number = number> extends Float
      *
      * @param args - Array which can contain numbers and vector like structures to use as vector components.
      */
-    protected setValues(args: Array<number | ReadonlyVectorLike>): this {
+    protected fillComponents(args: Array<number | ReadonlyVectorLike>): this {
         let i = 0;
         for (const arg of args) {
             if (typeof arg === "number") {
                 this[i++] = arg;
             } else {
-                super.set(arg, i);
-                i += arg.length;
+                for (let j = 0, max = Math.min(this.length - i, arg.length); j < max; ++j) {
+                    this[i++] = arg[j];
+                }
             }
-        }
-        if (i < this.length) {
-            this.fill(this[i - 1], i);
         }
         return this;
     }

@@ -6,6 +6,7 @@
 import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
+import { StrictArrayBufferLike } from "../util/types";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { ReadonlySquareMatrixLike, SquareMatrix, SquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike } from "./Vector";
@@ -51,13 +52,13 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
      * @param buffer - The array buffer to use.
      * @param offset - Optional byte offset within the array buffer. Defaults to 0.
      */
-    public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
+    public constructor(buffer: StrictArrayBufferLike, offset?: number);
 
-    public constructor(...args: [] | Matrix4JSON | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
+    public constructor(...args: [] | Matrix4JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
             super(16);
             this[0] = this[5] = this[10] = this[15] = 1;
-        }  else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
+        } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
             super(args[0], args[1] ?? 0, 16);
         } else {
             super(args);

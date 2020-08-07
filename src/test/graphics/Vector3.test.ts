@@ -23,71 +23,65 @@ describe("Vector3", () => {
             expect(vector.y).toBe(5);
             expect(vector.z).toBe(6);
         });
-        it("initializes vector to given single numeric value", () => {
-            const vector = new Vector3(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-            expect(vector.z).toBe(8);
-        });
-        it("initializes vector with 2D vector as first argument", () => {
-            const vector = new Vector3(new Vector2(10, 20), 3);
-            expect(vector.x).toBe(10);
-            expect(vector.y).toBe(20);
-            expect(vector.z).toBe(3);
-        });
-        it("initializes vector with 2D vector as second argument", () => {
-            const vector = new Vector3(1, new Vector2(20, 30));
-            expect(vector.x).toBe(1);
-            expect(vector.y).toBe(20);
-            expect(vector.z).toBe(30);
-        });
-        it("initializes vector with 3D vector", () => {
-            const vector = new Vector3(new Vector3(10, 20, 30));
-            expect(vector.x).toBe(10);
-            expect(vector.y).toBe(20);
-            expect(vector.z).toBe(30);
-        });
         it("initializes vector from a buffer without offset", () => {
             const array = new Float32Array(3);
             const vector = new Vector3(array.buffer);
-            vector.set(1, 2, 3);
+            vector.setComponents(1, 2, 3);
             expect(Array.from(array)).toEqual([ 1, 2, 3 ]);
         });
         it("initializes vector from a buffer with offset", () => {
             const array = new Float32Array(5);
             const vector = new Vector3(array.buffer, 4);
-            vector.set(1, 2, 3);
+            vector.setComponents(1, 2, 3);
             expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 0 ]);
         });
     });
 
-    describe("set", () => {
+    describe("fromVector", () => {
+        it("initializes vector with 2D vector as first argument", () => {
+            const vector = Vector3.fromVector(new Vector2(10, 20), 3);
+            expect(vector.x).toBe(10);
+            expect(vector.y).toBe(20);
+            expect(vector.z).toBe(3);
+        });
+        it("initializes vector with 2D vector as second argument", () => {
+            const vector = Vector3.fromVector(1, new Vector2(20, 30));
+            expect(vector.x).toBe(1);
+            expect(vector.y).toBe(20);
+            expect(vector.z).toBe(30);
+        });
+        it("initializes vector with 3D vector", () => {
+            const vector = Vector3.fromVector(new Vector3(10, 20, 30));
+            expect(vector.x).toBe(10);
+            expect(vector.y).toBe(20);
+            expect(vector.z).toBe(30);
+        });
+    });
+
+    describe("setComponents", () => {
         it("sets vector to given numeric values", () => {
-            const vector = new Vector3().set(4, 5, 6);
+            const vector = new Vector3().setComponents(4, 5, 6);
             expect(vector.x).toBe(4);
             expect(vector.y).toBe(5);
             expect(vector.z).toBe(6);
         });
-        it("sets vector to given single numeric value", () => {
-            const vector = new Vector3().set(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-            expect(vector.z).toBe(8);
-        });
+    });
+
+    describe("setVector", () => {
         it("sets vector with 2D vector as first argument", () => {
-            const vector = new Vector3().set(new Vector2(10, 20), 3);
+            const vector = new Vector3().setVector(new Vector2(10, 20), 3);
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(3);
         });
         it("sets vector with 2D vector as second argument", () => {
-            const vector = new Vector3().set(1, new Vector2(20, 30));
+            const vector = new Vector3().setVector(1, new Vector2(20, 30));
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
         });
         it("sets vector with 3D vector", () => {
-            const vector = new Vector3().set(new Vector3(10, 20, 30));
+            const vector = new Vector3().setVector(new Vector3(10, 20, 30));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);

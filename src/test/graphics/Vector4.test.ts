@@ -26,135 +26,127 @@ describe("Vector4", () => {
             expect(vector.z).toBe(6);
             expect(vector.w).toBe(7);
         });
-        it("initializes vector to given single numeric value", () => {
-            const vector = new Vector4(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-            expect(vector.z).toBe(8);
-            expect(vector.w).toBe(8);
+        it("initializes vector from a buffer without offset", () => {
+            const array = new Float32Array(4);
+            const vector = new Vector4(array.buffer);
+            vector.setComponents(1, 2, 3, 4);
+            expect(Array.from(array)).toEqual([ 1, 2, 3, 4 ]);
         });
+        it("initializes vector from a buffer with offset", () => {
+            const array = new Float32Array(6);
+            const vector = new Vector4(array.buffer, 4);
+            vector.setComponents(1, 2, 3, 4);
+            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 0 ]);
+        });
+    });
+
+    describe("fromVector", () => {
         it("initializes vector with 2D vector as first argument", () => {
-            const vector = new Vector4(new Vector2(10, 20), 3, 4);
+            const vector = Vector4.fromVector(new Vector2(10, 20), 3, 4);
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(3);
             expect(vector.w).toBe(4);
         });
         it("initializes vector with 2D vector as second argument", () => {
-            const vector = new Vector4(1, new Vector2(20, 30), 4);
+            const vector = Vector4.fromVector(1, new Vector2(20, 30), 4);
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(4);
         });
         it("initializes vector with 2D vector as third argument", () => {
-            const vector = new Vector4(1, 2, new Vector2(30, 40));
+            const vector = Vector4.fromVector(1, 2, new Vector2(30, 40));
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(2);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("initializes vector with two 2D vectors", () => {
-            const vector = new Vector4(new Vector2(10, 20), new Vector2(30, 40));
+            const vector = Vector4.fromVector(new Vector2(10, 20), new Vector2(30, 40));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("initializes vector with 3D vector as first argument", () => {
-            const vector = new Vector4(new Vector3(10, 20, 30), 4);
+            const vector = Vector4.fromVector(new Vector3(10, 20, 30), 4);
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(4);
         });
         it("initializes vector with 3D vector as second argument", () => {
-            const vector = new Vector4(1, new Vector3(20, 30, 40));
+            const vector = Vector4.fromVector(1, new Vector3(20, 30, 40));
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("initializes vector with 4D vector", () => {
-            const vector = new Vector4(new Vector4(10, 20, 30, 40));
+            const vector = Vector4.fromVector(new Vector4(10, 20, 30, 40));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
-        it("initializes vector from a buffer without offset", () => {
-            const array = new Float32Array(4);
-            const vector = new Vector4(array.buffer);
-            vector.set(1, 2, 3, 4);
-            expect(Array.from(array)).toEqual([ 1, 2, 3, 4 ]);
-        });
-        it("initializes vector from a buffer with offset", () => {
-            const array = new Float32Array(6);
-            const vector = new Vector4(array.buffer, 4);
-            vector.set(1, 2, 3, 4);
-            expect(Array.from(array)).toEqual([ 0, 1, 2, 3, 4, 0 ]);
-        });
     });
 
-    describe("set", () => {
+    describe("setComponents", () => {
         it("sets vector to given numeric values", () => {
-            const vector = new Vector4().set(4, 5, 6, 7);
+            const vector = new Vector4().setComponents(4, 5, 6, 7);
             expect(vector.x).toBe(4);
             expect(vector.y).toBe(5);
             expect(vector.z).toBe(6);
             expect(vector.w).toBe(7);
         });
-        it("sets vector to given single numeric value", () => {
-            const vector = new Vector4().set(8);
-            expect(vector.x).toBe(8);
-            expect(vector.y).toBe(8);
-            expect(vector.z).toBe(8);
-            expect(vector.w).toBe(8);
-        });
+    });
+
+    describe("setVector", () => {
         it("sets vector with 2D vector as first argument", () => {
-            const vector = new Vector4().set(new Vector2(10, 20), 3, 4);
+            const vector = new Vector4().setVector(new Vector2(10, 20), 3, 4);
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(3);
             expect(vector.w).toBe(4);
         });
         it("sets vector with 2D vector as second argument", () => {
-            const vector = new Vector4().set(1, new Vector2(20, 30), 4);
+            const vector = new Vector4().setVector(1, new Vector2(20, 30), 4);
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(4);
         });
         it("sets vector with 2D vector as third argument", () => {
-            const vector = new Vector4().set(1, 2, new Vector2(30, 40));
+            const vector = new Vector4().setVector(1, 2, new Vector2(30, 40));
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(2);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("sets vector with two 2D vectors", () => {
-            const vector = new Vector4().set(new Vector2(10, 20), new Vector2(30, 40));
+            const vector = new Vector4().setVector(new Vector2(10, 20), new Vector2(30, 40));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("sets vector with 3D vector as first argument", () => {
-            const vector = new Vector4().set(new Vector3(10, 20, 30), 4);
+            const vector = new Vector4().setVector(new Vector3(10, 20, 30), 4);
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(4);
         });
         it("sets vector with 3D vector as second argument", () => {
-            const vector = new Vector4().set(1, new Vector3(20, 30, 40));
+            const vector = new Vector4().setVector(1, new Vector3(20, 30, 40));
             expect(vector.x).toBe(1);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);
             expect(vector.w).toBe(40);
         });
         it("sets vector with 4D vector", () => {
-            const vector = new Vector4().set(new Vector4(10, 20, 30, 40));
+            const vector = new Vector4().setVector(new Vector4(10, 20, 30, 40));
             expect(vector.x).toBe(10);
             expect(vector.y).toBe(20);
             expect(vector.z).toBe(30);

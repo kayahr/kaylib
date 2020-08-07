@@ -6,6 +6,7 @@
 import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
+import { StrictArrayBufferLike } from "../util/types";
 import { AbstractMatrix } from "./AbstractMatrix";
 import { Matrix, ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike } from "./Vector";
@@ -47,9 +48,9 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
      * @param buffer - The array buffer to use.
      * @param offset - Optional byte offset within the array buffer. Defaults to 0.
      */
-    public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
+    public constructor(buffer: StrictArrayBufferLike, offset?: number);
 
-    public constructor(...args: [] | Matrix2x3JSON | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
+    public constructor(...args: [] | Matrix2x3JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
             super(6);
             this[0] = this[4] = 1;

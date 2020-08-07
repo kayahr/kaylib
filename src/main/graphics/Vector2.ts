@@ -7,6 +7,7 @@ import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../util/math";
+import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
 import { ReadonlySquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
@@ -29,13 +30,6 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     public constructor();
 
     /**
-     * Creates a new vector with all components set to the given value.
-     *
-     * @param xy - The value to initialize each vector component with.
-     */
-    public constructor(xy: number);
-
-    /**
      * Creates a new vector with the given component values.
      *
      * @param x - The initial X component value.
@@ -44,29 +38,43 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     public constructor(x: number, y: number);
 
     /**
-     * Creates a new vector by copying the component values from another vector.
-     *
-     * @param xy - The other vector to copy the X and Y component values from.
-     */
-    public constructor(xy: ReadonlyVectorLike);
-
-    /**
      * Creates a new vector using the given array buffer as component values.
      *
      * @param buffer - The array buffer to use.
      * @param offset - Optional byte offset within the array buffer. Defaults to 0.
      */
-    public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
+    public constructor(buffer: StrictArrayBufferLike, offset?: number);
 
-    public constructor(...args: Array<number | ReadonlyVectorLike> | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
-        if (args.length === 0) {
+    public constructor(...args: [] | Vector2JSON | [ StrictArrayBufferLike, number? ]) {
+        const len = args.length;
+        if (len === 0) {
             super(2);
         } else if (AbstractVector.isInitFromArrayBuffer(args)) {
             super(args[0], args[1] ?? 0, 2);
         } else {
-            super(2);
-            this.setValues(args);
+            super(args);
         }
+    }
+
+    /**
+     * Creates a new vector with the given component values.
+     *
+     * @param vector - The initial X, Y and Z component values as a two-, three- or four-dimensional vector.
+     */
+    public static fromVector(vector: ReadonlyVectorLike): Vector2;
+
+    public static fromVector(...args: Array<number | ReadonlyVectorLike>): Vector2 {
+        return new this().fillComponents(args);
+    }
+
+    /**
+     * Creates a new vector from the given JSON object.
+     *
+     * @param json - The vector JSON data.
+     * @return The created vector.
+     */
+    public static fromJSON(json: Vector2JSON): Vector2 {
+        return new Vector2(...json);
     }
 
     /**
@@ -106,49 +114,36 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /**
-     * Sets all vector component values to the given value.
-     *
-     * @param xy - The value to set for each vector component value.
-     */
-    public set(xy: number): this;
-
-    /**
      * Sets the vector component values.
      *
      * @param x - The X component value to set.
      * @param y - The Y component value to set.
      */
-    public set(x: number, y: number): this;
+    public setComponents(x: number, y: number): this {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
 
     /**
      * Sets the vector component values by copying them from the given vector.
      *
-     * @param xy - The vector to copy the X and Y component values from.
+     * @param vector - The vector to copy the X and Y component values from.
      */
-    public set(xy: ReadonlyVectorLike): this;
-
-    public set(...args: Array<number | ReadonlyVectorLike>): this {
-        return this.setValues(args);
+    public setVector(vector: ReadonlyVectorLike): this {
+        this[0] = vector[0];
+        this[1] = vector[1];
+        return this;
     }
 
     /** @inheritDoc */
     public clone(): Vector2 {
-        return new Vector2(this);
+        return new Vector2(this[0], this[1]);
     }
 
     /** @inheritDoc */
     public toJSON(): Vector2JSON {
         return [ this[0], this[1] ];
-    }
-
-    /**
-     * Creates a new vector from the given JSON object.
-     *
-     * @param json - The vector JSON data.
-     * @return The created vector.
-     */
-    public static fromJSON(json: Vector2JSON): Vector2 {
-        return new Vector2(...json);
     }
 
     /** @inheritDoc */

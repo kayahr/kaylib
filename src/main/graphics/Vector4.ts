@@ -7,6 +7,7 @@ import { Cloneable } from "../lang/Cloneable";
 import { isEqual } from "../lang/Equatable";
 import { Serializable } from "../lang/Serializable";
 import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../util/math";
+import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
 import { ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
@@ -29,13 +30,6 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
     public constructor();
 
     /**
-     * Creates a new vector with all components set to the given value.
-     *
-     * @param xyzw - The value to initialize each vector component with.
-     */
-    public constructor(xyzw: number);
-
-    /**
      * Creates a new vector with the given component values.
      *
      * @param x - The initial X component value.
@@ -46,13 +40,31 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
     public constructor(x: number, y: number, z: number, w: number);
 
     /**
+     * Creates a new vector using the given array buffer as component values.
+     *
+     * @param buffer - The array buffer to use.
+     * @param offset - Optional byte offset within the array buffer. Defaults to 0.
+     */
+    public constructor(buffer: StrictArrayBufferLike, offset?: number);
+
+    public constructor(...args: [] | Vector4JSON | [ StrictArrayBufferLike, number? ]) {
+        if (args.length === 0) {
+            super(4);
+        } else if (AbstractVector.isInitFromArrayBuffer(args)) {
+            super(args[0], args[1] ?? 0, 4);
+        } else {
+            super(args);
+        }
+    }
+
+    /**
      * Creates a new vector with the given component values.
      *
      * @param xy - The initial X and Y component values as a two-dimensional vector.
      * @param z  - The initial Z component value.
      * @param w  - The initial W component value.
      */
-    public constructor(xy: ReadonlyVectorLike<2>, z: number, w: number);
+    public static fromVector(xy: ReadonlyVectorLike<2>, z: number, w: number): Vector4;
 
     /**
      * Creates a new vector with the given component values.
@@ -61,7 +73,7 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
      * @param yz - The initial Y and Z component values as a two-dimensional vector.
      * @param w  - The initial W component value.
      */
-    public constructor(x: number, yz: ReadonlyVectorLike<2>, w: number);
+    public static fromVector(x: number, yz: ReadonlyVectorLike<2>, w: number): Vector4;
 
     /**
      * Creates a new vector with the given component values.
@@ -70,7 +82,7 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
      * @param y  - The initial Y component value.
      * @param zw - The initial Z and W component values as a two-dimensional vector.
      */
-    public constructor(x: number, y: number, zw: ReadonlyVectorLike<2>);
+    public static fromVector(x: number, y: number, zw: ReadonlyVectorLike<2>): Vector4;
 
     /**
      * Creates a new vector with the given component values.
@@ -78,7 +90,7 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
      * @param xy - The initial X and Y component values as a two-dimensional vector.
      * @param zw - The initial Z and W component values as a two-dimensional vector.
      */
-    public constructor(xy: ReadonlyVectorLike<2>, zw: ReadonlyVectorLike<2>);
+    public static fromVector(xy: ReadonlyVectorLike<2>, zw: ReadonlyVectorLike<2>): Vector4;
 
     /**
      * Creates a new vector with the given component values.
@@ -86,7 +98,7 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
      * @param xyz - The initial X, Y and Z component values as a two-dimensional vector.
      * @param w   - The initial W component value.
      */
-    public constructor(xyz: ReadonlyVectorLike<3>, w: number);
+    public static fromVector(xyz: ReadonlyVectorLike<3>, w: number): Vector4;
 
     /**
      * Creates a new vector with the given component values.
@@ -94,32 +106,21 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
      * @param x   - The initial X component value.
      * @param yzw - The initial Y, Z and W component values as a two-dimensional vector.
      */
-    public constructor(x: number, yzw: ReadonlyVectorLike<3>);
+    public static fromVector(x: number, yzw: ReadonlyVectorLike<3>): Vector4;
 
     /**
      * Creates a new vector with the given component values.
      *
      * @param xyzw - The initial component values as a four-dimensional vector.
      */
-    public constructor(xyzw: ReadonlyVectorLike<4>);
+    public static fromVector(xyzw: ReadonlyVectorLike<4>): Vector4;
 
-    /**
-     * Creates a new vector using the given array buffer as component values.
-     *
-     * @param buffer - The array buffer to use.
-     * @param offset - Optional byte offset within the array buffer. Defaults to 0.
-     */
-    public constructor(buffer: ArrayBuffer | SharedArrayBuffer, offset?: number);
+    public static fromVector(...args: Array<number | ReadonlyVectorLike>): Vector4 {
+        return new this().fillComponents(args);
+    }
 
-    public constructor(...args: Array<number | ReadonlyVectorLike> | [ ArrayBuffer | SharedArrayBuffer, number? ]) {
-        if (args.length === 0) {
-            super(4);
-        } else if (AbstractVector.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 4);
-        } else {
-            super(4);
-            this.setValues(args);
-        }
+    public static fromJSON(json: Vector4JSON): Vector4 {
+        return new Vector4(...json);
     }
 
     public get x(): number {
@@ -154,31 +155,91 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
         this[3] = w;
     }
 
-    public set(xyzw: number): this;
-    public set(x: number, y: number, z: number, w: number): this;
-    public set(xy: ReadonlyVectorLike<2>, z: number, w: number): this;
-    public set(x: number, yz: ReadonlyVectorLike<2>, w: number): this;
-    public set(x: number, y: number, zw: ReadonlyVectorLike<2>): this;
-    public set(xy: ReadonlyVectorLike<2>, zw: ReadonlyVectorLike<2>): this;
-    public set(xyz: ReadonlyVectorLike<3>, w: number): this;
-    public set(x: number, yzw: ReadonlyVectorLike<3>): this;
-    public set(xyzw: ReadonlyVectorLike<4>): this;
-    public set(...args: Array<number | ReadonlyVectorLike>): this {
-        return this.setValues(args);
+    /**
+     * Sets the vector component values.
+     *
+     * @param x - The X component value to set.
+     * @param y - The Y component value to set.
+     * @param z - The Z component value to set.
+     * @param w - The W component value to set.
+     */
+    public setComponents(x: number, y: number, z: number, w: number): this {
+        this[0] = x;
+        this[1] = y;
+        this[2] = z;
+        this[3] = w;
+        return this;
+    }
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param xy - The X and Y component values as a two-dimensional vector.
+     * @param z  - The Z component value.
+     * @param w  - The W component value.
+     */
+    public setVector(xy: ReadonlyVectorLike<2>, z: number, w: number): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param x  - The X component value.
+     * @param yz - The Y and Z component values as a two-dimensional vector.
+     * @param w  - The W component value.
+     */
+    public setVector(x: number, yz: ReadonlyVectorLike<2>, w: number): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param x  - The X component value.
+     * @param y  - The Y component value.
+     * @param zw - The Z and W component values as a two-dimensional vector.
+     */
+    public setVector(x: number, y: number, zw: ReadonlyVectorLike<2>): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param xy - The X and Y component values as a two-dimensional vector.
+     * @param zw - The Z and W component values as a two-dimensional vector.
+     */
+    public setVector(xy: ReadonlyVectorLike<2>, zw: ReadonlyVectorLike<2>): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param xyz - The X, Y and Z component values as a three-dimensional vector.
+     * @param w  - The W component value.
+     */
+    public setVector(xyz: ReadonlyVectorLike<3>, w: number): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param x   - The X component value.
+     * @param yzw - The Y, Z and W component values as a three-dimensional vector.
+     */
+    public setVector(x: number, yzw: ReadonlyVectorLike<3>): this;
+
+    /**
+     * Sets the vector component values to the given values.
+     *
+     * @param xyzw - The X, Y, Z and W component values as a four-dimensional vector.
+     */
+    public setVector(xyzw: ReadonlyVectorLike<4>): this;
+    public setVector(...args: Array<number | ReadonlyVectorLike>): this {
+        return this.fillComponents(args);
     }
 
     /** @inheritDoc */
     public clone(): Vector4 {
-        return new Vector4(this);
+        return new Vector4(this[0], this[1], this[2], this[3]);
     }
 
     /** @inheritDoc */
     public toJSON(): Vector4JSON {
         return [ this[0], this[1], this[2], this[3] ];
-    }
-
-    public static fromJSON(json: Vector4JSON): Vector4 {
-        return new Vector4(...json);
     }
 
     /** @inheritDoc */

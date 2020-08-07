@@ -4,7 +4,7 @@
  */
 
 import { formatNumber } from "../util/string";
-import { Constructor } from "../util/types";
+import { Constructor, StrictArrayBufferLike } from "../util/types";
 import { ReadonlyMatrixLike } from "./Matrix";
 import { ReadonlyVectorLike } from "./Vector";
 
@@ -26,7 +26,7 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
      * @return True if arguments are for initializing a matrix from an array buffer.
      */
     protected static isInitFromArrayBuffer(args: Array<number | ReadonlyVectorLike | ReadonlyMatrixLike> |
-            [ ArrayBuffer | SharedArrayBuffer, number? ]): args is [ ArrayBuffer | SharedArrayBuffer, number? ] {
+            [ StrictArrayBufferLike, number? ]): args is [ StrictArrayBufferLike, number? ] {
         const type = args[0].constructor;
         return type === ArrayBuffer || type === SharedArrayBuffer;
     }
