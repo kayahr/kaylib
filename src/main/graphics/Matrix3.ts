@@ -69,7 +69,9 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     /**
      * Creates a new matrix with the component values copied from the given column vectors.
      *
-     * @param columns - The column vectors.
+     * @param c1 - The first column vector.
+     * @param c2 - The first column vector.
+     * @param c3 - The first column vector.
      * @return The created matrix.
      */
     public static fromColumns(c1: ReadonlyVectorLike<3>, c2: ReadonlyVectorLike<3>, c3: ReadonlyVectorLike<3>):
@@ -78,6 +80,23 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
             c1[0], c1[1], c1[2],
             c2[0], c2[1], c2[2],
             c3[0], c3[1], c3[2]
+        );
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given row vectors.
+     *
+     * @param r1 - The first row vector.
+     * @param r2 - The first row vector.
+     * @param r3 - The first row vector.
+     * @return The created matrix.
+     */
+    public static fromRows(r1: ReadonlyVectorLike<3>, r2: ReadonlyVectorLike<3>, r3: ReadonlyVectorLike<3>):
+            Matrix3 {
+        return new Matrix3(
+            r1[0], r2[0], r3[0],
+            r1[1], r2[1], r3[1],
+            r1[2], r2[2], r3[2]
         );
     }
 

@@ -66,7 +66,9 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
     /**
      * Creates a new matrix with the component values copied from the given column vectors.
      *
-     * @param columns - The column vectors.
+     * @param c1 - The first column vector.
+     * @param c2 - The second column vector.
+     * @param c3 - The third column vector.
      * @return The created matrix.
      */
     public static fromColumns(c1: ReadonlyVectorLike<2>, c2: ReadonlyVectorLike<2>, c3: ReadonlyVectorLike<2>):
@@ -75,6 +77,22 @@ export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serial
             c1[0], c1[1],
             c2[0], c2[1],
             c3[0], c3[1]
+        );
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given row vectors.
+     *
+     * @param r1 - The first row vector.
+     * @param r2 - The second row vector.
+     * @param c3 - The third row vector.
+     * @return The created matrix.
+     */
+    public static fromRows(r1: ReadonlyVectorLike<3>, r2: ReadonlyVectorLike<3>): Matrix3x2 {
+        return new Matrix3x2(
+            r1[0], r2[0],
+            r1[1], r2[1],
+            r1[2], r2[2]
         );
     }
 

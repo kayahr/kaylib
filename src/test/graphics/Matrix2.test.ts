@@ -62,10 +62,23 @@ describe("Matrix2", () => {
     });
 
     describe("fromColumns", () => {
-        it("initializes matrix from two vectors", () => {
+        it("initializes matrix from two column vectors", () => {
             const m = Matrix2.fromColumns(
                 new Vector2(1, 2),
                 new Vector2(3, 4)
+            );
+            expect(m.toJSON()).toEqual([
+                 1, 2,
+                 3, 4
+            ]);
+        });
+    });
+
+    describe("fromRows", () => {
+        it("initializes matrix from two row vectors", () => {
+            const m = Matrix2.fromRows(
+                new Vector2(1, 3),
+                new Vector2(2, 4)
             );
             expect(m.toJSON()).toEqual([
                  1, 2,

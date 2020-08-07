@@ -50,12 +50,29 @@ describe("Matrix4", () => {
     });
 
     describe("fromColumns", () => {
-        it("initializes matrix from four vectors", () => {
+        it("initializes matrix from four column vectors", () => {
             const m = Matrix4.fromColumns(
                 new Vector4(1, 2, 3, 4),
                 new Vector4(5, 6, 7, 8),
                 new Vector4(9, 10, 11, 12),
                 new Vector4(13, 14, 15, 16)
+            );
+            expect(m.toJSON()).toEqual([
+                 1,  2,  3,  4,
+                 5,  6,  7,  8,
+                 9, 10, 11, 12,
+                13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("fromRows", () => {
+        it("initializes matrix from four row vectors", () => {
+            const m = Matrix4.fromRows(
+                new Vector4(1, 5, 9, 13),
+                new Vector4(2, 6, 10, 14),
+                new Vector4(3, 7, 11, 15),
+                new Vector4(4, 8, 12, 16)
             );
             expect(m.toJSON()).toEqual([
                  1,  2,  3,  4,

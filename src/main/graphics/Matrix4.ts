@@ -70,7 +70,10 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     /**
      * Creates a new matrix with the component values copied from the given column vectors.
      *
-     * @param columns - The column vectors.
+     * @param c1 - The first column vector.
+     * @param c2 - The second column vector.
+     * @param c3 - The third column vector.
+     * @param c4 - The fourth column vector.
      * @return The created matrix.
      */
     public static fromColumns(c1: ReadonlyVectorLike<4>, c2: ReadonlyVectorLike<4>,
@@ -80,6 +83,25 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
             c2[0], c2[1], c2[2], c2[3],
             c3[0], c3[1], c3[2], c3[3],
             c4[0], c4[1], c4[2], c4[3]
+        );
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given row vectors.
+     *
+     * @param r1 - The first row vector.
+     * @param r2 - The second row vector.
+     * @param r3 - The third row vector.
+     * @param r4 - The fourth row vector.
+     * @return The created matrix.
+     */
+    public static fromRows(r1: ReadonlyVectorLike<4>, r2: ReadonlyVectorLike<4>,
+            r3: ReadonlyVectorLike<4>, r4: ReadonlyVectorLike<4>): Matrix4 {
+        return new Matrix4(
+            r1[0], r2[0], r3[0], r4[0],
+            r1[1], r2[1], r3[1], r4[1],
+            r1[2], r2[2], r3[2], r4[2],
+            r1[3], r2[3], r3[3], r4[3]
         );
     }
 

@@ -64,11 +64,26 @@ describe("Matrix3", () => {
     });
 
     describe("fromColumns", () => {
-        it("initializes matrix from three vectors", () => {
+        it("initializes matrix from three column vectors", () => {
             const m = Matrix3.fromColumns(
                 new Vector3(1, 2, 3),
                 new Vector3(4, 5, 6),
                 new Vector3(7, 8, 9)
+            );
+            expect(m.toJSON()).toEqual([
+                 1, 2, 3,
+                 4, 5, 6,
+                 7, 8, 9
+            ]);
+        });
+    });
+
+    describe("fromRows", () => {
+        it("initializes matrix from three row vectors", () => {
+            const m = Matrix3.fromRows(
+                new Vector3(1, 4, 7),
+                new Vector3(2, 5, 8),
+                new Vector3(3, 6, 9)
             );
             expect(m.toJSON()).toEqual([
                  1, 2, 3,

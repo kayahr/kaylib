@@ -68,11 +68,23 @@ export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Seria
     /**
      * Creates a new matrix with the component values copied from the given column vectors.
      *
-     * @param columns - The column vectors.
+     * @param c1 - The first column vector.
+     * @param c2 - The first column vector.
      * @return The created matrix.
      */
     public static fromColumns(c1: ReadonlyVectorLike<2>, c2: ReadonlyVectorLike<2>): Matrix2 {
         return new Matrix2(c1[0], c1[1], c2[0], c2[1]);
+    }
+
+    /**
+     * Creates a new matrix with the component values copied from the given row vectors.
+     *
+     * @param r1 - The first row vector.
+     * @param r2 - The first row vector.
+     * @return The created matrix.
+     */
+    public static fromRows(r1: ReadonlyVectorLike<2>, r2: ReadonlyVectorLike<2>): Matrix2 {
+        return new Matrix2(r1[0], r2[0], r1[1], r2[1]);
     }
 
     /**

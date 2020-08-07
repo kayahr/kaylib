@@ -10,6 +10,7 @@ import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector2 } from "../../main/graphics/Vector2";
+import { Vector3 } from "../../main/graphics/Vector3";
 
 describe("AffineTransform", () => {
     describe("constructor", () => {
@@ -65,11 +66,25 @@ describe("AffineTransform", () => {
     });
 
     describe("fromColumns", () => {
-        it("initializes matrix from three vectors", () => {
+        it("initializes matrix from three column vectors", () => {
             const m = AffineTransform.fromColumns(
                 new Vector2(1, 2),
                 new Vector2(3, 4),
                 new Vector2(5, 6)
+            );
+            expect(m.toJSON()).toEqual([
+                 1, 2,
+                 3, 4,
+                 5, 6
+            ]);
+        });
+    });
+
+    describe("fromRows", () => {
+        it("initializes matrix from two row vectors", () => {
+            const m = AffineTransform.fromRows(
+                new Vector3(1, 3, 5),
+                new Vector3(2, 4, 6)
             );
             expect(m.toJSON()).toEqual([
                  1, 2,

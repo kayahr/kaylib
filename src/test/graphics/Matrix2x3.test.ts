@@ -10,6 +10,7 @@ import { Matrix2x3 } from "../../main/graphics/Matrix2x3";
 import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector3 } from "../../main/graphics/Vector3";
+import { Vector2 } from "../../main/graphics/Vector2";
 
 describe("Matrix2x3", () => {
     describe("constructor", () => {
@@ -63,10 +64,24 @@ describe("Matrix2x3", () => {
     });
 
     describe("fromColumns", () => {
-        it("initializes matrix from three vectors", () => {
+        it("initializes matrix from two column vectors", () => {
             const m = Matrix2x3.fromColumns(
                 new Vector3(1, 2, 3),
                 new Vector3(4, 5, 6),
+            );
+            expect(m.toJSON()).toEqual([
+                 1, 2, 3,
+                 4, 5, 6
+            ]);
+        });
+    });
+
+    describe("fromRows", () => {
+        it("initializes matrix from three row vectors", () => {
+            const m = Matrix2x3.fromRows(
+                new Vector2(1, 4),
+                new Vector2(2, 5),
+                new Vector2(3, 6),
             );
             expect(m.toJSON()).toEqual([
                  1, 2, 3,
