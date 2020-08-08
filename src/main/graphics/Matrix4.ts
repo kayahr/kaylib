@@ -649,6 +649,21 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Sets matrix to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     * @param dz - The Z translation.
+     */
+    public setTranslation(dx: number, dy: number, dz: number): this {
+        this[ 0] =  1; this[ 1] =  0; this[ 2] =  0; this[ 3] = 0;
+        this[ 4] =  0; this[ 5] =  1; this[ 6] =  0; this[ 7] = 0;
+        this[ 8] =  0; this[ 9] =  0; this[10] =  1; this[11] = 0;
+        this[12] = dx; this[13] = dy; this[14] = dz; this[15] = 1;
+        return this;
+    }
+
+    /**
      * Translates this matrix by the specified X delta.
      *
      * @param d - The X translation delta.
@@ -707,6 +722,21 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[ 9] *= sz;
         this[10] *= sz;
         this[11] *= sz;
+        return this;
+    }
+
+    /**
+     * Sets matrix to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - Optional Y scale factor. Defaults to X scale factor.
+     * @param sz - Optional Z scale factor. Defaults to X scale factor.
+     */
+    public setScale(sx: number, sy = sx, sz = sx): this {
+        this[ 0] = sx; this[ 1] =  0; this[ 2] =  0; this[ 3] = 0;
+        this[ 4] =  0; this[ 5] = sy; this[ 6] =  0; this[ 7] = 0;
+        this[ 8] =  0; this[ 9] =  0; this[10] = sz; this[11] = 0;
+        this[12] =  0; this[13] =  0; this[14] =  0; this[15] = 1;
         return this;
     }
 
@@ -804,29 +834,68 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Rotates this matrix around the specified axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     * @param axis  - The normalized rotation axis.
+     */
+    public setRotation(angle: number, axis: ReadonlyVectorLike<3>): this {
+        const s = Math.sin(angle);
+        const c = Math.cos(angle);
+        const x = axis[0];
+        const y = axis[1];
+        const z = axis[2];
+        const len = Math.hypot(x, y, z);
+        const nx = x / len;
+        const ny = y / len;
+        const nz = z / len;
+        const t = 1 - c;
+        const xt = nx * t;
+        const yt = ny * t;
+        const zt = nz * t;
+        const xs = nx * s;
+        const ys = ny * s;
+        const zs = nz * s;
+
+        this[ 0] = nx * xt + c;  this[ 1] = ny * xt + zs; this[ 2] = nz * xt - ys; this[ 3] = 0;
+        this[ 4] = nx * yt - zs; this[ 5] = ny * yt + c;  this[ 6] = nz * yt + xs; this[ 7] = 0;
+        this[ 8] = nx * zt + ys; this[ 9] = ny * zt - xs; this[10] = nz * zt + c;  this[11] = 0;
+        this[12] = 0;            this[13] = 0;            this[14] = 0;            this[15] = 1;
+
+        return this;
+    }
+
+    /**
      * Rotates this matrix by the specified angle around the X axis.
      *
      * @param angle - The rotation angle in RAD.
      */
     public rotateX(angle: number): this {
-        const s = Math.sin(angle);
-        const c = Math.cos(angle);
-        const m21 = this[ 4];
-        const m22 = this[ 5];
-        const m23 = this[ 6];
-        const m24 = this[ 7];
-        const m31 = this[ 8];
-        const m32 = this[10];
-        const m33 = this[ 9];
-        const m34 = this[11];
+        const s = Math.sin(angle), c = Math.cos(angle);
+        const m21 = this[ 4], m22 = this[ 5], m23 = this[ 6], m24 = this[ 7];
+        const m31 = this[ 8], m32 = this[ 9], m33 = this[10], m34 = this[11];
         this[ 4] = m21 * c + m31 * s;
-        this[ 5] = m22 * c + m33 * s;
-        this[ 6] = m23 * c + m32 * s;
+        this[ 5] = m22 * c + m32 * s;
+        this[ 6] = m23 * c + m33 * s;
         this[ 7] = m24 * c + m34 * s;
         this[ 8] = m21 * -s + m31 * c;
-        this[ 9] = m22 * -s + m33 * c;
-        this[10] = m23 * -s + m32 * c;
+        this[ 9] = m22 * -s + m32 * c;
+        this[10] = m23 * -s + m33 * c;
         this[11] = m24 * -s + m34 * c;
+        return this;
+    }
+
+    /**
+     * Sets rotation matrix around the X axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public setXRotation(angle: number): this {
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[ 0] = 1; this[ 1] =  0; this[ 2] =  0; this[ 3] = 0;
+        this[ 4] = 0; this[ 5] =  c; this[ 6] =  s; this[ 7] = 0;
+        this[ 8] = 0; this[ 9] = -s; this[10] =  c; this[11] = 0;
+        this[12] = 0; this[13] =  0; this[14] =  0; this[15] = 1;
         return this;
     }
 
@@ -836,16 +905,9 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
      * @param angle - The rotation angle in RAD.
      */
     public rotateY(angle: number): this {
-        const s = Math.sin(angle);
-        const c = Math.cos(angle);
-        const m11 = this[ 0];
-        const m12 = this[ 1];
-        const m13 = this[ 2];
-        const m14 = this[ 3];
-        const m31 = this[ 8];
-        const m32 = this[ 9];
-        const m33 = this[10];
-        const m34 = this[11];
+        const s = Math.sin(angle), c = Math.cos(angle);
+        const m11 = this[ 0], m12 = this[ 1], m13 = this[ 2], m14 = this[ 3];
+        const m31 = this[ 8], m32 = this[ 9], m33 = this[10], m34 = this[11];
         this[ 0] = m11 * c + m31 * -s;
         this[ 1] = m12 * c + m32 * -s;
         this[ 2] = m13 * c + m33 * -s;
@@ -858,21 +920,28 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Sets rotation matrix around the Y axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public setYRotation(angle: number): this {
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[ 0] = c; this[ 1] = 0; this[ 2] = -s; this[ 3] = 0;
+        this[ 4] = 0; this[ 5] = 1; this[ 6] =  0; this[ 7] = 0;
+        this[ 8] = s; this[ 9] = 0; this[10] =  c; this[11] = 0;
+        this[12] = 0; this[13] = 0; this[14] =  0; this[15] = 1;
+        return this;
+    }
+
+    /**
      * Rotates this matrix by the specified angle around the Z axis.
      *
      * @param angle - The rotation angle in RAD.
      */
     public rotateZ(angle: number): this {
-        const s = Math.sin(angle);
-        const c = Math.cos(angle);
-        const m11 = this[0];
-        const m12 = this[1];
-        const m13 = this[2];
-        const m14 = this[3];
-        const m21 = this[4];
-        const m22 = this[5];
-        const m23 = this[6];
-        const m24 = this[7];
+        const s = Math.sin(angle), c = Math.cos(angle);
+        const m11 = this[0], m12 = this[1], m13 = this[2], m14 = this[3];
+        const m21 = this[4], m22 = this[5], m23 = this[6], m24 = this[7];
         this[0] = m11 * c + m21 * s;
         this[1] = m12 * c + m22 * s;
         this[2] = m13 * c + m23 * s;
@@ -881,6 +950,20 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[5] = m12 * -s + m22 * c;
         this[6] = m13 * -s + m23 * c;
         this[7] = m14 * -s + m24 * c;
+        return this;
+    }
+
+    /**
+     * Sets rotation matrix around the Z axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public setZRotation(angle: number): this {
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[ 0] =  c; this[ 1] = s; this[ 2] = 0; this[ 3] = 0;
+        this[ 4] = -s; this[ 5] = c; this[ 6] = 0; this[ 7] = 0;
+        this[ 8] =  0; this[ 9] = 0; this[10] = 1; this[11] = 0;
+        this[12] =  0; this[13] = 0; this[14] = 0; this[15] = 1;
         return this;
     }
 }

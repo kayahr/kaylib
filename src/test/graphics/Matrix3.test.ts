@@ -400,6 +400,19 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("setTranslation", () => {
+        it("sets translation matrix", () => {
+            const m = new Matrix3(2, 3, 4, 5, 6, 7, 8, 9, 10);
+            const result = m.setTranslation(2, 3);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                1, 0, 0,
+                0, 1, 0,
+                2, 3, 1
+            ]);
+        });
+    });
+
     describe("translateX", () => {
         it("translates the matrix by given X delta", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -449,6 +462,29 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("setScale", () => {
+        it("sets scale matrix with common scale factor", () => {
+            const m = new Matrix3(7, 2, 3, 4, 5, 6, 8, 9, 10);
+            const result = m.setScale(20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20,  0, 0,
+                 0, 20, 0,
+                 0,  0, 1
+            ]);
+        });
+        it("sets scale matrix with individual scale factors", () => {
+            const m = new Matrix3(8, 2, 3, 4, 5, 6, 7, 9, 10);
+            const result = m.setScale(20, 30);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20,  0, 0,
+                 0, 30, 0,
+                 0,  0, 1
+            ]);
+        });
+    });
+
     describe("scaleX", () => {
         it("scales the matrix by given X scale factor", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -484,6 +520,19 @@ describe("Matrix3", () => {
                 2.7952847480773926, 4.152292728424072, 5.509300708770752,
                 3.030904769897461, 3.4290616512298584, 3.827218770980835,
                 7, 8, 9
+            ]);
+        });
+    });
+
+    describe("setRotation", () => {
+        it("sets rotation matrix", () => {
+            const m = new Matrix3(7, 2, 3, 4, 5, 6, 8, 9, 10);
+            const result = m.setRotation(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 0.8775825500488281, 0.4794255495071411, 0,
+                -0.4794255495071411, 0.8775825500488281, 0,
+                                  0,                  0, 1
             ]);
         });
     });

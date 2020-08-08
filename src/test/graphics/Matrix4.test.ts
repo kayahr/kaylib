@@ -593,6 +593,20 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("setTranslation", () => {
+        it("sets translation matrix", () => {
+            const m = new Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+            const result = m.setTranslation(20, 30, 40);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                 1,  0,  0, 0,
+                 0,  1,  0, 0,
+                 0,  0,  1, 0,
+                20, 30, 40, 1
+            ]);
+        });
+    });
+
     describe("translateX", () => {
         it("translates the matrix along the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -660,6 +674,31 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("setScale", () => {
+        it("sets scale matrix with common scale factor", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18);
+            const result = m.setScale(20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20,  0,  0, 0,
+                 0, 20,  0, 0,
+                 0,  0, 20, 0,
+                 0,  0,  0, 1
+            ]);
+        });
+        it("sets scale matrix with individual scale factors", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18);
+            const result = m.setScale(20, 30, 40);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20,  0,  0, 0,
+                 0, 30,  0, 0,
+                 0,  0, 40, 0,
+                 0,  0,  0, 1
+            ]);
+        });
+    });
+
     describe("scaleX", () => {
         it("scales the matrix along the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -716,6 +755,20 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("setRotation", () => {
+        it("sets matrix to rotation around the given axis", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.setRotation(0.5, new Vector3(10, 15, -30));
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                0.8875758051872253, -0.39594629406929016, -0.23544786870479584, 0,
+                0.4259260594844818, 0.9000673890113831, 0.0920090526342392, 0,
+                0.17548830807209015, -0.18194839358329773, 0.9675219058990479, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
     describe("rotateX", () => {
         it("rotates the matrix around the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -726,6 +779,20 @@ describe("Matrix4", () => {
                 8.702742576599121, 10.0597505569458, 11.41675853729248, 12.77376651763916,
                 5.501115322113037, 5.899272441864014, 6.29742956161499, 6.695586204528809,
                 13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("setXRotation", () => {
+        it("sets matrix to rotation around the X axis", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.setXRotation(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                1, 0, 0, 0,
+                0, 0.8775825500488281, 0.4794255495071411, 0,
+                0, -0.4794255495071411, 0.8775825500488281, 0,
+                0, 0, 0, 1
             ]);
         });
     });
@@ -744,6 +811,20 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("setYRotation", () => {
+        it("sets matrix to rotation around the Y axis", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.setYRotation(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0, -0.4794255495071411, 0,
+                0, 1, 0, 0,
+                0.4794255495071411, 0, 0.8775825500488281, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
     describe("rotateZ", () => {
         it("rotates the matrix around the Z axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -754,6 +835,20 @@ describe("Matrix4", () => {
                 3.908487319946289, 4.306644439697266, 4.704801082611084, 5.1029582023620605,
                 9, 10, 11, 12,
                 13, 14, 15, 16
+            ]);
+        });
+    });
+
+    describe("setZRotation", () => {
+        it("sets matrix to rotation around the Z axis", () => {
+            const m = new Matrix4(17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            const result = m.setZRotation(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0.4794255495071411, 0, 0,
+                -0.4794255495071411, 0.8775825500488281, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
             ]);
         });
     });

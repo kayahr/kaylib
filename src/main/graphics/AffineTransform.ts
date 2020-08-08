@@ -204,6 +204,19 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
+     * Sets matrix to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     */
+    public setTranslation(dx: number, dy: number): this {
+        this[0] =  1; this[1] =  0;
+        this[2] =  0; this[3] =  1;
+        this[4] = dx; this[5] = dy;
+        return this;
+    }
+
+    /**
      * Scales this matrix by the specified factor.
      *
      * @param sx - The X scale factor.
@@ -240,7 +253,20 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
-     * Rotates this matrix around the specified axis.
+     * Sets matrix to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     */
+    public setScale(sx: number, sy = sx): this {
+        this[0] = sx; this[1] =  0;
+        this[2] =  0; this[3] = sy;
+        this[4] =  0; this[5] =  0;
+        return this;
+    }
+
+    /**
+     * Rotates this matrix by the given angle.
      *
      * @param angle - The rotation angle in RAD.
      */
@@ -251,6 +277,19 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
         this[1] = c * a01 + s * a11;
         this[2] = c * a10 - s * a00;
         this[3] = c * a11 - s * a01;
+        return this;
+    }
+
+    /**
+     * Sets matrix to a rotation matrix.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public setRotation(angle: number): this {
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[0] =  c; this[1] = s;
+        this[2] = -s; this[3] = c;
+        this[4] =  0; this[5] = 0;
         return this;
     }
 }

@@ -502,6 +502,19 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /**
+     * Sets matrix to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     */
+    public setTranslation(dx: number, dy: number): this {
+        this[0] =  1; this[1] =  0; this[2] = 0;
+        this[3] =  0; this[4] =  1; this[5] = 0;
+        this[6] = dx; this[7] = dy; this[8] = 1;
+        return this;
+    }
+
+    /**
      * Translates this matrix by the specified X delta.
      *
      * @param d - The X translation delta.
@@ -538,6 +551,19 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[3] *= sy;
         this[4] *= sy;
         this[5] *= sy;
+        return this;
+    }
+
+    /**
+     * Sets matrix to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     */
+    public setScale(sx: number, sy = sx): this {
+        this[0] = sx; this[1] =  0; this[2] = 0;
+        this[3] =  0; this[4] = sy; this[5] = 0;
+        this[6] =  0; this[7] =  0; this[8] = 1;
         return this;
     }
 
@@ -579,6 +605,19 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[3] = c * a10 - s * a00;
         this[4] = c * a11 - s * a01;
         this[5] = c * a12 - s * a02;
+        return this;
+    }
+
+    /**
+     * Sets matrix to a rotation matrix.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public setRotation(angle: number): this {
+        const s = Math.sin(angle), c = Math.cos(angle);
+        this[0] =  c; this[1] = s; this[2] = 0;
+        this[3] = -s; this[4] = c; this[5] = 0;
+        this[6] =  0; this[7] = 0; this[8] = 1;
         return this;
     }
 }

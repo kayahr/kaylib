@@ -413,6 +413,19 @@ describe("AffineTransform", () => {
         });
     });
 
+    describe("setTranslation", () => {
+        it("sets translation matrix", () => {
+            const m = new AffineTransform(7, 2, 3, 4, 5, 6);
+            const result = m.setTranslation(2, 3);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                1, 0,
+                0, 1,
+                2, 3
+            ]);
+        });
+    });
+
     describe("scale", () => {
         it("scales the matrix by given scale factor", () => {
             const m = new AffineTransform(1, 2, 3, 4, 5, 6);
@@ -462,6 +475,29 @@ describe("AffineTransform", () => {
         });
     });
 
+    describe("setScale", () => {
+        it("sets scale matrix with common scale factor", () => {
+            const m = new AffineTransform(7, 2, 3, 4, 5, 6);
+            const result = m.setScale(20);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20, 0,
+                0, 20,
+                0, 0
+            ]);
+        });
+        it("sets scale matrix with individual scale factors", () => {
+            const m = new AffineTransform(8, 2, 3, 4, 5, 6);
+            const result = m.setScale(20, 30);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                20, 0,
+                0, 30,
+                0, 0
+            ]);
+        });
+    });
+
     describe("rotate", () => {
         it("rotates the matrix", () => {
             const m = new AffineTransform(1, 2, 3, 4, 5, 6);
@@ -471,6 +507,19 @@ describe("AffineTransform", () => {
                 2.315859079360962, 3.6728672981262207,
                 2.153322219848633, 2.5514791011810303,
                 5, 6
+            ]);
+        });
+    });
+
+    describe("setRotation", () => {
+        it("sets rotation matrix", () => {
+            const m = new AffineTransform(7, 2, 3, 4, 5, 6);
+            const result = m.setRotation(0.5);
+            expect(result).toBe(m);
+            expect(result.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0.4794255495071411,
+                -0.4794255495071411, 0.8775825500488281,
+                0, 0
             ]);
         });
     });
