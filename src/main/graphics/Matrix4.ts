@@ -669,6 +669,17 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Creates matrix initialized to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     * @param dz - The Z translation.
+     */
+    public static createTranslation(dx: number, dy: number, dz: number): Matrix4 {
+        return new Matrix4().setTranslation(dx, dy, dz);
+    }
+
+    /**
      * Translates this matrix by the specified X delta.
      *
      * @param d - The X translation delta.
@@ -743,6 +754,17 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[ 8] =  0; this[ 9] =  0; this[10] = sz; this[11] = 0;
         this[12] =  0; this[13] =  0; this[14] =  0; this[15] = 1;
         return this;
+    }
+
+    /**
+     * Creates matrix initialized to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     * @param sz - Optional Z scale factor. Defaults to X scale factor.
+     */
+    public static createScale(sx: number, sy?: number, sz?: number): Matrix4 {
+        return new Matrix4().setScale(sx, sy, sz);
     }
 
     /**
@@ -871,6 +893,16 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Create new matrix initialized to a rotation matrix around the given axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     * @param axis  - The normalized rotation axis.
+     */
+    public static createRotation(angle: number, axis: ReadonlyVectorLike<3>): Matrix4 {
+        return new Matrix4().setRotation(angle, axis);
+    }
+
+    /**
      * Rotates this matrix by the specified angle around the X axis.
      *
      * @param angle - The rotation angle in RAD.
@@ -902,6 +934,15 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[ 8] = 0; this[ 9] = -s; this[10] =  c; this[11] = 0;
         this[12] = 0; this[13] =  0; this[14] =  0; this[15] = 1;
         return this;
+    }
+
+    /**
+     * Create new matrix initialized to a rotation matrix around the X axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public static createXRotation(angle: number): Matrix4 {
+        return new Matrix4().setXRotation(angle);
     }
 
     /**
@@ -939,6 +980,15 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Create new matrix initialized to a rotation matrix around the Y axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public static createYRotation(angle: number): Matrix4 {
+        return new Matrix4().setYRotation(angle);
+    }
+
+    /**
      * Rotates this matrix by the specified angle around the Z axis.
      *
      * @param angle - The rotation angle in RAD.
@@ -970,5 +1020,14 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[ 8] =  0; this[ 9] = 0; this[10] = 1; this[11] = 0;
         this[12] =  0; this[13] = 0; this[14] = 0; this[15] = 1;
         return this;
+    }
+
+    /**
+     * Create new matrix initialized to a rotation matrix around the Z axis.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public static createZRotation(angle: number): Matrix4 {
+        return new Matrix4().setZRotation(angle);
     }
 }

@@ -426,6 +426,17 @@ describe("AffineTransform", () => {
         });
     });
 
+    describe("createTranslation", () => {
+        it("creates translation matrix", () => {
+            const m = AffineTransform.createTranslation(2, 3);
+            expect(m.toJSON()).toEqualCloseTo([
+                1, 0,
+                0, 1,
+                2, 3
+            ]);
+        });
+    });
+
     describe("scale", () => {
         it("scales the matrix by given scale factor", () => {
             const m = new AffineTransform(1, 2, 3, 4, 5, 6);
@@ -498,6 +509,25 @@ describe("AffineTransform", () => {
         });
     });
 
+    describe("createScale", () => {
+        it("creates scale matrix with common scale factor", () => {
+            const m = AffineTransform.createScale(20);
+            expect(m.toJSON()).toEqualCloseTo([
+                20, 0,
+                0, 20,
+                0, 0
+            ]);
+        });
+        it("creates scale matrix with individual scale factors", () => {
+            const m = AffineTransform.createScale(20, 30);
+            expect(m.toJSON()).toEqualCloseTo([
+                20, 0,
+                0, 30,
+                0, 0
+            ]);
+        });
+    });
+
     describe("rotate", () => {
         it("rotates the matrix", () => {
             const m = new AffineTransform(1, 2, 3, 4, 5, 6);
@@ -517,6 +547,17 @@ describe("AffineTransform", () => {
             const result = m.setRotation(0.5);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0.4794255495071411,
+                -0.4794255495071411, 0.8775825500488281,
+                0, 0
+            ]);
+        });
+    });
+
+    describe("createRotation", () => {
+        it("creates rotation matrix", () => {
+            const m = AffineTransform.createRotation(0.5);
+            expect(m.toJSON()).toEqualCloseTo([
                 0.8775825500488281, 0.4794255495071411,
                 -0.4794255495071411, 0.8775825500488281,
                 0, 0

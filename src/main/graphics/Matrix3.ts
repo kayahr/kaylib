@@ -519,6 +519,16 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /**
+     * Creates matrix initialized to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     */
+    public static createTranslation(dx: number, dy: number): Matrix3 {
+        return new Matrix3().setTranslation(dx, dy);
+    }
+
+    /**
      * Translates this matrix by the specified X delta.
      *
      * @param d - The X translation delta.
@@ -569,6 +579,16 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[3] =  0; this[4] = sy; this[5] = 0;
         this[6] =  0; this[7] =  0; this[8] = 1;
         return this;
+    }
+
+    /**
+     * Creates matrix initialized to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     */
+    public static createScale(sx: number, sy?: number): Matrix3 {
+        return new Matrix3().setScale(sx, sy);
     }
 
     /**
@@ -623,5 +643,14 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[3] = -s; this[4] = c; this[5] = 0;
         this[6] =  0; this[7] = 0; this[8] = 1;
         return this;
+    }
+
+    /**
+     * Create new matrix initialized to a rotation matrix.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public static createRotation(angle: number): Matrix3 {
+        return new Matrix3().setRotation(angle);
     }
 }

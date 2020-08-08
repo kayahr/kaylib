@@ -413,6 +413,17 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("createTranslation", () => {
+        it("creates translation matrix", () => {
+            const m = Matrix3.createTranslation(2, 3);
+            expect(m.toJSON()).toEqualCloseTo([
+                1, 0, 0,
+                0, 1, 0,
+                2, 3, 1
+            ]);
+        });
+    });
+
     describe("translateX", () => {
         it("translates the matrix by given X delta", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -485,6 +496,25 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("createScale", () => {
+        it("creates scale matrix with common scale factor", () => {
+            const m = Matrix3.createScale(20);
+            expect(m.toJSON()).toEqualCloseTo([
+                20,  0, 0,
+                 0, 20, 0,
+                 0,  0, 1
+            ]);
+        });
+        it("creates scale matrix with individual scale factors", () => {
+            const m = Matrix3.createScale(20, 30);
+            expect(m.toJSON()).toEqualCloseTo([
+                20,  0, 0,
+                 0, 30, 0,
+                 0,  0, 1
+            ]);
+        });
+    });
+
     describe("scaleX", () => {
         it("scales the matrix by given X scale factor", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -530,6 +560,17 @@ describe("Matrix3", () => {
             const result = m.setRotation(0.5);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([
+                 0.8775825500488281, 0.4794255495071411, 0,
+                -0.4794255495071411, 0.8775825500488281, 0,
+                                  0,                  0, 1
+            ]);
+        });
+    });
+
+    describe("createRotation", () => {
+        it("creates rotation matrix", () => {
+            const m = Matrix3.createRotation(0.5);
+            expect(m.toJSON()).toEqualCloseTo([
                  0.8775825500488281, 0.4794255495071411, 0,
                 -0.4794255495071411, 0.8775825500488281, 0,
                                   0,                  0, 1

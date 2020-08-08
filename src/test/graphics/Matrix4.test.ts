@@ -607,6 +607,18 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("createTranslation", () => {
+        it("creates translation matrix", () => {
+            const m = Matrix4.createTranslation(20, 30, 40);
+            expect(m.toJSON()).toEqualCloseTo([
+                 1,  0,  0, 0,
+                 0,  1,  0, 0,
+                 0,  0,  1, 0,
+                20, 30, 40, 1
+            ]);
+        });
+    });
+
     describe("translateX", () => {
         it("translates the matrix along the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -699,6 +711,27 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("createScale", () => {
+        it("creates scale matrix with common scale factor", () => {
+            const m = Matrix4.createScale(20);
+            expect(m.toJSON()).toEqualCloseTo([
+                20,  0,  0, 0,
+                 0, 20,  0, 0,
+                 0,  0, 20, 0,
+                 0,  0,  0, 1
+            ]);
+        });
+        it("creates scale matrix with individual scale factors", () => {
+            const m = Matrix4.createScale(20, 30, 40);
+            expect(m.toJSON()).toEqualCloseTo([
+                20,  0,  0, 0,
+                 0, 30,  0, 0,
+                 0,  0, 40, 0,
+                 0,  0,  0, 1
+            ]);
+        });
+    });
+
     describe("scaleX", () => {
         it("scales the matrix along the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -769,6 +802,18 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("createRotation", () => {
+        it("creates matrix to rotation around the given axis", () => {
+            const m = Matrix4.createRotation(0.5, new Vector3(10, 15, -30));
+            expect(m.toJSON()).toEqualCloseTo([
+                0.8875758051872253, -0.39594629406929016, -0.23544786870479584, 0,
+                0.4259260594844818, 0.9000673890113831, 0.0920090526342392, 0,
+                0.17548830807209015, -0.18194839358329773, 0.9675219058990479, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
     describe("rotateX", () => {
         it("rotates the matrix around the X axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -789,6 +834,18 @@ describe("Matrix4", () => {
             const result = m.setXRotation(0.5);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([
+                1, 0, 0, 0,
+                0, 0.8775825500488281, 0.4794255495071411, 0,
+                0, -0.4794255495071411, 0.8775825500488281, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
+    describe("createXRotation", () => {
+        it("creates matrix to rotation around the X axis", () => {
+            const m = Matrix4.createXRotation(0.5);
+            expect(m.toJSON()).toEqualCloseTo([
                 1, 0, 0, 0,
                 0, 0.8775825500488281, 0.4794255495071411, 0,
                 0, -0.4794255495071411, 0.8775825500488281, 0,
@@ -825,6 +882,18 @@ describe("Matrix4", () => {
         });
     });
 
+    describe("createYRotation", () => {
+        it("creates matrix to rotation around the Y axis", () => {
+            const m = Matrix4.createYRotation(0.5);
+            expect(m.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0, -0.4794255495071411, 0,
+                0, 1, 0, 0,
+                0.4794255495071411, 0, 0.8775825500488281, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
     describe("rotateZ", () => {
         it("rotates the matrix around the Z axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
@@ -845,6 +914,18 @@ describe("Matrix4", () => {
             const result = m.setZRotation(0.5);
             expect(result).toBe(m);
             expect(result.toJSON()).toEqualCloseTo([
+                0.8775825500488281, 0.4794255495071411, 0, 0,
+                -0.4794255495071411, 0.8775825500488281, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            ]);
+        });
+    });
+
+    describe("createZRotation", () => {
+        it("creates matrix to rotation around the Z axis", () => {
+            const m = Matrix4.createZRotation(0.5);
+            expect(m.toJSON()).toEqualCloseTo([
                 0.8775825500488281, 0.4794255495071411, 0, 0,
                 -0.4794255495071411, 0.8775825500488281, 0, 0,
                 0, 0, 1, 0,

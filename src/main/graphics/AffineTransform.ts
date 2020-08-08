@@ -217,6 +217,16 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
+     * Creates matrix initialized to a translation matrix.
+     *
+     * @param dx - The X translation.
+     * @param dy - The Y translation.
+     */
+    public static createTranslation(dx: number, dy: number): AffineTransform {
+        return new AffineTransform().setTranslation(dx, dy);
+    }
+
+    /**
      * Scales this matrix by the specified factor.
      *
      * @param sx - The X scale factor.
@@ -266,6 +276,16 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
+     * Creates matrix initialized to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     */
+    public static createScale(sx: number, sy?: number): AffineTransform {
+        return new AffineTransform().setScale(sx, sy);
+    }
+
+    /**
      * Rotates this matrix by the given angle.
      *
      * @param angle - The rotation angle in RAD.
@@ -291,5 +311,14 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
         this[2] = -s; this[3] = c;
         this[4] =  0; this[5] = 0;
         return this;
+    }
+
+    /**
+     * Create new matrix initialized to a rotation matrix.
+     *
+     * @param angle - The rotation angle in RAD.
+     */
+    public static createRotation(angle: number): AffineTransform {
+        return new AffineTransform().setRotation(angle);
     }
 }
