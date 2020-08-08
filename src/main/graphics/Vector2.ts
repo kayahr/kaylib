@@ -46,13 +46,15 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     public constructor(buffer: StrictArrayBufferLike, offset?: number);
 
     public constructor(...args: [] | Vector2JSON | [ StrictArrayBufferLike, number? ]) {
-        const len = args.length;
-        if (len === 0) {
+        if (args.length === 0) {
             super(2);
-        } else if (AbstractVector.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 2);
+        } else if (AbstractVector.isInitFromComponents(args)) {
+            super(2);
+            // Manually setting elements is much faster than passing them as array to Float32Array constructor
+            this[0] = args[0];
+            this[1] = args[1];
         } else {
-            super(args);
+            super(args[0], args[1] ?? 0, 2);
         }
     }
 

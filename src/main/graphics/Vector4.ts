@@ -50,10 +50,15 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
     public constructor(...args: [] | Vector4JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
             super(4);
-        } else if (AbstractVector.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 4);
+        } else if (AbstractVector.isInitFromComponents(args)) {
+            super(4);
+            // Manually setting elements is much faster than passing them as array to Float32Array constructor
+            this[0] = args[0];
+            this[1] = args[1];
+            this[2] = args[2];
+            this[3] = args[3];
         } else {
-            super(args);
+            super(args[0], args[1] ?? 0, 4);
         }
     }
 

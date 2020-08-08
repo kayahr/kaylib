@@ -58,10 +58,14 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         if (args.length === 0) {
             super(9);
             this[0] = this[4] = this[8] = 1;
-        } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 9);
+        } else if (AbstractMatrix.isInitFromComponents(args)) {
+            super(9);
+            // Manually setting elements is much faster than passing them as array to Float32Array constructor
+            this[0] = args[0]; this[1] = args[1]; this[2] = args[2];
+            this[3] = args[3]; this[4] = args[4]; this[5] = args[5];
+            this[6] = args[6]; this[7] = args[7]; this[8] = args[8];
         } else {
-            super(args);
+            super(args[0], args[1] ?? 0, 9);
         }
         this.columns = 3;
         this.rows = 3;

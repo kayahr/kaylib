@@ -56,10 +56,13 @@ export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Seria
         if (args.length === 0) {
             super(4);
             this[0] = this[3] = 1;
-        } else if (AbstractMatrix.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 4);
+        } else if (AbstractMatrix.isInitFromComponents(args)) {
+            super(4);
+            // Manually setting elements is much faster than passing them as array to Float32Array constructor
+            this[0] = args[0]; this[1] = args[1];
+            this[2] = args[2]; this[3] = args[3];
         } else {
-            super(args);
+            super(args[0], args[1] ?? 0, 4);
         }
         this.columns = 2;
         this.rows = 2;

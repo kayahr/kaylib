@@ -49,10 +49,14 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     public constructor(...args: [] | Vector3JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
             super(3);
-        } else if (AbstractVector.isInitFromArrayBuffer(args)) {
-            super(args[0], args[1] ?? 0, 3);
+        } else if (AbstractVector.isInitFromComponents(args)) {
+            super(3);
+            // Manually setting elements is much faster than passing them as array to Float32Array constructor
+            this[0] = args[0];
+            this[1] = args[1];
+            this[2] = args[2];
         } else {
-            super(args);
+            super(args[0], args[1] ?? 0, 3);
         }
     }
 

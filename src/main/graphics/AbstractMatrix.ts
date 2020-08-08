@@ -6,7 +6,6 @@
 import { formatNumber } from "../util/string";
 import { Constructor, StrictArrayBufferLike } from "../util/types";
 import { ReadonlyMatrixLike } from "./Matrix";
-import { ReadonlyVectorLike } from "./Vector";
 
 /**
  * Abstract base class for 32-bit floating point matrices.
@@ -20,15 +19,13 @@ export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> exten
     public readonly rows!: number;
 
     /**
-     * Helper method to check if constructor arguments are for initializing a matrix from an array buffer.
+     * Helper method to check if constructor arguments are for initializing a matrix from a components array.
      *
      * @param args - The arguments to check.
-     * @return True if arguments are for initializing a matrix from an array buffer.
+     * @return True if arguments are for initializing a matrix from a components array.
      */
-    protected static isInitFromArrayBuffer(args: Array<number | ReadonlyVectorLike | ReadonlyMatrixLike> |
-            [ StrictArrayBufferLike, number? ]): args is [ StrictArrayBufferLike, number? ] {
-        const type = args[0].constructor;
-        return type === ArrayBuffer || type === SharedArrayBuffer;
+    protected static isInitFromComponents(args: number[] | [ StrictArrayBufferLike, number? ]): args is number[] {
+        return typeof args[0] === "number";
     }
 
     /**

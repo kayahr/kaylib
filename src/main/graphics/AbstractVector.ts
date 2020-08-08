@@ -14,15 +14,13 @@ export abstract class AbstractVector<Size extends number = number> extends Float
     public readonly length!: Size;
 
     /**
-     * Helper method to check if constructor arguments are for initializing a vector from an array buffer.
+     * Helper method to check if constructor arguments are for initializing a matrix from a components array.
      *
      * @param args - The arguments to check.
-     * @return True if arguments are for initializing a vector from an array buffer.
+     * @return True if arguments are for initializing a matrix from a components array.
      */
-    protected static isInitFromArrayBuffer(args: Array<number | ReadonlyVectorLike> |
-            [ StrictArrayBufferLike, number? ]): args is [ StrictArrayBufferLike, number? ] {
-        const type = args[0].constructor;
-        return type === ArrayBuffer || type === SharedArrayBuffer;
+    protected static isInitFromComponents(args: number[] | [ StrictArrayBufferLike, number? ]): args is number[] {
+        return typeof args[0] === "number";
     }
 
     /**
