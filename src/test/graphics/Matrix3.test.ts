@@ -11,6 +11,7 @@ import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector3 } from "../../main/graphics/Vector3";
 import { IllegalArgumentException, IllegalStateException } from "../../main/util/exception";
+import { degrees, normalizeDegrees, radians } from "../../main/util/math";
 import { isBrowser } from "../../main/util/runtime";
 
 describe("Matrix3", () => {
@@ -437,6 +438,12 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("getTranslationX", () => {
+        it("returns the horizontal translation of the matrix", () => {
+            expect(Matrix3.createTranslation(-9.1, 3).getTranslationX()).toBeCloseTo(-9.1);
+        });
+    });
+
     describe("translateY", () => {
         it("translates the matrix by given Y delta", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -447,6 +454,12 @@ describe("Matrix3", () => {
                  4,  5,  6,
                 47, 58, 69
             ]);
+        });
+    });
+
+    describe("getTranslationY", () => {
+        it("returns the vertical translation of the matrix", () => {
+            expect(Matrix3.createTranslation(-9.1, 3).getTranslationY()).toBeCloseTo(3);
         });
     });
 
@@ -528,6 +541,32 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("getScaleX", () => {
+        it("returns the horizontal scaling factor of the matrix", () => {
+            const matrix = new Matrix3();
+            matrix.translate(1, 2);
+            matrix.scale(10, 1);
+            expect(matrix.getScaleX()).toBeCloseTo(10);
+            matrix.scale(0.5, 1);
+            expect(matrix.getScaleX()).toBeCloseTo(5);
+            matrix.rotate(radians(23.45));
+            expect(matrix.getScaleX()).toBeCloseTo(5);
+        });
+        it("returns horizontal scaling for every rotation angle", () => {
+            for (let i = -360; i <= 360; i++) {
+                const matrix = Matrix3.createScale(5, 10).rotate(radians(i));
+                expect(matrix.getScaleX()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct X scale when Y scale is 0", () => {
+            expect(Matrix3.createScale(10, 0).rotate(1.3).getScaleX()).toBeCloseTo(10);
+        });
+        it("returns 0 for scale 0", () => {
+            expect(Matrix3.createScale(0).rotate(0.5).getScaleX()).toBe(0);
+            expect(Matrix3.createScale(0, 40).rotate(1.3).getScaleX()).toBe(0);
+        });
+    });
+
     describe("scaleY", () => {
         it("scales the matrix by given Y scale factor", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -541,6 +580,32 @@ describe("Matrix3", () => {
         });
     });
 
+    describe("getScaleY", () => {
+        it("returns the vertical scaling factor of the matrix", () => {
+            const matrix = new Matrix3();
+            matrix.translate(10, 20);
+            matrix.scale(1, 10);
+            expect(matrix.getScaleY()).toBeCloseTo(10);
+            matrix.scale(1, 0.5);
+            expect(matrix.getScaleY()).toBeCloseTo(5);
+            matrix.rotate(radians(78.93));
+            expect(matrix.getScaleY()).toBeCloseTo(5);
+        });
+        it("returns vertical scaling for every rotation angle", () => {
+            for (let i = -360; i <= 360; i++) {
+                const matrix = Matrix3.createScale(41, 12).rotate(radians(i));
+                expect(matrix.getScaleY()).toBeCloseTo(12);
+            }
+        });
+        it("returns correct Y scale when X scale is 0", () => {
+            expect(Matrix3.createScale(0, 10).rotate(1.3).getScaleY()).toBeCloseTo(10);
+        });
+        it("returns 0 for scale 0", () => {
+            expect(Matrix3.createScale(0).rotate(0.5).getScaleY()).toBe(0);
+            expect(Matrix3.createScale(40, 0).rotate(1.3).getScaleY()).toBe(0);
+        });
+    });
+
     describe("rotate", () => {
         it("rotates the matrix", () => {
             const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -551,6 +616,53 @@ describe("Matrix3", () => {
                 3.030904769897461, 3.4290616512298584, 3.827218770980835,
                 7, 8, 9
             ]);
+        });
+    });
+
+    describe("getRotation", () => {
+        it("returns the rotation of the matrix in radians", () => {
+            const matrix = new Matrix3();
+            expect(matrix.getRotation()).toBe(0);
+            matrix.rotate(radians(20));
+            expect(degrees(matrix.getRotation())).toBeCloseTo(20);
+            matrix.rotate(radians(-40));
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+            matrix.translate(10, -30);
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+            matrix.scale(3);
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+            matrix.scale(0.1);
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+            matrix.scale(10);
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+            matrix.rotate(radians(180));
+            expect(degrees(matrix.getRotation())).toBeCloseTo(160);
+            matrix.rotate(radians(180));
+            expect(degrees(matrix.getRotation())).toBeCloseTo(-20);
+        });
+        it("returns the rotation for any angle", () => {
+            for (let i = -360; i < 360; i++) {
+                const m = new Matrix3().translate(10, 20).scale(2, 3).rotate(radians(i));
+                expect(normalizeDegrees(degrees(m.getRotation()))).toBeCloseTo(normalizeDegrees(i));
+            }
+        });
+        it("returns correct rotation when Y scale is 0", () => {
+            for (let i = 0; i < 360; i++) {
+                const m = new Matrix3().translate(10, 20).scale(1, 0).rotate(radians(i));
+                expect(normalizeDegrees(degrees(m.getRotation()))).toBeCloseTo(i);
+            }
+        });
+        it("returns correct rotation when X scale is 0", () => {
+            for (let i = 0; i < 360; i++) {
+                const m = new Matrix3().translate(10, 20).scale(0, 1).rotate(radians(i));
+                expect(normalizeDegrees(degrees(m.getRotation()))).toBeCloseTo(i);
+            }
+        });
+        it("returns 0 when scale is 0", () => {
+            for (let i = 0; i < 360; i++) {
+                const m = new Matrix3().translate(10, 20).scale(0).rotate(radians(i));
+                expect(m.getRotation()).toBe(0);
+            }
         });
     });
 

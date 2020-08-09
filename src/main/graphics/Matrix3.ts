@@ -541,6 +541,15 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /**
+     * Returns the X translation of the matrix.
+     *
+     * @return The X translation.
+     */
+    public getTranslationX(): number {
+        return this[6];
+    }
+
+    /**
      * Translates this matrix by the specified Y delta.
      *
      * @param d - The Y translation delta.
@@ -552,6 +561,14 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         return this;
     }
 
+    /**
+     * Returns the Y translation of the matrix.
+     *
+     * @return The Y translation.
+     */
+    public getTranslationY(): number {
+        return this[7];
+    }
     /**
      * Scales this matrix by the specified factor.
      *
@@ -604,6 +621,23 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     }
 
     /**
+     * Returns the X scale factor of the matrix.
+     *
+     * @return The X scale factor of the matrix.
+     */
+    public getScaleX(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[3], m22 = this[4];
+        if (m11 !== 0 || m21 !== 0) {
+            return Math.hypot(m11, m21);
+        } else if (m12 !== 0 || m22 !== 0) {
+            return (m11 * m22 - m12 * m21) / Math.hypot(m12, m22);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Scales this matrix by the specified factor along the Y axis.
      *
      * @param s - The scale factor.
@@ -613,6 +647,23 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[4] *= s;
         this[5] *= s;
         return this;
+    }
+
+    /**
+     * Returns the Y scale factor of the matrix.
+     *
+     * @return The Y scale factor of the matrix.
+     */
+    public getScaleY(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[3], m22 = this[4];
+        if (m11 !== 0 || m21 !== 0) {
+            return (m11 * m22 - m12 * m21) / Math.hypot(m11, m21);
+        } else if (m12 !== 0 || m22 !== 0) {
+            return Math.hypot(m12, m22);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -631,6 +682,25 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
         this[4] = c * m22 - s * m12;
         this[5] = c * m23 - s * m13;
         return this;
+    }
+
+    /**
+     * Returns the rotation of this matrix in radians.
+     *
+     * @return The rotation angle in radians.
+     */
+    public getRotation(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[3], m22 = this[4];
+        if (m11 !== 0 || m21 !== 0) {
+            const acos = Math.acos(m11 / Math.hypot(m11, m21));
+            return m21 > 0 ? -acos : acos;
+        } else if (m12 !== 0 || m22 !== 0) {
+            const acos = Math.acos(m12 / Math.hypot(m12, m22));
+            return Math.PI / 2 + (m22 > 0 ? -acos : acos);
+        } else {
+            return 0;
+        }
     }
 
     /**
