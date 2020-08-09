@@ -708,4 +708,26 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
     public static createRotation(angle: number): Matrix3 {
         return new Matrix3().setRotation(angle);
     }
+
+    /**
+     * Transforms the given 2D canvas rendering context. The third row of this 3x3 matrix is ignored because Canvas
+     * only supports affine transformations with the last row fixed to 0 0 1.
+     *
+     * @param ctx - The 2D canvas rendering context to transform.
+     */
+    public transformCanvas(ctx: CanvasRenderingContext2D): this {
+        ctx.transform(this[0], this[1], this[3], this[4], this[6], this[7]);
+        return this;
+    }
+
+    /**
+     * Sets the transformation of the given 2D canvas rendering context. The third row of this 3x3 matrix is ignored
+     * because Canvas only supports affine transformations with the last row fixed to 0 0 1.
+     *
+     * @param ctx - The 2D canvas rendering context to set the transformation on.
+     */
+    public setCanvasTransform(ctx: CanvasRenderingContext2D): this {
+        ctx.setTransform(this[0], this[1], this[3], this[4], this[6], this[7]);
+        return this;
+    }
 }

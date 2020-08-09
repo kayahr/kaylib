@@ -377,4 +377,24 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public static createRotation(angle: number): AffineTransform {
         return new AffineTransform().setRotation(angle);
     }
+
+    /**
+     * Transforms the given 2D canvas rendering context.
+     *
+     * @param ctx - The 2D canvas rendering context to transform.
+     */
+    public transformCanvas(ctx: CanvasRenderingContext2D): this {
+        ctx.transform(this[0], this[1], this[2], this[3], this[4], this[5]);
+        return this;
+    }
+
+    /**
+     * Sets the transformation of the given 2D canvas rendering context.
+     *
+     * @param ctx - The 2D canvas rendering context to set the transformation on.
+     */
+    public setCanvasTransform(ctx: CanvasRenderingContext2D): this {
+        ctx.setTransform(this[0], this[1], this[2], this[3], this[4], this[5]);
+        return this;
+    }
 }

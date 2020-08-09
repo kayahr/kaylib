@@ -6,6 +6,7 @@
 import "@kayahr/jest-matchers";
 import "jest-extended";
 
+import { createCanvas, getRenderingContext, hasCanvasSupport } from "../../main/graphics/canvas";
 import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Matrix3 } from "../../main/graphics/Matrix3";
 import { Matrix4 } from "../../main/graphics/Matrix4";
@@ -718,6 +719,41 @@ describe("Matrix3", () => {
                     IllegalStateException, "Can only create DOMMatrix from Matrix3 2D affine transformation");
                 expect(() => new Matrix3(2, 3, 0, 5, 6, 0, 8, 9, 0).toDOMMatrix()).toThrowWithMessage(
                     IllegalStateException, "Can only create DOMMatrix from Matrix3 2D affine transformation");
+            });
+        });
+    }
+
+    if (hasCanvasSupport()) {
+        describe("setCanvasTransform", () => {
+            it("sets the transformation matrix of a canvas", () => {
+                const m = new Matrix3(2, 3, 0, 4, 5, 0, 6, 7, 1);
+                const canvas = createCanvas(100, 100);
+                const ctx = getRenderingContext(canvas, "2d");
+                ctx.setTransform(3, 123, 4598, 12, 59, 39);
+                m.setCanvasTransform(ctx);
+                const m2 = ctx.getTransform();
+                expect(m2.a).toBeCloseTo(m[0]);
+                expect(m2.b).toBeCloseTo(m[1]);
+                expect(m2.c).toBeCloseTo(m[3]);
+                expect(m2.d).toBeCloseTo(m[4]);
+                expect(m2.e).toBeCloseTo(m[6]);
+                expect(m2.f).toBeCloseTo(m[7]);
+            });
+        });
+        describe("transformCanvas", () => {
+            it("transforms the transformation matrix of a canvas", () => {
+                const m = new Matrix3(2, 3, 0, 4, 5, 0, 6, 7, 1);
+                const canvas = createCanvas(100, 100);
+                const ctx = getRenderingContext(canvas, "2d");
+                ctx.setTransform(3, 123, 4598, 12, 59, 39);
+                m.transformCanvas(ctx);
+                const m2 = ctx.getTransform();
+                expect(m2.a).toBeCloseTo(13800);
+                expect(m2.b).toBeCloseTo(282);
+                expect(m2.c).toBeCloseTo(23002);
+                expect(m2.d).toBeCloseTo(552);
+                expect(m2.e).toBeCloseTo(32263);
+                expect(m2.f).toBeCloseTo(861);
             });
         });
     }
