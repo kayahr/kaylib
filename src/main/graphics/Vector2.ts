@@ -9,6 +9,7 @@ import { Serializable } from "../lang/Serializable";
 import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../util/math";
 import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
+import { AffineTransform } from "./AffineTransform";
 import { ReadonlySquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
@@ -200,11 +201,16 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public mul(arg: ReadonlySquareMatrixLike<2>): this {
+    public mul(arg: ReadonlySquareMatrixLike<2> | AffineTransform): this {
         const x = this[0];
         const y = this[1];
-        this[0] = x * arg[0] + y * arg[2];
-        this[1] = x * arg[1] + y * arg[3];
+        if (arg.length === 6) {
+            this[0] = x * arg[0] + y * arg[2] + arg[4];
+            this[1] = x * arg[1] + y * arg[3] + arg[5];
+        } else {
+            this[0] = x * arg[0] + y * arg[2];
+            this[1] = x * arg[1] + y * arg[3];
+        }
         return this;
     }
 
@@ -218,25 +224,24 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public div(arg: ReadonlySquareMatrixLike<2>): this {
+    public div(arg: ReadonlySquareMatrixLike<2> | AffineTransform): this {
         const b11 = arg[0], b12 = arg[1];
         const b21 = arg[2], b22 = arg[3];
-
-        // d = determinant(b)
+        const x = this[0];
+        const y = this[1];
         const d = b11 * b22 - b12 * b21;
-
-        // c = invert(b)
         const c11 = b22 / d;
         const c12 = -b12 / d;
         const c21 = -b21 / d;
         const c22 = b11 / d;
-
-        // this = this * c
-        const x = this[0];
-        const y = this[1];
-        this[0] = x * c11 + y * c21;
-        this[1] = x * c12 + y * c22;
-
+        if (arg.length === 6) {
+            const b31 = arg[4], b32 = arg[5];
+            this[0] = x * c11 + y * c21 + (b21 * b32 - b31 * b22) / d;
+            this[1] = x * c12 + y * c22 + (b31 * b12 - b11 * b32) / d;
+        } else {
+            this[0] = x * c11 + y * c21;
+            this[1] = x * c12 + y * c22;
+        }
         return this;
     }
 

@@ -5,6 +5,7 @@
 
 import "@kayahr/jest-matchers";
 
+import { AffineTransform } from "../../main/graphics/AffineTransform";
 import { Matrix2 } from "../../main/graphics/Matrix2";
 import { Vector2 } from "../../main/graphics/Vector2";
 import { Vector3 } from "../../main/graphics/Vector3";
@@ -744,6 +745,13 @@ describe("Vector2", () => {
             expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 43, 50 ]);
         });
+        it("multiplies the vector with an affine transform", () => {
+            const v = new Vector2(3, 4);
+            const m = new AffineTransform(5, 6, 7, 8, 9, 10);
+            const result = v.mul(m);
+            expect(result).toBe(v);
+            expect(result.toJSON()).toEqual([ 52, 60 ]);
+        });
     });
 
     describe("transposeMul", () => {
@@ -760,6 +768,13 @@ describe("Vector2", () => {
         it("multiplies the vector with the inverse of the given 2x2 matrix", () => {
             const v = new Vector2(43, 50);
             const m = new Matrix2(5, 6, 7, 8);
+            const result = v.div(m);
+            expect(result).toBe(v);
+            expect(result.toJSON()).toEqual([ 3, 4 ]);
+        });
+        it("multiplies the vector with the inverse of the given affine transform", () => {
+            const v = new Vector2(52, 60);
+            const m = new AffineTransform(5, 6, 7, 8, 9, 10);
             const result = v.div(m);
             expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ 3, 4 ]);

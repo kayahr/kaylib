@@ -9,7 +9,7 @@ import { Serializable } from "../lang/Serializable";
 import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from "../util/math";
 import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
-import { ReadonlyMatrixLike } from "./Matrix";
+import { ReadonlySquareMatrixLike } from "./SquareMatrix";
 import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
 /**
@@ -237,7 +237,7 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public mul(arg: ReadonlyMatrixLike<3, 3>): this {
+    public mul(arg: ReadonlySquareMatrixLike<3>): this {
         const x = this[0];
         const y = this[1];
         const z = this[2];
@@ -248,7 +248,7 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public transposeMul(arg: ReadonlyMatrixLike<3, 3>): this {
+    public transposeMul(arg: ReadonlySquareMatrixLike<3>): this {
         const x = this[0];
         const y = this[1];
         const z = this[2];
@@ -259,7 +259,7 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public div(arg: ReadonlyMatrixLike<3, 3>): this {
+    public div(arg: ReadonlySquareMatrixLike<3>): this {
         const b11 = arg[0], b12 = arg[1], b13 = arg[2];
         const b21 = arg[3], b22 = arg[4], b23 = arg[5];
         const b31 = arg[6], b32 = arg[7], b33 = arg[8];
@@ -295,7 +295,7 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
     }
 
     /** @inheritDoc */
-    public transposeDiv(arg: ReadonlyMatrixLike<3, 3>): this {
+    public transposeDiv(arg: ReadonlySquareMatrixLike<3>): this {
         const b11 = arg[0], b12 = arg[1], b13 = arg[2];
         const b21 = arg[3], b22 = arg[4], b23 = arg[5];
         const b31 = arg[6], b32 = arg[7], b33 = arg[8];
