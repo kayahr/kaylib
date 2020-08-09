@@ -148,7 +148,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
 
     /** @inheritDoc */
     public getDeterminant(): number {
-        return this[0] * this[3] * 1 - this[2] * this[1] * 1;
+        return this[0] * this[3] - this[2] * this[1];
     }
 
     /** @inheritDoc */
@@ -193,6 +193,15 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
+     * Returns the X translation of the matrix.
+     *
+     * @return The X translation.
+     */
+    public getTranslationX(): number {
+        return this[4];
+    }
+
+    /**
      * Translates this matrix by the specified Y delta.
      *
      * @param d - The Y translation delta.
@@ -201,6 +210,15 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
         this[4] += d * this[2];
         this[5] += d * this[3];
         return this;
+    }
+
+    /**
+     * Returns the Y translation of the matrix.
+     *
+     * @return The Y translation.
+     */
+    public getTranslationY(): number {
+        return this[5];
     }
 
     /**
@@ -241,6 +259,19 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
+     * Sets matrix to a scale matrix.
+     *
+     * @param sx - The X scale factor.
+     * @param sy - The Y scale factor. Defaults to X scale factor.
+     */
+    public setScale(sx: number, sy = sx): this {
+        this[0] = sx; this[1] =  0;
+        this[2] =  0; this[3] = sy;
+        this[4] =  0; this[5] =  0;
+        return this;
+    }
+
+    /**
      * Scales this matrix by the specified factor along the X axis.
      *
      * @param s - The scale factor.
@@ -249,6 +280,23 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
         this[0] *= s;
         this[1] *= s;
         return this;
+    }
+
+    /**
+     * Returns the X scale factor of the matrix.
+     *
+     * @return The X scale factor of the matrix.
+     */
+    public getScaleX(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[2], m22 = this[3];
+        if (m11 !== 0 || m21 !== 0) {
+            return Math.hypot(m11, m21);
+        } else if (m12 !== 0 || m22 !== 0) {
+            return (m11 * m22 - m12 * m21) / Math.hypot(m12, m22);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -263,16 +311,20 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /**
-     * Sets matrix to a scale matrix.
+     * Returns the Y scale factor of the matrix.
      *
-     * @param sx - The X scale factor.
-     * @param sy - The Y scale factor. Defaults to X scale factor.
+     * @return The Y scale factor of the matrix.
      */
-    public setScale(sx: number, sy = sx): this {
-        this[0] = sx; this[1] =  0;
-        this[2] =  0; this[3] = sy;
-        this[4] =  0; this[5] =  0;
-        return this;
+    public getScaleY(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[2], m22 = this[3];
+        if (m11 !== 0 || m21 !== 0) {
+            return (m11 * m22 - m12 * m21) / Math.hypot(m11, m21);
+        } else if (m12 !== 0 || m22 !== 0) {
+            return Math.hypot(m12, m22);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -291,13 +343,33 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
      * @param angle - The rotation angle in RAD.
      */
     public rotate(angle: number): this {
-        const a00 = this[0], a01 = this[1], a10 = this[2], a11 = this[3];
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[2], m22 = this[3];
         const s = Math.sin(angle), c = Math.cos(angle);
-        this[0] = c * a00 + s * a10;
-        this[1] = c * a01 + s * a11;
-        this[2] = c * a10 - s * a00;
-        this[3] = c * a11 - s * a01;
+        this[0] = c * m11 + s * m21;
+        this[1] = c * m12 + s * m22;
+        this[2] = c * m21 - s * m11;
+        this[3] = c * m22 - s * m12;
         return this;
+    }
+
+    /**
+     * Returns the rotation of this matrix in radians.
+     *
+     * @return The rotation angle in radians.
+     */
+    public getRotation(): number {
+        const m11 = this[0], m12 = this[1];
+        const m21 = this[2], m22 = this[3];
+        if (m11 !== 0 || m21 !== 0) {
+            const acos = Math.acos(m11 / Math.hypot(m11, m21));
+            return m21 > 0 ? -acos : acos;
+        } else if (m12 !== 0 || m22 !== 0) {
+            const acos = Math.acos(m12 / Math.hypot(m12, m22));
+            return Math.PI / 2 + (m22 > 0 ? -acos : acos);
+        } else {
+            return 0;
+        }
     }
 
     /**

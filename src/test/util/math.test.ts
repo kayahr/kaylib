@@ -4,7 +4,7 @@
  */
 
 import {
-    clamp, degrees, fract, mix, radians, roundEven, sanitizeDegrees, sanitizeRadians, smoothStep, step
+    clamp, degrees, fract, mix, normalizeDegrees, normalizeRadians, radians, roundEven, smoothStep, step
 } from "../../main/util/math";
 
 describe("math", () => {
@@ -28,23 +28,23 @@ describe("math", () => {
 
     describe("sanitizeRadians", () => {
         it("sanitizes angle in radians", () => {
-            expect(sanitizeRadians(0)).toBeCloseTo(0);
-            expect(sanitizeRadians(Math.PI * 2)).toBeCloseTo(0);
-            expect(sanitizeRadians(Math.PI * 2 - 0.01)).toBeCloseTo(Math.PI * 2 - 0.01);
-            expect(sanitizeRadians(-0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
-            expect(sanitizeRadians(-Math.PI * 2 - 0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
-            expect(sanitizeRadians(radians(780.05))).toBeCloseTo(radians(60.05));
+            expect(normalizeRadians(0)).toBeCloseTo(0);
+            expect(normalizeRadians(Math.PI * 2)).toBeCloseTo(0);
+            expect(normalizeRadians(Math.PI * 2 - 0.01)).toBeCloseTo(Math.PI * 2 - 0.01);
+            expect(normalizeRadians(-0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
+            expect(normalizeRadians(-Math.PI * 2 - 0.05)).toBeCloseTo(Math.PI * 2 - 0.05);
+            expect(normalizeRadians(radians(780.05))).toBeCloseTo(radians(60.05));
         });
     });
 
     describe("sanitizeDegrees", () => {
         it("sanitizes angle in degrees", () => {
-            expect(sanitizeDegrees(0)).toBeCloseTo(0);
-            expect(sanitizeDegrees(360)).toBeCloseTo(0);
-            expect(sanitizeDegrees(359.99)).toBeCloseTo(359.99);
-            expect(sanitizeDegrees(-0.05)).toBeCloseTo(359.95);
-            expect(sanitizeDegrees(-360.05)).toBeCloseTo(359.95);
-            expect(sanitizeDegrees(780.05)).toBeCloseTo(60.05);
+            expect(normalizeDegrees(0)).toBeCloseTo(0);
+            expect(normalizeDegrees(360)).toBeCloseTo(0);
+            expect(normalizeDegrees(359.99)).toBeCloseTo(359.99);
+            expect(normalizeDegrees(-0.05)).toBeCloseTo(359.95);
+            expect(normalizeDegrees(-360.05)).toBeCloseTo(359.95);
+            expect(normalizeDegrees(780.05)).toBeCloseTo(60.05);
         });
     });
 

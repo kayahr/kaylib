@@ -37,23 +37,23 @@ export function degrees(radians: number): number {
 }
 
 /**
- * Sanitizes an angle in radians so it is between 0 (inclusive) and 2*PI (exclusive).
+ * Normalizes an angle in radians so it is between 0 (inclusive) and 2*PI (exclusive).
  *
- * @param degrees - The angle to sanitize.
- * @return The sanitized angle.
+ * @param degrees - The angle to normalize.
+ * @return The normalized angle.
  */
-export function sanitizeRadians(angle: number): number {
+export function normalizeRadians(angle: number): number {
     const pi2 = Math.PI * 2;
     return ((angle % pi2) + pi2) % pi2;
 }
 
 /**
- * Sanitizes an angle in degrees so it is between 0 (inclusive) and 360 (exclusive).
+ * Normalizes an angle in degrees so it is between 0 (inclusive) and 360 (exclusive).
  *
- * @param degrees - The angle to sanitize.
- * @return The sanitized angle.
+ * @param degrees - The angle to normalize.
+ * @return The normalized angle.
  */
-export function sanitizeDegrees(degrees: number): number {
+export function normalizeDegrees(degrees: number): number {
     return ((degrees % 360) + 360) % 360;
 }
 
