@@ -97,6 +97,11 @@ export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<
     negate(): this;
 
     /**
+     * Resets all components of this vector to 0.
+     */
+    reset(): this;
+
+    /**
      * Adds the given vector or scalar to this vector.
      *
      * @param summand - The vector or scalar to add to this vector.

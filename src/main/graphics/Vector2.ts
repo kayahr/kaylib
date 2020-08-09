@@ -11,7 +11,7 @@ import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
 import { AffineTransform } from "./AffineTransform";
 import { ReadonlySquareMatrixLike } from "./SquareMatrix";
-import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
+import { ReadonlyVector, ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
 /**
  * JSON representation of a vector with two floating point components.
@@ -19,6 +19,17 @@ import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 export type Vector2JSON = [ number, number ];
 
 export type Vector2Like = VectorLike<2>;
+
+/**
+ * Readonly interface for a vector with two components.
+ */
+export interface ReadonlyVector2 extends ReadonlyVector<2> {
+    /** The X component of the vector. */
+    readonly x: number;
+
+    /** The Y component of the vector. */
+    readonly y: number;
+}
 
 /**
  * Vector with two 32-bit floating point components. This class extends the standard Float32Array type so a vector
@@ -173,6 +184,12 @@ export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<V
     public negate(): this {
         this[0] = -this[0];
         this[1] = -this[1];
+        return this;
+    }
+
+    /** @inheritDoc */
+    public reset(): this {
+        this[0] = this[1] = 0;
         return this;
     }
 

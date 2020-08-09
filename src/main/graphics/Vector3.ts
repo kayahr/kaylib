@@ -10,7 +10,7 @@ import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from
 import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
 import { ReadonlySquareMatrixLike } from "./SquareMatrix";
-import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
+import { ReadonlyVector, ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
 /**
  * JSON representation of a vector with three floating point components.
@@ -18,6 +18,20 @@ import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 export type Vector3JSON = [ number, number, number ];
 
 export type Vector3Like = VectorLike<3>;
+
+/**
+ * Readonly interface for a vector with three components.
+ */
+export interface ReadonlyVector3 extends ReadonlyVector<3> {
+    /** The X component of the vector. */
+    readonly x: number;
+
+    /** The Y component of the vector. */
+    readonly y: number;
+
+    /** The Z component of the vector. */
+    readonly z: number;
+}
 
 /**
  * Vector with three 32-bit floating point components. This class extends the standard Float32Array type so a vector
@@ -205,6 +219,12 @@ export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<V
         this[0] = -this[0];
         this[1] = -this[1];
         this[2] = -this[2];
+        return this;
+    }
+
+    /** @inheritDoc */
+    public reset(): this {
+        this[0] = this[1] = this[2] = 0;
         return this;
     }
 

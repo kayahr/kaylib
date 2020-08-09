@@ -10,7 +10,7 @@ import { clamp, degrees, fract, mix, radians, roundEven, smoothStep, step } from
 import { StrictArrayBufferLike } from "../util/types";
 import { AbstractVector } from "./AbstractVector";
 import { ReadonlyMatrixLike } from "./Matrix";
-import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
+import { ReadonlyVector, ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 
 /**
  * JSON representation of a vector with four floating point components.
@@ -18,6 +18,23 @@ import { ReadonlyVectorLike, Vector, VectorLike } from "./Vector";
 export type Vector4JSON = [ number, number, number, number ];
 
 export type Vector4Like = VectorLike<4>;
+
+/**
+ * Readonly interface for a vector with four components.
+ */
+export interface ReadonlyVector4 extends ReadonlyVector<4> {
+    /** The X component of the vector. */
+    readonly x: number;
+
+    /** The Y component of the vector. */
+    readonly y: number;
+
+    /** The Z component of the vector. */
+    readonly z: number;
+
+    /** The W component of the vector. */
+    readonly w: number;
+}
 
 /**
  * Vector with four 32-bit floating point components. This class extends the standard Float32Array type so a vector
@@ -275,6 +292,12 @@ export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<V
         this[1] = -this[1];
         this[2] = -this[2];
         this[3] = -this[3];
+        return this;
+    }
+
+    /** @inheritDoc */
+    public reset(): this {
+        this[0] = this[1] = this[2] = this[3] = 0;
         return this;
     }
 
