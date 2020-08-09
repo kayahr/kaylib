@@ -626,15 +626,7 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
      * @return The X scale factor of the matrix.
      */
     public getScaleX(): number {
-        const m11 = this[0], m12 = this[1];
-        const m21 = this[3], m22 = this[4];
-        if (m11 !== 0 || m21 !== 0) {
-            return Math.hypot(m11, m21);
-        } else if (m12 !== 0 || m22 !== 0) {
-            return (m11 * m22 - m12 * m21) / Math.hypot(m12, m22);
-        } else {
-            return 0;
-        }
+        return Math.hypot(this[0], this[3]);
     }
 
     /**
@@ -655,15 +647,7 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
      * @return The Y scale factor of the matrix.
      */
     public getScaleY(): number {
-        const m11 = this[0], m12 = this[1];
-        const m21 = this[3], m22 = this[4];
-        if (m11 !== 0 || m21 !== 0) {
-            return (m11 * m22 - m12 * m21) / Math.hypot(m11, m21);
-        } else if (m12 !== 0 || m22 !== 0) {
-            return Math.hypot(m12, m22);
-        } else {
-            return 0;
-        }
+        return Math.hypot(this[1], this[4]);
     }
 
     /**

@@ -781,6 +781,15 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Returns the X scale factor of the matrix.
+     *
+     * @return The X scale factor of the matrix.
+     */
+    public getScaleX(): number {
+        return Math.hypot(this[0], this[4], this[8]);
+    }
+
+    /**
      * Scales this matrix by the specified factor along the Y axis.
      *
      * @param s - The scale factor.
@@ -794,6 +803,15 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
     }
 
     /**
+     * Returns the Y scale factor of the matrix.
+     *
+     * @return The Y scale factor of the matrix.
+     */
+    public getScaleY(): number {
+        return Math.hypot(this[1], this[5], this[9]);
+    }
+
+    /**
      * Scales this matrix by the specified factor along the Z axis.
      *
      * @param s - The scale factor.
@@ -804,6 +822,15 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
         this[10] *= s;
         this[11] *= s;
         return this;
+    }
+
+    /**
+     * Returns the Z scale factor of the matrix.
+     *
+     * @return The Z scale factor of the matrix.
+     */
+    public getScaleZ(): number {
+        return Math.hypot(this[2], this[6], this[10]);
     }
 
     /**

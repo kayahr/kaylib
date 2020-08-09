@@ -13,6 +13,7 @@ import { Matrix3x2 } from "../../main/graphics/Matrix3x2";
 import { Matrix4 } from "../../main/graphics/Matrix4";
 import { Vector3 } from "../../main/graphics/Vector3";
 import { Vector4 } from "../../main/graphics/Vector4";
+import { radians } from "../../main/util/math";
 import { isBrowser } from "../../main/util/runtime";
 
 describe("Matrix4", () => {
@@ -746,7 +747,48 @@ describe("Matrix4", () => {
         });
     });
 
-    describe("scaleX", () => {
+    describe("getScaleX", () => {
+        it("returns the X scaling factor of the matrix", () => {
+            const matrix = new Matrix4();
+            matrix.translate(1, 2, 3);
+            matrix.scale(10, 1, 5);
+            expect(matrix.getScaleX()).toBeCloseTo(10);
+            matrix.scale(0.5, 1, 3);
+            expect(matrix.getScaleX()).toBeCloseTo(5);
+            matrix.rotateZ(radians(23.45));
+            expect(matrix.getScaleX()).toBeCloseTo(5);
+        });
+        it("returns X scaling for every rotation angle", () => {
+            for (let i = -360; i <= 360; i++) {
+                const matrix = Matrix4.createScale(5, 10, 2).rotateY(radians(i));
+                expect(matrix.getScaleX()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct X scale when Y scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(5, 0, 2).rotateY(radians(i));
+                expect(matrix.getScaleX()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct X scale when Z scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(5, 2, 0).rotateX(Math.PI / 2).rotateZ(Math.PI / 2);
+                expect(matrix.getScaleX()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct X scale when Y and Z scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(5, 0, 0).rotateY(radians(i));
+                expect(matrix.getScaleX()).toBeCloseTo(5);
+            }
+        });
+        it("returns 0 for scale 0", () => {
+            expect(Matrix4.createScale(0).rotateZ(0.5).getScaleX()).toBe(0);
+            expect(Matrix4.createScale(0, 40, 2).rotateZ(1.3).getScaleX()).toBe(0);
+        });
+    });
+
+    describe("scaleY", () => {
         it("scales the matrix along the Y axis", () => {
             const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
             const result = m.scaleY(10);
@@ -757,6 +799,47 @@ describe("Matrix4", () => {
                   9, 10, 11, 12,
                  13, 14, 15, 16
             ]);
+        });
+    });
+
+    describe("getScaleY", () => {
+        it("returns the Y scaling factor of the matrix", () => {
+            const matrix = new Matrix4();
+            matrix.translate(1, 2, 3);
+            matrix.scale(1, 10, 5);
+            expect(matrix.getScaleY()).toBeCloseTo(10);
+            matrix.scale(1, 0.5, 3);
+            expect(matrix.getScaleY()).toBeCloseTo(5);
+            matrix.rotateZ(radians(23.45));
+            expect(matrix.getScaleY()).toBeCloseTo(5);
+        });
+        it("returns Y scaling for every rotation angle", () => {
+            for (let i = -360; i <= 360; i++) {
+                const matrix = Matrix4.createScale(10, 5, 2).rotateZ(radians(i));
+                expect(matrix.getScaleY()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Y scale when X scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(0, 5, 2).rotateY(radians(i));
+                expect(matrix.getScaleY()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Y scale when Z scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(2, 5, 0).rotateX(Math.PI / 2).rotateZ(Math.PI / 2);
+                expect(matrix.getScaleY()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Y scale when X and Z scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(0, 5, 0).rotateY(radians(i));
+                expect(matrix.getScaleY()).toBeCloseTo(5);
+            }
+        });
+        it("returns 0 for scale 0", () => {
+            expect(Matrix4.createScale(0).rotateZ(0.5).getScaleY()).toBe(0);
+            expect(Matrix4.createScale(50, 0, 2).rotateZ(1.3).getScaleY()).toBe(0);
         });
     });
 
@@ -771,6 +854,47 @@ describe("Matrix4", () => {
                  90, 100, 110, 120,
                  13,  14,  15,  16
             ]);
+        });
+    });
+
+    describe("getScaleZ", () => {
+        it("returns the Z scaling factor of the matrix", () => {
+            const matrix = new Matrix4();
+            matrix.translate(1, 2, 3);
+            matrix.scale(5, 1, 10);
+            expect(matrix.getScaleZ()).toBeCloseTo(10);
+            matrix.scale(3, 1, 0.5);
+            expect(matrix.getScaleZ()).toBeCloseTo(5);
+            matrix.rotateZ(radians(23.45));
+            expect(matrix.getScaleZ()).toBeCloseTo(5);
+        });
+        it("returns Z scaling for every rotation angle", () => {
+            for (let i = -360; i <= 360; i++) {
+                const matrix = Matrix4.createScale(2, 10, 5).rotateY(radians(i));
+                expect(matrix.getScaleZ()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Z scale when Y scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(2, 0, 5).rotateY(radians(i));
+                expect(matrix.getScaleZ()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Z scale when X scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(0, 2, 5).rotateX(Math.PI / 2).rotateZ(Math.PI / 2);
+                expect(matrix.getScaleZ()).toBeCloseTo(5);
+            }
+        });
+        it("returns correct Z scale when Y and X scale is 0", () => {
+            for (let i = -360; i <= 360; i += 20) {
+                const matrix = Matrix4.createScale(0, 0, 5).rotateY(radians(i));
+                expect(matrix.getScaleZ()).toBeCloseTo(5);
+            }
+        });
+        it("returns 0 for scale 0", () => {
+            expect(Matrix4.createScale(0).rotateZ(0.5).getScaleZ()).toBe(0);
+            expect(Matrix4.createScale(2, 40, 0).rotateZ(1.3).getScaleZ()).toBe(0);
         });
     });
 
