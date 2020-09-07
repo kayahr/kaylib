@@ -25,7 +25,8 @@ const maxResults = 10;
 let resultsHistory: BenchmarkResult[][] = [];
 
 function drawGraph(): void {
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, width, height);
 
     ctx.save();
     ctx.translate(0.5, 0.5);
