@@ -4,4 +4,5 @@
  */
 
 export * from "./benchmarks/resultCacheBenchmark";
-export * from "../../sandbox/sandboxBenchmark";
+export * from "./benchmarks/propertiesBenchmark";
+// export * from "../../sandbox/sandboxBenchmark";
