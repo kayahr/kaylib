@@ -48,7 +48,7 @@ describe("cache", () => {
             expect(bar).toEqual({ a: 23 });
             expect(test.getFoo()).toBe(foo);
             expect(test.getBar()).toBe(bar);
-            delete test.getFoo;
+            delete (test as Partial<Test>).getFoo;
             const foo2 = test.getFoo();
             expect(foo2).toEqual(foo);
             expect(foo2).not.toBe(foo);
