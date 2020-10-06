@@ -82,17 +82,17 @@ function isParameterizedPropertyDecoratorArgs<T, K, O>(args: PropertyDecoratorAr
  * Type of a parameterless method decorator. This is pretty much the same as the standard method decorator type
  * but with more strict typings.
  */
-type ParameterlessPropertyDecorator<T, K extends string> = <T extends object, K extends string>(
-    target: T, propertyKey: K) => void;
+type ParameterlessPropertyDecorator<T extends object, K extends string> = (target: T, propertyKey: K) => void;
 
 /**
  * Type of a parameterized method decorator which is a function receiving the decorator parameter and returning
  * the real (parameterless) method decorator.
  */
-type ParameterizedPropertyDecorator<T, K extends string, P> = (params: P) => ParameterlessPropertyDecorator<T, K>;
+type ParameterizedPropertyDecorator<T extends object, K extends string, P> = (params: P) =>
+    ParameterlessPropertyDecorator<T, K>;
 
 /** Union type grouping the parameterless and parameterized method decorator type into one. */
-type PropertyDecorator<T, K extends string, P> = ParameterlessPropertyDecorator<T, K>
+type PropertyDecorator<T extends object, K extends string, P> = ParameterlessPropertyDecorator<T, K>
     & ParameterizedPropertyDecorator<T, K, P>;
 
 /**

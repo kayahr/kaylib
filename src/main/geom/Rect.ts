@@ -37,7 +37,7 @@ export interface RectJSON extends SizeJSON {
  * @param anchor - The anchor point.
  * @return Array with normalized left, top, width and height values.
  */
-function normalizeRect<T>(x: number, y: number, width: number, height: number, anchor: Direction):
+function normalizeRect(x: number, y: number, width: number, height: number, anchor: Direction):
         [ number, number, number, number ] {
     let left: number;
     let top: number;
