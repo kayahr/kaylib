@@ -7,10 +7,13 @@ import { Serializable } from "../lang/Serializable";
 import { IllegalArgumentException } from "../util/exception";
 import { clamp } from "../util/math";
 import { isLittleEndian } from "../util/runtime";
-import { formatNumber } from "../util/string";
+import { formatNumber, toHex } from "../util/string";
 import { WritableArrayLike } from "../util/types";
 import { Color } from "./Color";
 import { RGBColor } from "./RGBColor";
+
+/** Regular expression to parse RGBA color in HTML format. */
+const ARGBColorHTMLRegExp = /^\s*#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})\s*$/i;
 
 /** Regular expression to parse RGBA color in CSS format. */
 const RGBAColorCSSRegExp = /^\s*rgba\s*\(\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*[\s,]\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*[\s,]\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*[\s,]\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?)\s*\)\s*$/i;
@@ -57,19 +60,28 @@ export class RGBAColor implements Color, Serializable<string> {
     }
 
     /**
-     * Parses the given string into an RGBA color object. The string can be defined in HTML or CSS format.
+     * Parses the given string into an RGBA color object. The string can be defined in ARGB HTML or CSS format.
      *
-     * @param string - The RGBA color string to parse.
+     * @param string - The color string to parse.
      * @return The parsed RGBA color.
      */
     public static fromString(s: string): RGBAColor {
-        const match = RGBAColorCSSRegExp.exec(s);
+        let match = RGBAColorCSSRegExp.exec(s);
         if (match != null) {
             return new RGBAColor(
                 parseFloat(match[1]) / (match[1].endsWith("%") ? 100 : 255),
                 parseFloat(match[2]) / (match[2].endsWith("%") ? 100 : 255),
                 parseFloat(match[3]) / (match[3].endsWith("%") ? 100 : 255),
                 parseFloat(match[4])
+            );
+        }
+        match = ARGBColorHTMLRegExp.exec(s);
+        if (match != null) {
+            return new RGBAColor(
+                parseInt(match[2], 16) / 255,
+                parseInt(match[3], 16) / 255,
+                parseInt(match[4], 16) / 255,
+                parseInt(match[1], 16) / 255
             );
         }
         throw new IllegalArgumentException("Invalid RGBA color format: " + s);
@@ -83,6 +95,16 @@ export class RGBAColor implements Color, Serializable<string> {
     /** @inheritDoc */
     public toString(): string {
         return this.toCSS();
+    }
+
+    /**
+     * Returns the color as an ARGB HTML string.
+     *
+     * @return The color as an ARGB HTML string.
+     */
+    public toHTML(): string {
+        return `#${toHex(this.alpha * 255, 2)}${toHex(this.red * 255, 2)}${toHex(this.green * 255, 2)}`
+            + `${toHex(this.blue * 255, 2)}`;
     }
 
     /**

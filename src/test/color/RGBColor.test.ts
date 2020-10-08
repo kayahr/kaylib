@@ -64,19 +64,19 @@ describe("RGBColor", () => {
     });
 
     describe("toJSON", () => {
-        it("serialized color to CSS string", () => {
+        it("serializes color to CSS string", () => {
             expect(new RGBColor(0, 0, 0).toJSON()).toBe("rgb(0%,0%,0%)");
         });
     });
 
     describe("toString", () => {
-        it("serialized color to CSS string", () => {
+        it("serializes color to CSS string", () => {
             expect(new RGBColor(1 / 100, 2 / 100, 3 / 100).toString()).toBe("rgb(1%,2%,3%)");
         });
     });
 
     describe("toHTML", () => {
-        it("serialized color to HTML string", () => {
+        it("serializes color to HTML string", () => {
             expect(new RGBColor(0, 0.5, 1).toHTML()).toBe("#007fff");
         });
     });

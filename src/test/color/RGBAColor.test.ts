@@ -55,6 +55,12 @@ describe("RGBAColor", () => {
     });
 
     describe("fromJSON", () => {
+        it("deserializes color from ARGB HTML string", () => {
+            expect(RGBAColor.fromJSON("#45112233")).toEqual(new RGBAColor(0x11 / 255, 0x22 / 255, 0x33 / 255,
+                0x45 / 255));
+            expect(RGBAColor.fromJSON(" #eDAACcfF ")).toEqual(new RGBAColor(0xaa / 255, 0xcc / 255, 0xff / 255,
+                0xed / 255));
+        });
         it("deserializes color from RGB CSS string", () => {
             expect(RGBAColor.fromJSON("rgba(123,213,99,0.1)")).toEqual(
                 new RGBAColor(123 / 255, 213 / 255, 99 / 255, 0.1));
@@ -73,14 +79,20 @@ describe("RGBAColor", () => {
     });
 
     describe("toJSON", () => {
-        it("serialized color to CSS string", () => {
+        it("serializes color to CSS string", () => {
             expect(new RGBAColor(0, 0, 0, 0).toJSON()).toBe("rgba(0%,0%,0%,0)");
         });
     });
 
     describe("toString", () => {
-        it("serialized color to CSS string", () => {
+        it("serializes color to CSS string", () => {
             expect(new RGBAColor(1 / 100, 2 / 100, 3 / 100, 0.9).toString()).toBe("rgba(1%,2%,3%,0.9)");
+        });
+    });
+
+    describe("toHTML", () => {
+        it("serializes color to ARGB HTML string", () => {
+            expect(new RGBAColor(0, 0.5, 1, 0.4).toHTML()).toBe("#66007fff");
         });
     });
 
