@@ -35,7 +35,6 @@
             {
                 "displayName": "node",
                 "testEnvironment": "jest-environment-node-single-context",
-                "testRunner": "jest-circus/runner",
                 "testMatch": [
                     "<rootDir>/lib/test/**/*.test.js"
                 ]
@@ -44,7 +43,6 @@
                 "displayName": "electron",
                 "runner": "@jest-runner/electron",
                 "testEnvironment": "@jest-runner/electron/environment",
-                "testRunner": "jest-circus/runner",
                 "testMatch": [
                     "<rootDir>/lib/test/**/*.test.js"
                 ]
@@ -68,7 +66,6 @@
         "eslint-plugin-deprecation": "1.1.0",
         "eslint-plugin-simple-import-sort": "5.0.3",
         "jest": "26.6.1",
-        "jest-circus": "26.6.1",
         "jest-environment-node-single-context": "26.2.0",
         "jest-extended": "0.11.5",
         "rimraf": "3.0.2",
