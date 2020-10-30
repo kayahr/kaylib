@@ -5,7 +5,7 @@
 
 import "reflect-metadata";
 
-import { Constructor } from "../util/types";
+import { Class, Constructor } from "../util/types";
 import { injector } from "./Injector";
 import { Parameter } from "./Parameter";
 import { Qualifier } from "./Qualifier";
@@ -27,7 +27,7 @@ export class Injectable<T = unknown> {
      * @param names   - Optional qualifier names this injectable matches.
      */
     public constructor(
-        private readonly type: Constructor<T>,
+        private readonly type: Class<T> | Constructor<T>,
         private readonly factory: (...args: any[]) => T | Promise<T>,
         private readonly params: Parameter[],
         private readonly names: string[] = []
@@ -40,7 +40,7 @@ export class Injectable<T = unknown> {
         return new Injectable(type, (...args: any[]) => new type(...args), params, names);
     }
 
-    public static fromFactory<T>(type: Constructor<T>, factory: (...args: any[]) => T | Promise<T>, names?: string[]):
+    public static fromFactory<T>(type: Class<T>, factory: (...args: any[]) => T | Promise<T>, names?: string[]):
             Injectable<T> {
         const paramQualifiers = Reflect.getMetadata("di:qualifiers", type, factory.name) as Qualifier[] ?? [];
         const paramTypes = Reflect.getMetadata("design:paramtypes", type, factory.name) as Constructor[] ?? [];
@@ -48,7 +48,7 @@ export class Injectable<T = unknown> {
         return new Injectable(type, factory, params, names);
     }
 
-    public static fromValue<T extends Record<string, unknown>>(value: T, names?: string[]): Injectable<T> {
+    public static fromValue<T extends Object>(value: T, names?: string[]): Injectable<T> {
         return new Injectable(value.constructor as Constructor<T>, () => value, [], names);
     }
 
@@ -62,7 +62,7 @@ export class Injectable<T = unknown> {
         if (typeof qualifier === "string") {
             return this.names.includes(qualifier);
         } else {
-            let type: Constructor = this.type;
+            let type = this.type as Constructor;
             while (type != null) {
                 if (type === qualifier) {
                     return true;
@@ -121,13 +121,13 @@ export class Injectable<T = unknown> {
  * @param qualifiers - Optional qualifier names. When specified then injectable is not only registered by its type but
  *                     also by these names so they can be injected into other injectables by name.
  */
-export function injectable<T>(...names: string[]): (target: Constructor<T>, propertyKey?: string) => void {
-    return (target: Constructor<T>, propertyKey?: string): void => {
+export function injectable<T>(...names: string[]): (target: Class<T>, propertyKey?: string) => void {
+    return (target: Class<T>, propertyKey?: string): void => {
         if (propertyKey != null) {
             injector.injectFactory(target, (target as unknown as Record<string, unknown>)[propertyKey] as
                 ((...args: any[]) => T | Promise<T>), names);
         } else {
-            injector.injectClass(target, names);
+            injector.injectClass(target as Constructor<T>, names);
         }
     };
 }

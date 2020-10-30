@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Constructor } from "../util/types";
+import { Class, Constructor } from "../util/types";
 import { Injectable } from "./Injectable";
 import { InjectionException } from "./InjectionException";
 import { createQualifier, QualifierLike } from "./Qualifier";
@@ -14,6 +14,14 @@ import { createQualifier, QualifierLike } from "./Qualifier";
 class Injector {
     /** The registered injectables. */
     private readonly injectables: Injectable[] = [];
+
+    /**
+     * Removed all injectables from the injector. This is rarely useful, for example when testing injection in unit
+     * tests where you may want to clear the injector before each test.
+     */
+    public clear(): void {
+        this.injectables.length = 0;
+    }
 
     /**
      * Injects the given injectable.
@@ -43,7 +51,7 @@ class Injector {
      * @param factory - The factory method which creates the given type.
      * @param names   - Optional qualifier names.
      */
-    public injectFactory<T>(type: Constructor<T>, factory: (...args: any[]) => T | Promise<T>, names?: string[]): this {
+    public injectFactory<T>(type: Class<T>, factory: (...args: any[]) => T | Promise<T>, names?: string[]): this {
         return this.inject(Injectable.fromFactory(type, factory, names));
     }
 
@@ -51,11 +59,14 @@ class Injector {
      * Injects the given value.
      *
      * @param value - The value to inject. Type is automatically determined from the value constructor.
-     * @param names   - Optional qualifier names.
+     * @param names - Optional qualifier names.
      */
-    public injectValue<T extends Record<string, unknown>>(value: T, names?: string[]): this {
+    public injectValue<T extends Object>(value: T, ...names: string[]): this {
         return this.inject(Injectable.fromValue(value, names));
     }
+
+    public create<T>(type: Constructor<T>): T | Promise<T>;
+    public create<T>(type: Class<T>, factory?: (...args: any[]) => T | Promise<T>): T | Promise<T>;
 
     /**
      * Creates a new instance of the given class and resolves its dependencies.
@@ -64,13 +75,16 @@ class Injector {
      * @param factory - Optional static factory method which creates the class.
      * @return The created new instance. Synchronous or asynchronous.
      */
-    public create<T>(type: Constructor<T>, factory?: (...args: any[]) => T | Promise<T>): T | Promise<T> {
+    public create<T>(type: Constructor<T> | Class<T>, factory?: (...args: any[]) => T | Promise<T>): T | Promise<T> {
         if (factory != null) {
-            return Injectable.fromFactory(type, factory).createInstance();
+            return Injectable.fromFactory(type as Class<T>, factory).createInstance();
         } else {
-            return Injectable.fromClass(type).createInstance();
+            return Injectable.fromClass(type as Constructor<T>).createInstance();
         }
     }
+
+    public async createAsync<T>(type: Constructor<T>): Promise<T>;
+    public async createAsync<T>(type: Class<T>, factory?: (...args: any[]) => Promise<T> | T): Promise<T>;
 
     /**
      * Asynchronously creates a new instance of the given class and resolves its dependencies.
@@ -79,9 +93,13 @@ class Injector {
      * @param factory - Optional static factory method which creates the class.
      * @return The created new instance.
      */
-    public async createAsync<T>(type: Constructor<T>, factory?: (...args: any[]) => Promise<T>): Promise<T> {
-        return this.create(type, factory);
+    public async createAsync<T>(type: Constructor<T> | Class<T>, factory?: (...args: any[]) => Promise<T> | T):
+            Promise<T> {
+        return this.create(type as (Class<T>), factory);
     }
+
+    public createSync<T>(type: Constructor<T>): T;
+    public createSync<T>(type: Class<T>, factory: (...args: any[]) => T): T;
 
     /**
      * Synchronously creates a new instance of the given class and resolves its dependencies.
@@ -90,8 +108,8 @@ class Injector {
      * @param factory - Optional static factory method which creates the class.
      * @return The created new instance.
      */
-    public createSync<T>(type: Constructor<T>, factory?: (...args: any[]) => T): T {
-        const instance = this.create(type, factory);
+    public createSync<T>(type: Constructor<T> | Class<T>, factory?: (...args: any[]) => T): T {
+        const instance = this.create(type as Class<T>, factory);
         if (instance instanceof Promise) {
             throw new InjectionException("Asynchronous dependencies found during synchronous resolving");
         }
