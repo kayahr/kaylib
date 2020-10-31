@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { IllegalArgumentException } from "../util/exception";
 import { Constructor } from "../util/types";
+import { InjectionException } from "./InjectionException";
 import { injector } from "./Injector";
 import { createQualifier, Qualifier } from "./Qualifier";
 
@@ -30,7 +30,7 @@ export class Parameter<T = unknown> {
     public constructor(type: Constructor<T>, qualifier?: Qualifier<T>) {
         if ((this.isArray = type as Constructor === Array)) {
             if (qualifier == null) {
-                throw new IllegalArgumentException(
+                throw new InjectionException(
                     "Array parameters must be qualified by using the @qualify decorator");
             }
             this.qualifier = qualifier;
