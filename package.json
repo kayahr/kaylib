@@ -29,7 +29,9 @@
         "lib/main/",
         "src/main/"
     ],
-    "funding": "https://github.com/kayahr/kaylib?sponsor=1",
+    "funding": {
+        "url": "https://github.com/kayahr/kaylib?sponsor=1"
+    },
     "jest": {
         "projects": [
             {
