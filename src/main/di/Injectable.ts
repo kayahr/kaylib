@@ -43,7 +43,7 @@ export class Injectable<T = unknown> {
     public static fromFactory<T>(type: Class<T>, factory: (...args: any[]) => T | Promise<T>, names?: string[]):
             Injectable<T> {
         const paramQualifiers = Reflect.getMetadata("di:qualifiers", type, factory.name) as Qualifier[] ?? [];
-        const paramTypes = Reflect.getMetadata("design:paramtypes", type, factory.name) as Constructor[] ?? [];
+        const paramTypes = Reflect.getMetadata("design:paramtypes", type, factory.name) as Constructor[];
         const params = paramTypes.map((type, index) => new Parameter(type, paramQualifiers[index]));
         return new Injectable(type, factory, params, names);
     }
