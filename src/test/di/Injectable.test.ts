@@ -64,7 +64,7 @@ describe("injectable", () => {
             }
         }
 
-        @injectable()
+        @injectable
         class Test {
             public constructor(private readonly dep1: Dependency1, private readonly dep2: Dependency2) {}
 
