@@ -113,6 +113,9 @@ export class Injectable<T = unknown> {
     }
 }
 
+export function injectable<T>(target: Class<T>, propertyKey?: string): void;
+export function injectable<T>(...names: string[]): (target: Class<T>, propertyKey?: string) => void;
+
 /**
  * Decorator to mark a class as an injectable dependency. An injectable can be injected into other injectables.
  * The decorator can be used on a class or on a static factory method. Factory methods can also be asynchronous by
@@ -121,8 +124,10 @@ export class Injectable<T = unknown> {
  * @param qualifiers - Optional qualifier names. When specified then injectable is not only registered by its type but
  *                     also by these names so they can be injected into other injectables by name.
  */
-export function injectable<T>(...names: string[]): (target: Class<T>, propertyKey?: string) => void {
-    return (target: Class<T>, propertyKey?: string): void => {
+export function injectable<T>(...args: (string[] | [ Class<T>, string? ])):
+        void | ((target: Class<T>, propertyKey?: string) => void) {
+    const names = args[0] instanceof Function ? [] : args as string[];
+    const decorator = (target: Class<T>, propertyKey?: string): void => {
         if (propertyKey != null) {
             injector.injectFactory(target, (target as unknown as Record<string, unknown>)[propertyKey] as
                 ((...args: any[]) => T | Promise<T>), names);
@@ -130,4 +135,9 @@ export function injectable<T>(...names: string[]): (target: Class<T>, propertyKe
             injector.injectClass(target as Constructor<T>, names);
         }
     };
+    if (args[0] instanceof Function) {
+        return decorator(args[0], args[1]);
+    } else {
+        return decorator;
+    }
 }

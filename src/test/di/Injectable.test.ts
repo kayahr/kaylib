@@ -105,7 +105,7 @@ describe("injectable", () => {
         class Test {
             public constructor(public a: number) {}
 
-            @injectable()
+            @injectable
             public static create(dep: Dependency): Test {
                 return new Test(dep.a);
             }
@@ -129,7 +129,7 @@ describe("injectable", () => {
         class Test {
             public constructor(public a: number) {}
 
-            @injectable()
+            @injectable
             public static create(dep: Dependency): Test {
                 return new Test(dep.a);
             }
