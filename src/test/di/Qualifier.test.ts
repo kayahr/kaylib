@@ -20,13 +20,19 @@ describe("qualifier", () => {
                 public a: number,
                 @qualifier("number").and("two")
                 public b: number,
+                @qualifier("number").andNot("two")
+                public c: number[],
                 @qualifier("number").and(createQualifier("two").or("three"))
-                public n: number[]
+                public d: number[],
+                @qualifier("none").orNot("three").and("number")
+                public e: number[]
             ) {}
         }
         const test = injector.createSync(Test);
         expect(test.a).toBe(1);
         expect(test.b).toBe(2);
-        expect(test.n).toEqual([ 2, 3 ]);
+        expect(test.c).toEqual([ 1, 3 ]);
+        expect(test.d).toEqual([ 2, 3 ]);
+        expect(test.e).toEqual([ 1, 2 ]);
     });
 });

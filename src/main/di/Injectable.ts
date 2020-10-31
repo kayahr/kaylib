@@ -58,7 +58,7 @@ export class Injectable<T = unknown> {
      * @param qualifier - The qualifier to match.
      * @return True if injectable matches the qualifier, false if not.
      */
-    public qualifiesAs<A = unknown>(qualifier: Constructor<A> | string): this is Injectable<A> {
+    public qualifiesAs<A = unknown>(qualifier: Constructor<A> | Class<A> | string): this is Injectable<A> {
         if (typeof qualifier === "string") {
             return this.names.includes(qualifier);
         } else {

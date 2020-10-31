@@ -5,14 +5,14 @@
 
 import "reflect-metadata";
 
-import { Constructor } from "../util/types";
+import { Class, Constructor } from "../util/types";
 import { Injectable } from "./Injectable";
 
 /**
  * Type for dependency injection qualifier like arguments. Can be either a real qualifier instance or a
  * qualifier type or name which is automatically converted into a qualifier instance.
  */
-export type QualifierLike<T = unknown> = Qualifier<T> | Constructor<T> | string;
+export type QualifierLike<T = unknown> = Qualifier<T> | Constructor<T> | Class<T> | string;
 
 /**
  * Dependency injection qualifier. This interface is also a parameter decorator so this type can be used to
@@ -34,6 +34,22 @@ export interface Qualifier<T = unknown> extends ParameterDecorator {
      * @return The new qualifier.
      */
     or<U>(qualifier: QualifierLike<U>): Qualifier<T | U>;
+
+    /**
+     * Combines this qualifier with the given qualifier by using an and-not-operation.
+     *
+     * @param qualifier - The other qualifier.
+     * @return The new qualifier.
+     */
+    andNot<U>(qualifier: QualifierLike<U>): Qualifier<Exclude<T, U>>;
+
+    /**
+     * Combines this qualifier with the given qualifier by using an or-not-operation.
+     *
+     * @param qualifier - The other qualifier.
+     * @return The new qualifier.
+     */
+    orNot<U>(qualifier: QualifierLike<U>): Qualifier<T | Exclude<T, U>>;
 
     /**
      * Checks if the given type qualifies.
@@ -61,6 +77,8 @@ export function isQualifier(obj: unknown): obj is Qualifier {
     return obj instanceof Function
         && (obj as Qualifier).and instanceof Function
         && (obj as Qualifier).or instanceof Function
+        && (obj as Qualifier).andNot instanceof Function
+        && (obj as Qualifier).orNot instanceof Function
         && (obj as Qualifier).matches instanceof Function;
 }
 
@@ -92,6 +110,20 @@ function createNewQualifier<T>(check: (type: Injectable) => boolean, name: strin
                 return createNewQualifier(
                     type => check(type) || other.matches(type),
                     `(${qualifierInstance} | ${other})`
+                );
+            },
+            andNot<U>(qualifier: QualifierLike<U>): Qualifier<Exclude<T, U>> {
+                const other = createQualifier(qualifier);
+                return createNewQualifier(
+                    type => check(type) && !other.matches(type),
+                    `(${qualifierInstance} & !${other})`
+                );
+            },
+            orNot<U>(qualifier: QualifierLike<U>): Qualifier<T | Exclude<T, U>> {
+                const other = createQualifier(qualifier);
+                return createNewQualifier(
+                    type => check(type) || !other.matches(type),
+                    `(${qualifierInstance} | !${other})`
                 );
             },
             matches(type: Injectable): type is Injectable<T> {
