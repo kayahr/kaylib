@@ -2,8 +2,10 @@
     "$schema": "http://json.schemastore.org/package",
     "name": "@kayahr/kaylib",
     "version": "1.0.0",
-    "description": "TODO Write a description",
-    "keywords": [],
+    "description": "Utility library providing some useful base types and concepts",
+    "keywords": [
+        "typescript"
+    ],
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": "github:kayahr/kaylib",
     "publishConfig": {
