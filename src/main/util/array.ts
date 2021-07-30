@@ -101,7 +101,7 @@ export function concat<T extends TypedArray | unknown[]>(array1: T, ...moreArray
         const type = array1.constructor as new (size: number) => TypedArray;
         const size = moreArrays.reduce((length, array) => length + array.length, array1.length);
         const result = new type(size);
-        result.set(array1 as TypedArray);
+        result.set(array1);
         let offset = array1.length;
         for (const array of moreArrays) {
             result.set(array as TypedArray, offset);
