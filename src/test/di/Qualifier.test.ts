@@ -35,4 +35,40 @@ describe("qualifier", () => {
         expect(test.d).toEqual([ 2, 3 ]);
         expect(test.e).toEqual([ 1, 2 ]);
     });
+
+    it("qualifies constructor parameter which uses an interface type", () => {
+        interface Foo {
+            foo(): number;
+        }
+
+
+        @injectable("foo1")
+        class Foo1 implements Foo {
+            public foo(): number {
+                return 2;
+            }
+        }
+
+        @injectable("foo2")
+        class Foo2 implements Foo {
+            public foo(): number {
+                return 3;
+            }
+        }
+
+        @injectable()
+        class Test {
+            public constructor(
+                @qualifier("foo1")
+                public foo1: Foo,
+                @qualifier("foo2")
+                public foo2: Foo
+            ) {}
+        }
+        const test = injector.createSync(Test);
+        expect(test.foo1).toBeInstanceOf(Foo1);
+        expect(test.foo2).toBeInstanceOf(Foo2);
+        expect(test.foo1.foo()).toBe(2);
+        expect(test.foo2.foo()).toBe(3);
+    });
 });
