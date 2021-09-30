@@ -137,7 +137,7 @@ export class Observable<T> implements ObservableLike<T> {
                             return onNext.call(activeObserver, value as T);
                         } catch (e) {
                             try {
-                                this.error(e);
+                                this.error(e instanceof Error ? e : new Error("" + e));
                             } catch {
                                 throw e;
                             }
@@ -205,7 +205,7 @@ export class Observable<T> implements ObservableLike<T> {
                     onCleanup = null;
                 }
             } catch (e) {
-                subscriptionObserver.error(e);
+                subscriptionObserver.error(e instanceof Error ? e : new Error("" + e));
             }
         }
         return subscription;
