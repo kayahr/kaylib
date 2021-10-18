@@ -126,7 +126,8 @@ export function benchmark(candidates: BenchmarkCandidate[], onResults: (results:
                 for (const result of results) {
                     result.percent = Math.round(100 * result.opsPerSecond / fastest);
                 }
-                onResults(Object.assign(JSON.parse(JSON.stringify(results)), { toString: resultsToString }));
+                const clone = JSON.parse(JSON.stringify(results)) as BenchmarkResult[];
+                onResults(Object.assign(clone, { toString: resultsToString }));
             }
         }
     }, 0);

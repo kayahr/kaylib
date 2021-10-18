@@ -53,7 +53,7 @@ export function createMethodDecorator<
     K extends string,
     V extends Method<T>,
     T extends object = Record<K, V>,
-    P extends unknown = never
+    P = never
 >(func: (target: T, key: K, descriptor: TypedPropertyDescriptor<V>, params?: P) => void): MethodDecorator<T, V, P> {
     return ((...args: MethodDecoratorArgs<T, K, V, P>) => {
         if (isParameterizedMethodDecoratorArgs(args)) {
@@ -101,7 +101,7 @@ type PropertyDecorator<T extends object, K extends string, P> = ParameterlessPro
 export function createPropertyDecorator<
     K extends string,
     T extends object,
-    P extends unknown = never
+    P = never
 >(func: (target: T, key: K, params?: P) => void): PropertyDecorator<T, K, P> {
     return ((...args: PropertyDecoratorArgs<T, K, P>) => {
         if (isParameterizedPropertyDecoratorArgs(args)) {

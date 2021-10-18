@@ -19,7 +19,7 @@ export abstract class Exception<T = unknown> extends Error {
     public constructor(message: string, public readonly cause: T | null = null) {
         super(message);
         this.name = this.constructor.name;
-        Object.setPrototypeOf(this, this.constructor.prototype);
+        Object.setPrototypeOf(this, this.constructor.prototype as Function);
     }
 }
 

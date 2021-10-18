@@ -12,6 +12,6 @@ const globalScope = (
     typeof window !== "undefined" ? window :
     typeof global !== "undefined" ? global :
     {}
-) as NodeJS.Global & Window & Record<string, unknown>;
+) as typeof globalThis & Window & Record<string, unknown>;
 
 export { globalScope as global };

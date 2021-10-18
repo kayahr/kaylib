@@ -97,17 +97,17 @@ export function createObserver<T>(observer: Observer<T>): Observer<T>;
  * @param onComplete - Receives a completion notification.
  * @return The created observer.
  */
-export function createObserver<T>(onNext: (value: T) => void, onError?: (error: Error) => void,
-    onComplete?: () => void): Observer<T>;
+export function createObserver<T>(onNext: (value: T) => void, onError?: null | ((error: Error) => void),
+    onComplete?: null | (() => void)): Observer<T>;
 
 export function createObserver<T>(observerOrOnNext: Observer<T> | ((value?: T) => void),
-        onError?: (error: Error) => void, onComplete?: () => void): Observer<T> {
+        onError?: null | ((error: Error) => void), onComplete?: null | (() => void)): Observer<T> {
     if (observerOrOnNext instanceof Function) {
         return {
             start: undefined,
             next: observerOrOnNext,
-            error: onError,
-            complete: onComplete
+            error: onError ?? undefined,
+            complete: onComplete ?? undefined
         };
     } else if (observerOrOnNext instanceof Object) {
         return observerOrOnNext;

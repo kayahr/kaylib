@@ -92,13 +92,24 @@ export class Observable<T> implements ObservableLike<T> {
     public subscribe(next: (value: T) => void, error: null | undefined, complete: () => void): Subscription;
 
     /** @inheritDoc */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public subscribe(arg?: Observer<T> | ((value: T) => void) | null): Subscription {
+    public subscribe(arg: unknown): Subscription {
         // The `arguments` object is used here because the observable spec unit tests don't like typescripts
-        // optional parameters...
+        // optional parameters... For the same reason the subscribe function implementation has a single unused
+        // argument.
         // eslint-disable-next-line prefer-rest-params
-        const observer = createObserver(arguments[0], arguments[1], arguments[2]);
-
+        const args = arguments as unknown as [ Observer<T> ]
+            | [ (value: T) => void, ((error: Error) => void)?, (() => void)? ]
+            | [ null | undefined, null | undefined, (() => void)? ]
+            | [ null | undefined, ((error: any) => void)?, (() => void)? ]
+            | [ (value: T) => void, null | undefined, () => void ];
+        let observer: Observer<T>;
+        if (args[0] instanceof Function) {
+            observer = createObserver(args[0] ?? (() => {}), args[1], args[2]);
+        } else if (args[0] instanceof Object) {
+            observer = createObserver(args[0]);
+        } else {
+            throw new TypeError("Parameter must be an observer object or function");
+        }
         let activeObserver: Observer<T> | null = observer;
         let onCleanup: (() => void) | null = null;
 
