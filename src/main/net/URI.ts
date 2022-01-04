@@ -133,7 +133,7 @@ export class URI implements Serializable<string>, Equatable, Comparable<URI> {
         const file = this.path;
         if (windows !== false && (windows === true || (isNodeJS() && isWindows()))) {
             if (/^\/[a-z]:/i.exec(file) != null) {
-                return file.substr(1).replace(/\//g, "\\");
+                return file.substring(1).replace(/\//g, "\\");
             } else {
                 return file.replace(/\//g, "\\");
             }
@@ -392,7 +392,7 @@ export class URI implements Serializable<string>, Equatable, Comparable<URI> {
                 // path of the given URI against the path of this URI. This is done by concatenating all but the last
                 // segment of this URI's path, if any, with the given URI's path
                 const basePath = this.path ?? "";
-                newPath = normalizePath(basePath.substr(0, basePath.lastIndexOf("/") + 1) + path, "/");
+                newPath = normalizePath(basePath.substring(0, basePath.lastIndexOf("/") + 1) + path, "/");
             }
         }
 

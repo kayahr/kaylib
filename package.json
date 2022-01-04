@@ -37,7 +37,9 @@
     "jest": {
         "projects": [
             {
-                "setupFilesAfterEnv": [ "jest-extended/all" ],
+                "setupFilesAfterEnv": [
+                    "jest-extended/all"
+                ],
                 "displayName": "node",
                 "testEnvironment": "jest-environment-node-single-context",
                 "testMatch": [
@@ -45,7 +47,9 @@
                 ]
             },
             {
-                "setupFilesAfterEnv": [ "jest-extended/all" ],
+                "setupFilesAfterEnv": [
+                    "jest-extended/all"
+                ],
                 "displayName": "electron",
                 "runner": "@kayahr/jest-electron-runner",
                 "testEnvironment": "@kayahr/jest-electron-runner/environment",
@@ -59,26 +63,26 @@
         ]
     },
     "devDependencies": {
-        "@kayahr/eslint-config": "1.6.1",
-        "@kayahr/jest-electron-runner": "4.0.4",
+        "@kayahr/eslint-config": "2.0.1",
+        "@kayahr/jest-electron-runner": "4.0.5",
         "@kayahr/jest-matchers": "1.0.1",
-        "@types/jest": "27.0.2",
-        "@typescript-eslint/eslint-plugin": "5.0.0",
-        "@typescript-eslint/parser": "5.0.0",
-        "cspell": "5.12.3",
-        "electron": "15.2.0",
+        "@types/jest": "27.4.0",
+        "@typescript-eslint/eslint-plugin": "5.9.0",
+        "@typescript-eslint/parser": "5.9.0",
+        "cspell": "5.14.0",
+        "electron": "16.0.6",
         "es-observable-tests": "0.3.0",
-        "eslint": "7.32.0",
-        "eslint-plugin-deprecation": "1.2.1",
+        "eslint": "8.6.0",
+        "eslint-plugin-deprecation": "1.3.2",
         "eslint-plugin-simple-import-sort": "7.0.0",
-        "jest": "27.3.0",
+        "jest": "27.4.5",
         "jest-environment-node-single-context": "27.2.0",
-        "jest-extended": "1.0.0",
+        "jest-extended": "1.2.0",
         "rimraf": "3.0.2",
-        "source-map-support": "0.5.20",
+        "source-map-support": "0.5.21",
         "steal": "2.2.4",
-        "typedoc": "0.22.6",
-        "typescript": "4.4.4"
+        "typedoc": "0.22.10",
+        "typescript": "4.5.4"
     },
     "dependencies": {
         "reflect-metadata": "^0.1.13",

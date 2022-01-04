@@ -34,7 +34,7 @@ export function capitalize(s: string): string {
     } else if (s.length === 1) {
         return s.toUpperCase();
     } else {
-        return s[0].toUpperCase() + s.substr(1).toLowerCase();
+        return s[0].toUpperCase() + s.substring(1).toLowerCase();
     }
 }
 

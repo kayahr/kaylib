@@ -65,9 +65,9 @@ export function createTimeUUID(mac?: Uint8Array): string {
     }
 
     // Fetch high, mid and low UUID parts from hex timestamp
-    const high = nowHex.substr(0, 3);
-    const mid = nowHex.substr(3, 4);
-    const low = nowHex.substr(7, 8);
+    const high = nowHex.substring(0, 3);
+    const mid = nowHex.substring(3, 7);
+    const low = nowHex.substring(7, 15);
 
     // Create sequence UUID part
     const seq = (0x8000 | clockSequence).toString(16);
