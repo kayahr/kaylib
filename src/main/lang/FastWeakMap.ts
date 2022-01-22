@@ -63,7 +63,7 @@ export class FastWeakMap<K extends Object, V> implements WeakMap<K, V> {
      * Returns a boolean indicating whether an element with the specified key exists in the weak map or not.
      *
      * @param key - The key of the element to return from the weak map.
-     * @return True if an element with the specified key exists in the weakmap. False otherwise.
+     * @return True if an element with the specified key exists in the weak map. False otherwise.
      */
     public has(key: K): boolean {
         return (key as Record<symbol, unknown>)[this.property] !== undefined;
