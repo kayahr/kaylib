@@ -10,9 +10,6 @@ import { ReadonlyVectorLike } from "./Vector";
  * Abstract base class for 32-bit floating point vectors.
  */
 export abstract class AbstractVector<Size extends number = number> extends Float32Array {
-    /** The number of vector components. */
-    public readonly length!: Size;
-
     /**
      * Helper method to check if constructor arguments are for initializing a matrix from a components array.
      *

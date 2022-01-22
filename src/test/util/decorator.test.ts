@@ -93,42 +93,27 @@ describe("decorator", () => {
 
     describe("createPropertyDecorator", () => {
         it("can create a simple parameterless property decorator", () => {
+            let decoratedTarget: unknown;
+            let decoratedPropertyKey: unknown;
             const testDecorator = createPropertyDecorator((target, propertyKey) => {
-                Object.defineProperty(target, propertyKey, {
-                    value: 4
-                });
+                decoratedTarget = target;
+                decoratedPropertyKey = propertyKey
             });
             class Test {
                 @testDecorator
-                public foo!: number;
+                public foo: number = 20;
             }
-            const test = new Test();
-            expect(test.foo).toBe(4);
-        });
-        it("can specify the target type", () => {
-            const testDecorator = createPropertyDecorator((target, propertyKey) => {
-                Object.defineProperty(target, propertyKey, {
-                    get(this: Test) {
-                        return this.bar;
-                    }
-                });
-            });
-            class Test {
-                @testDecorator
-                public foo!: number;
-
-                public constructor(public readonly bar: number) {}
-            }
-            const test = new Test(3);
-            expect(test.foo).toBe(3);
+            expect(decoratedTarget).toBe(Test.prototype);
+            expect(decoratedPropertyKey).toBe("foo");
         });
         it("supports optional decorator parameter", () => {
+            let decoratedTargets: unknown[] = [];
+            let decoratedPropertyKeys: unknown[] = [];
+            let decoratorParams: unknown[] = [];
             const testDecorator = createPropertyDecorator((target, propertyKey, param?: number) => {
-                Object.defineProperty(target, propertyKey, {
-                    get() {
-                        return param == null ? 0 : param;
-                    }
-                });
+                decoratedTargets.push(target);
+                decoratedPropertyKeys.push(propertyKey);
+                decoratorParams.push(param);
             });
             class Test {
                 @testDecorator
@@ -137,9 +122,15 @@ describe("decorator", () => {
                 @testDecorator(1)
                 public bar!: number;
             }
-            const test = new Test();
-            expect(test.foo).toBe(0);
-            expect(test.bar).toBe(1);
+            expect(decoratedTargets.length).toBe(2);
+            expect(decoratedTargets[0]).toBe(Test.prototype);
+            expect(decoratedTargets[1]).toBe(Test.prototype);
+            expect(decoratedPropertyKeys.length).toBe(2);
+            expect(decoratedPropertyKeys[0]).toBe("foo");
+            expect(decoratedPropertyKeys[1]).toBe("bar");
+            expect(decoratorParams.length).toBe(2);
+            expect(decoratorParams[0]).toBe(undefined);
+            expect(decoratorParams[1]).toBe(1);
         });
     });
 });
