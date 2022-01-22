@@ -14,7 +14,7 @@ export interface AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> {
 /**
  * Abstract base class for 32-bit floating point matrices.
  */
-export abstract class AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> extends Float32Array {
+export abstract class AbstractMatrix extends Float32Array {
     public readonly columns!: number;
 
     public readonly rows!: number;
