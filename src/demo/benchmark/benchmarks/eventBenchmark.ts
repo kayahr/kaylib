@@ -3,33 +3,44 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
-import { Signal } from "../../../main/signal/Signal";
+import { Signal, SlotFunction } from "../../../main/signal/Signal";
 import { BenchmarkCandidate } from "../../../main/util/benchmark";
 
-let sum1 = 0;
-const subject = new Subject<number>();
-for (let i = 0; i < 10; i++) {
-    subject.subscribe(a => { sum1 += a; });
-}
-
-let sum2 = 0;
-const signal = new Signal<number[]>();
-for (let i = 0; i < 10; i++) {
-    signal.connect(a => { sum2 += a; });
-}
-
 function withRxJS(): number {
-    for (let i = 0; i < 100; i++) {
+    const subject = new Subject<number>();
+    let sum1 = 0;
+    sum1 += subject != null ? 0 : 1;
+    const subscriptions: Subscription[] = [];
+    for (let i = 0; i < 10; i++) {
+        const subscription = subject.subscribe(a => { sum1 += a; });
+        subscriptions.push(subscription);
+    }
+    for (let i = 0; i < 1000; i++) {
         subject.next(10);
+    }
+    for (const subscription of subscriptions) {
+        subscription.unsubscribe();
     }
     return sum1;
 }
 
 function withSignal(): number {
-    for (let i = 0; i < 100; i++) {
+    const signal = new Signal<number[]>();
+    let sum2 = 0;
+    sum2 += signal != null ? 0 : 1;
+    const slots: Array<SlotFunction<any>> = [];
+    for (let i = 0; i < 10; i++) {
+        const slot = (a: number): void => { sum2 += a; };
+        signal.connect(slot);
+        slots.push(slot);
+    }
+    for (let i = 0; i < 1000; i++) {
         signal(10);
+    }
+    for (const slot of slots) {
+        signal.disconnect(slot);
     }
     return sum2;
 }
