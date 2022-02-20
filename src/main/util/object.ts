@@ -6,7 +6,6 @@
 import { isEquatable } from "../lang/Equatable";
 import { isTypedArray } from "./array";
 import { getClass } from "./class";
-import { IllegalStateException } from "./exception";
 
 /** Cached object IDs. */
 const objectIds = new WeakMap<object, number>();
@@ -25,10 +24,6 @@ export function getObjectId(object: object): number {
     let id = objectIds.get(object);
     if (id == null) {
         id = nextObjectId++;
-        if (id === Number.MAX_SAFE_INTEGER) {
-            // If this ever happens I really like to know what the application is doing with object IDs...
-            throw new IllegalStateException("Object IDs exhausted");
-        }
         objectIds.set(object, id);
     }
     return id;
