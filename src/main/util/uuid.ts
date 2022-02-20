@@ -4,7 +4,6 @@
  */
 
 import { IllegalArgumentException } from "../util/exception";
-import { getHRTime } from "../util/time";
 
 /** The gregorian calendar offset used for time based UUID. */
 const GREGORIAN_OFFSET = Date.UTC(1582, 9, 15);
@@ -47,7 +46,7 @@ export function createRandomUUID(): string {
  */
 export function createTimeUUID(mac?: Uint8Array): string {
     // Create timestamp based on Gregorian calendar adoption date and converted to 100-nanosecond intervals
-    const timestamp = Math.round((getHRTime() - GREGORIAN_OFFSET) * 10000);
+    const timestamp = Math.round((performance.now() - GREGORIAN_OFFSET) * 10000);
 
     // Check for timestamp collision and increment clock sequence to fix it
     if (timestamp <= lastTimestamp) {
