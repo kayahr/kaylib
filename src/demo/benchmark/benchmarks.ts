@@ -4,7 +4,11 @@
  */
 
 export * from "./benchmarks/bindBenchmark";
+export * from "./benchmarks/clearArrayBenchmark";
+export * from "./benchmarks/eventBenchmark";
+export * from "./benchmarks/exceptionBenchmark";
 export * from "./benchmarks/functionsBenchmark";
+export * from "./benchmarks/iterateBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/weakMapBenchmark";
