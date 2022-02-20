@@ -1,4 +1,5 @@
 import { FastWeakMap } from "../../main/lang/FastWeakMap";
+import { garbageCollect } from "../support/gc";
 
 describe("FastWeakMap", () => {
     describe("constructor", () => {
@@ -62,5 +63,15 @@ describe("FastWeakMap", () => {
             const map = new FastWeakMap();
             expect(map.delete({})).toBe(false);
         });
+    });
+
+    it("doesn't prevent keys from being garbage collected", async () => {
+        let o: Object | null = {};
+        const map = new WeakMap<Object, number>();
+        map.set(o, 2);
+        const ref = new WeakRef(o);
+        o = null;
+        await garbageCollect();
+        expect(ref.deref()).toBeUndefined();
     });
 });

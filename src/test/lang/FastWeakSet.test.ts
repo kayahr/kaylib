@@ -1,4 +1,5 @@
 import { FastWeakSet } from "../../main/lang/FastWeakSet";
+import { garbageCollect } from "../support/gc";
 
 describe("FastWeakSet", () => {
     describe("constructor", () => {
@@ -48,5 +49,15 @@ describe("FastWeakSet", () => {
             const set = new FastWeakSet();
             expect(set.delete({})).toBe(false);
         });
+    });
+
+    it("doesn't prevent values from being garbage collected", async () => {
+        let o: Object | null = {};
+        const set = new WeakSet();
+        set.add(o);
+        const ref = new WeakRef(o);
+        o = null;
+        await garbageCollect();
+        expect(ref.deref()).toBeUndefined();
     });
 });

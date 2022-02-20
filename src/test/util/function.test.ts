@@ -1,13 +1,5 @@
 import { bind, weakBind, weakFunctionDestroyedException } from "../../main/util/function";
-import { sleep } from "../../main/util/time";
-
-async function garbageCollect(): Promise<void> {
-    await sleep(0);
-    if (gc != null) {
-        gc();
-    }
-    await sleep(0);
-}
+import { garbageCollect } from "../support/gc";
 
 describe("function", () => {
     describe("bind", () => {
