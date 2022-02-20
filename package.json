@@ -6,7 +6,7 @@
     "keywords": [
         "typescript"
     ],
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": "github:kayahr/kaylib",
     "publishConfig": {
         "access": "public"
