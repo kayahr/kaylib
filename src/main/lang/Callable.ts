@@ -20,4 +20,13 @@ export class Callable<T extends unknown[] = unknown[], R = unknown> extends Func
         super();
         return Object.setPrototypeOf(func, new.target.prototype) as typeof this;
     }
+
+    public get [Symbol.toStringTag](): string {
+        return "Callable";
+    }
+
+    public toString(): string {
+        // Redirecting toString back to Object
+        return Object.prototype.toString.call(this);
+    }
 }

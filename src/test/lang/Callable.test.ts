@@ -1,6 +1,11 @@
 import { Callable } from "../../main/lang/Callable";
 
 describe("Callable", () => {
+    describe("toString", () => {
+        it("returns correct string representation", () => {
+            expect(new Callable(() => {}).toString()).toBe("[object Callable]");
+        });
+    });
     it("can be called", () => {
         const fn = jest.fn((a: number, b: number): number => a + b);
         const callable = new Callable(fn);
