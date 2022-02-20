@@ -140,6 +140,15 @@ describe("Vector2", () => {
         });
     });
 
+    describe("reset", () => {
+        it("resets all vector components to 0", () => {
+            const v = new Vector2(1, 2);
+            const result = v.reset();
+            expect(result).toBe(v);
+            expect(result.toJSON()).toEqual([ 0, 0 ]);
+        });
+    });
+
     describe("add", () => {
         it("component-wise adds a scalar to the vector", () => {
             const v = new Vector2(1, 2);

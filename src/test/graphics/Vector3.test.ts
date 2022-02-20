@@ -165,6 +165,15 @@ describe("Vector3", () => {
         });
     });
 
+    describe("reset", () => {
+        it("resets all vector components to 0", () => {
+            const v = new Vector3(1, 2, 3);
+            const result = v.reset();
+            expect(result).toBe(v);
+            expect(result.toJSON()).toEqual([ 0, 0, 0 ]);
+        });
+    });
+
     describe("add", () => {
         it("returns component-wise sum of vector and scalar", () => {
             const v = new Vector3(1, 2, 3);

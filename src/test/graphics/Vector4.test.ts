@@ -227,12 +227,21 @@ describe("Vector4", () => {
         });
     });
 
-    describe("neg", () => {
+    describe("negate", () => {
         it("returns negated vector", () => {
             const v = new Vector4(1, 2, 3, 4);
             const result = v.negate();
             expect(result).toBe(v);
             expect(result.toJSON()).toEqual([ -1, -2, -3, -4 ]);
+        });
+    });
+
+    describe("reset", () => {
+        it("resets all vector components to 0", () => {
+            const v = new Vector4(1, 2, 3, 4);
+            const result = v.reset();
+            expect(result).toBe(v);
+            expect(result.toJSON()).toEqual([ 0, 0, 0, 0 ]);
         });
     });
 

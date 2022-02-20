@@ -4,6 +4,7 @@
  */
 
 import { IllegalArgumentException } from "../util/exception";
+import { toHex } from "./string";
 
 /** The gregorian calendar offset used for time based UUID. */
 const GREGORIAN_OFFSET = Date.UTC(1582, 9, 15);
@@ -50,18 +51,12 @@ export function createTimeUUID(mac?: Uint8Array): string {
 
     // Check for timestamp collision and increment clock sequence to fix it
     if (timestamp <= lastTimestamp) {
-        clockSequence++;
-        if (clockSequence > 0x3fff) {
-            clockSequence = 0;
-        }
+        clockSequence = (clockSequence + 1) & 0x3fff;
     }
     lastTimestamp = timestamp;
 
     // Convert timestamp to a hex string with 15 characters length
-    let nowHex = timestamp.toString(16);
-    while (nowHex.length < 15) {
-        nowHex = "0" + nowHex;
-    }
+    const nowHex = toHex(timestamp, 15);
 
     // Fetch high, mid and low UUID parts from hex timestamp
     const high = nowHex.substring(0, 3);

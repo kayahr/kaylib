@@ -85,6 +85,11 @@ describe("image", () => {
                 return expect(loadImage(uri)).rejects.toEqual(
                     new IOException(`Unable to load image with URL '${uri}'`));
             });
+            it("reports error when image is empty (emulated by SVG with width and height 0)", async () => {
+                const uri = URI.fromFile(__filename).resolve("../../../src/test/data/empty.svg");
+                return expect(loadImage(uri)).rejects.toEqual(
+                    new IOException(`Loaded image '${uri}' is empty`));
+            });
         }
     });
 });
