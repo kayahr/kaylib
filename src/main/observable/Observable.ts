@@ -4,9 +4,10 @@
  */
 
 import { isIterable } from "../lang/Iterable";
+import { toError } from "../util/error";
 import { ObservableLike } from "./ObservableLike";
 import { createObserver, Observer } from "./Observer";
-import { isSubscribable } from "./Subscribable";
+import { isSubscribable, Subscribable } from "./Subscribable";
 import { SubscriberFunction } from "./SubscriberFunction";
 import { Subscription } from "./Subscription";
 import { SubscriptionObserver } from "./SubscriptionObserver";
@@ -37,7 +38,7 @@ export interface ObservableConstructor<T> {
      * @param observable - The observable or iterable to convert.
      * @return The created observable.
      */
-    from(observable: ObservableLike<T> | Iterable<T>): ObservableLike<T>;
+    from(observable: Subscribable<T> | Iterable<T>): ObservableLike<T>;
 }
 
 /**
@@ -63,7 +64,7 @@ export class Observable<T> implements ObservableLike<T> {
         return createObservableOf<T>(this, Observable, ...items);
     }
 
-    public static from<T>(observable: ObservableLike<T> | Iterable<T>): ObservableLike<T> {
+    public static from<T>(observable: Subscribable<T> | Iterable<T>): ObservableLike<T> {
         return createObservableFrom<T>(this, Observable, observable);
     }
 
@@ -98,13 +99,13 @@ export class Observable<T> implements ObservableLike<T> {
         // argument.
         // eslint-disable-next-line prefer-rest-params
         const args = arguments as unknown as [ Observer<T> ]
-            | [ (value: T) => void, ((error: Error) => void)?, (() => void)? ]
-            | [ null | undefined, null | undefined, (() => void)? ]
-            | [ null | undefined, ((error: any) => void)?, (() => void)? ]
+            | [ (value: T) => void, ((error: Error) => void) | undefined, (() => void) | undefined ]
+            | [ null | undefined, null | undefined, (() => void) ]
+            | [ null | undefined, ((error: any) => void) | undefined, (() => void) | undefined ]
             | [ (value: T) => void, null | undefined, () => void ];
         let observer: Observer<T>;
         if (args[0] instanceof Function) {
-            observer = createObserver(args[0] ?? (() => {}), args[1], args[2]);
+            observer = createObserver(args[0], args[1], args[2]);
         } else if (args[0] instanceof Object) {
             observer = createObserver(args[0]);
         } else {
@@ -148,7 +149,7 @@ export class Observable<T> implements ObservableLike<T> {
                             return onNext.call(activeObserver, value as T);
                         } catch (e) {
                             try {
-                                this.error(e instanceof Error ? e : new Error("" + e));
+                                this.error(toError(e));
                             } catch {
                                 throw e;
                             }
@@ -216,7 +217,7 @@ export class Observable<T> implements ObservableLike<T> {
                     onCleanup = null;
                 }
             } catch (e) {
-                subscriptionObserver.error(e instanceof Error ? e : new Error("" + e));
+                subscriptionObserver.error(toError(e));
             }
         }
         return subscription;
@@ -235,7 +236,7 @@ export function createObservableOf<T>(thisConstructor: ObservableConstructor<T>,
 }
 
 export function createObservableFrom<T>(thisConstructor: ObservableConstructor<T>,
-        fallbackConstructor: ObservableConstructor<T>, observable: ObservableLike<T> | Iterable<T>):
+        fallbackConstructor: ObservableConstructor<T>, observable: Subscribable<T> | Iterable<T>):
         ObservableLike<T> {
     const constructor = thisConstructor instanceof Function ? thisConstructor : fallbackConstructor;
     if (isIterable(observable)) {
@@ -246,14 +247,15 @@ export function createObservableFrom<T>(thisConstructor: ObservableConstructor<T
             observer.complete();
         });
     } else if (observable instanceof Object) {
-        const observableFactory = observable["@@observable"] ?? observable[Symbol.observable];
+        const observableFactory = (observable as Observable<T>)["@@observable"]
+            ?? (observable as Observable<T>)[Symbol.observable];
         if (observableFactory instanceof Function) {
             const observable = observableFactory();
             if (observable instanceof Object) {
                 if (observable.constructor !== constructor) {
                     return new constructor(observer => observable.subscribe(observer));
                 }
-                return observable as Observable<T>;
+                return observable;
             }
         }
         if (isSubscribable(observable)) {
@@ -261,16 +263,4 @@ export function createObservableFrom<T>(thisConstructor: ObservableConstructor<T
         }
     }
     throw new TypeError("Not an observable");
-}
-
-export function merge<A, B>(o1: ObservableLike<A>, o2: ObservableLike<B>): Observable<A | B>;
-export function merge<A extends Array<ObservableLike<T>>, T>(...observables: A): Observable<T> {
-    return new Observable<T>(observer => {
-        const subscriptions = observables.map(observable => observable.subscribe(observer));
-        return (): void => {
-            for (const subscription of subscriptions) {
-                subscription.unsubscribe();
-            }
-        };
-    });
 }

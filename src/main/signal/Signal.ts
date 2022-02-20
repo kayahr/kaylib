@@ -214,9 +214,9 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
      * @Return A new observable.
      */
     public asObservable<R extends ObservableSignalValue<T>>(this: Signal<T>): Subscribable<R> {
-        return new Observable(observer => {
+        return new Observable(subscriber => {
             const slot = (...values: unknown[]): void => {
-                observer.next((values.length === 1 ? values[0] : values) as R);
+                subscriber.next((values.length === 1 ? values[0] : values) as R);
             };
             this.connect(slot);
             return (): void => {
