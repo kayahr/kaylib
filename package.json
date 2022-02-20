@@ -19,8 +19,7 @@
         "clean": "rimraf lib coverage doc/api",
         "compile": "tsc",
         "watch": "tsc -w",
-        "check": "node --expose-gc ./node_modules/.bin/jest",
-        "coverage": "jest --coverage",
+        "check": "better-jest",
         "doc": "typedoc --excludeNotExported --excludePrivate --mode file --includes doc --out doc/api src/main ../../node_modules/**/*.d.ts",
         "lint": "eslint --max-warnings 0 --ext .ts src",
         "cspell": "cspell --no-progress",
@@ -68,6 +67,7 @@
         }
     },
     "devDependencies": {
+        "@kayahr/better-jest": "1.0.2",
         "@kayahr/eslint-config": "2.1.0",
         "@kayahr/jest-electron-runner": "4.4.0",
         "@kayahr/jest-matchers": "1.0.1",
