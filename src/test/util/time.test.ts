@@ -9,9 +9,9 @@ describe("time", () => {
     describe("sleep", () => {
         it("sleeps for the given number of milliseconds", async () => {
             const a = performance.now();
-            await sleep(92);
+            await sleep(100);
             const b = performance.now();
-            expect(b - a).toBeGreaterThanOrEqual(92);
+            expect(b - a).toBeGreaterThanOrEqual(50);
         });
         it("sleeps for minimum number of milliseconds when no parameter is given", async () => {
             const a = performance.now();
