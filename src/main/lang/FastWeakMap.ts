@@ -9,7 +9,9 @@
  * the values are garbage collected, too.
  *
  * This implementation is not fully compatible to the WeakMap spec as it doesn't validate key types at runtime and
- * instead relies on TypeScript typings during compile time to ensure that keys are always objects.
+ * instead relies on TypeScript typings during compile time to ensure that keys are always objects. Also note that the
+ * created symbol property in the key object may influence other code which iterates over symbol properties with
+ * `Object.getPropertyDescriptors()` or `Object.getPropertySymbols()`. If this bothers you, use the standard WeakMap.
  */
 export class FastWeakMap<K extends Object, V> implements WeakMap<K, V> {
     /** The property used by this weak map to store values inside the key object. */
