@@ -9,12 +9,7 @@ import { IllegalArgumentException } from "./exception";
  * The global scope of the current environment. This is `globalThis` if present, the browsers Window object when
  * present or the Node.js global object. When nothing of all this exists then an empty object is returned as fallback.
  */
-const globalScope = (
-    typeof globalThis !== "undefined" ? globalThis :
-    typeof window !== "undefined" ? window :
-    typeof global !== "undefined" ? global :
-    {}
-) as typeof globalThis & Window & Record<string, unknown>;
+const globalScope = globalThis as typeof globalThis & Window & Record<string, unknown>;
 
 export { globalScope as global };
 
