@@ -8,5 +8,9 @@
     },
     "extends": [
         "@kayahr"
-    ]
+    ],
+    "rules": {
+        // Currently broken in 5.12.0
+        "@typescript-eslint/no-unnecessary-type-arguments": "off"
+    }
 }

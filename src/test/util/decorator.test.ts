@@ -97,7 +97,7 @@ describe("decorator", () => {
             let decoratedPropertyKey: unknown;
             const testDecorator = createPropertyDecorator((target, propertyKey) => {
                 decoratedTarget = target;
-                decoratedPropertyKey = propertyKey
+                decoratedPropertyKey = propertyKey;
             });
             class Test {
                 @testDecorator
@@ -107,9 +107,9 @@ describe("decorator", () => {
             expect(decoratedPropertyKey).toBe("foo");
         });
         it("supports optional decorator parameter", () => {
-            let decoratedTargets: unknown[] = [];
-            let decoratedPropertyKeys: unknown[] = [];
-            let decoratorParams: unknown[] = [];
+            const decoratedTargets: unknown[] = [];
+            const decoratedPropertyKeys: unknown[] = [];
+            const decoratorParams: unknown[] = [];
             const testDecorator = createPropertyDecorator((target, propertyKey, param?: number) => {
                 decoratedTargets.push(target);
                 decoratedPropertyKeys.push(propertyKey);
