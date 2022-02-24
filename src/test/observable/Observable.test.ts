@@ -6,11 +6,12 @@
 import "jest-extended";
 
 import { runTests as runObservableTests } from "es-observable-tests";
-import { Subject } from "rxjs";
+import { merge, Observable as RxJSObservable, Subject } from "rxjs";
 
 import { Observable } from "../../main/observable/Observable";
 import { Observer } from "../../main/observable/Observer";
 import { Subscribable } from "../../main/observable/Subscribable";
+import { SubscriptionObserver } from "../../main/observable/SubscriptionObserver";
 import { Unsubscribable } from "../../main/observable/Unsubscribable";
 
 describe("Observable", () => {
@@ -24,6 +25,22 @@ describe("Observable", () => {
             throw new Error(`Test suite found ${result.logger.failed} failures and ${result.logger.errored} errors: `
                 + output);
         }
+    });
+    it("can be used in RxJS operators", () => {
+        let exposedObserver: SubscriptionObserver<number> | undefined;
+        const observable = new RxJSObservable<number>(observer => {
+            exposedObserver = observer;
+        });
+        const subject = new Subject<number>();
+        const mergedObservable = merge(observable, subject);
+        const values: number[] = [];
+        mergedObservable.subscribe(value => values.push(value));
+        if (exposedObserver == null) {
+            throw new Error("Observer not exposed");
+        }
+        exposedObserver.next(1);
+        subject.next(2);
+        expect(values).toEqual([ 1, 2 ]);
     });
     describe("[Symbol.observable]", () => {
         it("returns same observable", () => {
