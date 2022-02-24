@@ -13,11 +13,6 @@ export interface SubscriptionObserver<T> {
     readonly closed: boolean;
 
     /**
-     * Sends the next undefined value in the sequence. Only applies to observables without a value type.
-     */
-    next(this: SubscriptionObserver<void>): void;
-
-    /**
      * Sends the next value in the sequence
      *
      * @param value - The next value.

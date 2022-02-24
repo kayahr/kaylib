@@ -57,11 +57,6 @@ export type Observer<T> = (NextObserver<T> | ErrorObserver | CompleteObserver) &
     start?(subscription: Subscription): void;
 
     /**
-     * Sends the next undefined value in the sequence. Only applies to observables without a value type.
-     */
-    next?(this: Observer<T>): void;
-
-    /**
      * Receives the next value in the sequence.
      *
      * @param next - The next value in the sequence. Undefined when observable doesn't have a value type.
