@@ -143,25 +143,33 @@ export class Observable<T> implements ObservableLike<T> {
                 public get closed(): boolean {
                     return activeObserver == null;
                 }
-                public next(value?: T): any {
-                    // eslint-disable-next-line @typescript-eslint/unbound-method
-                    const onNext = activeObserver?.next ?? null;
+                public next(arg: T): any {
+                    const onNext = activeObserver?.next;
                     if (onNext != null) {
-                        try {
-                            return onNext.call(activeObserver, value as T);
-                        } catch (e) {
+                        // Speed optimization: Replace next method with a more direct function call
+                        const boundOnNext = onNext.bind(activeObserver);
+                        this.next = (arg: T): any => {
                             try {
-                                this.error(toError(e));
-                            } catch {
-                                throw e;
+                                return boundOnNext(arg);
+                            } catch (e) {
+                                try {
+                                    this.error(toError(e));
+                                } catch {
+                                    throw e;
+                                }
                             }
-                        }
+                        };
+                    } else {
+                        this.next = () => undefined;
                     }
+                    return this.next(arg);
                 }
                 public error(e: Error): void {
                     const observer = activeObserver;
                     try {
                         activeObserver = null;
+                        // Speed optimization: Replace next method instead of doing null checks in next method
+                        this.next = () => undefined;
                         const onError = observer?.error ?? null;
                         if (onError != null) {
                             return onError.call(observer, e);
@@ -172,7 +180,7 @@ export class Observable<T> implements ObservableLike<T> {
                         try {
                             cleanup();
                         } catch {
-                            /* Already handling an error. Additional errors during cleanup are intentionally ignored. */
+                            // Already handling an error. Additional errors during cleanup are intentionally ignored.
                         }
                         throw e;
                     } finally {
@@ -183,6 +191,8 @@ export class Observable<T> implements ObservableLike<T> {
                     const observer = activeObserver;
                     try {
                         activeObserver = null;
+                        // Speed optimization: Replace next method instead of doing null checks in next method
+                        this.next = () => undefined;
                         const onComplete = observer?.complete ?? null;
                         if (onComplete != null) {
                             return onComplete.call(observer, arg);
@@ -191,14 +201,14 @@ export class Observable<T> implements ObservableLike<T> {
                          try {
                             cleanup();
                         } catch {
-                            /* Already handling an error. Additional errors during cleanup are intentionally ignored. */
+                            // Already handling an error. Additional errors during cleanup are intentionally ignored.
                         }
                         throw e;
                     } finally {
                         cleanup();
                     }
                 }
-            };
+            }();
             subscriptionObserver.constructor = Object;
             try {
                 teardown = this.subscriber(subscriptionObserver);
