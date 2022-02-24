@@ -155,7 +155,6 @@ export class Observable<T> implements ObservableLike<T> {
                             }
                         }
                     }
-                    return undefined;
                 }
                 public error(e: Error): void {
                     const observer = activeObserver;
@@ -186,7 +185,6 @@ export class Observable<T> implements ObservableLike<T> {
                         if (onComplete != null) {
                             return onComplete.call(observer, arg);
                         }
-                        return undefined;
                     } catch (e) {
                          try {
                             cleanup();
