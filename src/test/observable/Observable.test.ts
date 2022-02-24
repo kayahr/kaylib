@@ -6,7 +6,7 @@
 import "jest-extended";
 
 import { runTests as runObservableTests } from "es-observable-tests";
-import { merge, Observable as RxJSObservable, Subject } from "rxjs";
+import { merge, Subject } from "rxjs";
 
 import { Observable } from "../../main/observable/Observable";
 import { Observer } from "../../main/observable/Observer";
@@ -28,11 +28,11 @@ describe("Observable", () => {
     });
     it("can be used in RxJS operators", () => {
         let exposedObserver: SubscriptionObserver<number> | undefined;
-        const observable = new RxJSObservable<number>(observer => {
+        const observable = new Observable<number>(observer => {
             exposedObserver = observer;
         });
         const subject = new Subject<number>();
-        const mergedObservable = merge(observable, subject);
+        const mergedObservable = merge(subject, observable);
         const values: number[] = [];
         mergedObservable.subscribe(value => values.push(value));
         if (exposedObserver == null) {

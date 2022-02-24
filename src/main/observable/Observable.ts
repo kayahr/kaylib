@@ -3,6 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
+import type { Subscribable as RxJSSubscribable } from "rxjs";
+
 import { isIterable } from "../lang/Iterable";
 import { toError } from "../util/error";
 import { ObservableLike } from "./ObservableLike";
@@ -68,11 +70,11 @@ export class Observable<T> implements ObservableLike<T> {
         return createObservableFrom<T>(this, Observable, observable);
     }
 
-    public [Symbol.observable](): this {
+    public [Symbol.observable](): this & RxJSSubscribable<T> {
         return this;
     }
 
-    public "@@observable"(): this {
+    public "@@observable"(): this & RxJSSubscribable<T> {
         return this;
     }
 
