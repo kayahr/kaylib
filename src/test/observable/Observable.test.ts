@@ -26,6 +26,20 @@ describe("Observable", () => {
                 + output);
         }
     });
+    it("correctly supports void as value type", () => {
+        let exposedObserver: SubscriptionObserver<void> | undefined;
+        const observable = new Observable<void>(observer => {
+            exposedObserver = observer;
+        });
+        const subscriber = jest.fn();
+
+        observable.subscribe(subscriber);
+        if (exposedObserver == null) {
+            throw new Error("Observer not exposed");
+        }
+        exposedObserver.next();
+        expect(subscriber).toHaveBeenCalledOnce();
+    });
     it("can be used in RxJS operators", () => {
         let exposedObserver: SubscriptionObserver<number> | undefined;
         const observable = new Observable<number>(observer => {
@@ -41,6 +55,64 @@ describe("Observable", () => {
         exposedObserver.next(1);
         subject.next(2);
         expect(values).toEqual([ 1, 2 ]);
+    });
+    it("runs next function with observer as scope", () => {
+        let exposedObserver: SubscriptionObserver<number> | undefined;
+        const observable = new Observable<number>(observer => {
+            exposedObserver = observer;
+        });
+        const values: number[] = [];
+        class MyObserver {
+            private readonly factor: number = 2;
+            public next(value: number): void {
+                values.push(value * this.factor);
+            }
+        }
+        observable.subscribe(new MyObserver());
+        if (exposedObserver == null) {
+            throw new Error("Observer not exposed");
+        }
+        exposedObserver.next(2);
+        exposedObserver.next(3);
+        expect(values).toEqual([ 4, 6 ]);
+    });
+    it("runs complete function with observer as scope", () => {
+        let exposedObserver: SubscriptionObserver<number> | undefined;
+        const observable = new Observable<number>(observer => {
+            exposedObserver = observer;
+        });
+        const values: number[] = [];
+        class MyObserver {
+            private readonly factor: number = 3;
+            public complete(): void {
+                values.push(this.factor);
+            }
+        }
+        observable.subscribe(new MyObserver());
+        if (exposedObserver == null) {
+            throw new Error("Observer not exposed");
+        }
+        exposedObserver.complete();
+        expect(values).toEqual([ 3 ]);
+    });
+    it("runs error function with observer as scope", () => {
+        let exposedObserver: SubscriptionObserver<number> | undefined;
+        const observable = new Observable<number>(observer => {
+            exposedObserver = observer;
+        });
+        const values: number[] = [];
+        class MyObserver {
+            private readonly factor: number = 4;
+            public error(e: Error): void {
+                values.push(+e.message * this.factor);
+            }
+        }
+        observable.subscribe(new MyObserver());
+        if (exposedObserver == null) {
+            throw new Error("Observer not exposed");
+        }
+        exposedObserver.error(new Error("4"));
+        expect(values).toEqual([ 16 ]);
     });
     describe("[Symbol.observable]", () => {
         it("returns same observable", () => {
