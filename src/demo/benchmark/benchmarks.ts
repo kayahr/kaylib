@@ -9,6 +9,7 @@ export * from "./benchmarks/eventBenchmark";
 export * from "./benchmarks/exceptionBenchmark";
 export * from "./benchmarks/functionsBenchmark";
 export * from "./benchmarks/iterateBenchmark";
+export * from "./benchmarks/observableBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/weakMapBenchmark";
