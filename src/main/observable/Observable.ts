@@ -8,7 +8,7 @@ import type { Subscribable as RxJSSubscribable } from "rxjs";
 import { isIterable } from "../lang/Iterable";
 import { toError } from "../util/error";
 import { ObservableLike } from "./ObservableLike";
-import { createObserver, Observer } from "./Observer";
+import { Observer } from "./Observer";
 import { isSubscribable, Subscribable } from "./Subscribable";
 import { SubscriberFunction } from "./SubscriberFunction";
 import { Subscription } from "./Subscription";
@@ -56,7 +56,7 @@ export class Observable<T> implements ObservableLike<T> {
      * @param subscriber - The subscriber function.
      */
     public constructor(subscriber: SubscriberFunction<T>) {
-        if (!(subscriber instanceof Function)) {
+        if (!(subscriber.constructor === Function || subscriber instanceof Function)) {
             throw new TypeError("Parameter must be a subscriber function");
         }
         this.subscriber = subscriber;
@@ -107,9 +107,13 @@ export class Observable<T> implements ObservableLike<T> {
             | [ (value: T) => void, null | undefined, () => void ];
         let observer: Observer<T>;
         if (args[0] instanceof Function) {
-            observer = createObserver(args[0], args[1], args[2]);
+            observer = {
+                next: args[0],
+                error: args[1] ?? undefined,
+                complete: args[2] ?? undefined
+            };
         } else if (args[0] instanceof Object) {
-            observer = createObserver(args[0]);
+            observer = args[0];
         } else {
             throw new TypeError("Parameter must be an observer object or function");
         }
@@ -132,7 +136,7 @@ export class Observable<T> implements ObservableLike<T> {
                 cleanup();
                 activeObserver = null;
             }
-        };
+        }();
         subscription.constructor = Object;
         if (observer.start != null) {
             observer.start(subscription);

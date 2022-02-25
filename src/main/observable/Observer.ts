@@ -77,36 +77,3 @@ export type Observer<T> = (NextObserver<T> | ErrorObserver | CompleteObserver) &
      */
     complete?(value?: unknown): void;
 };
-
-/**
- * Validates the given observer object. When object is a valid observer then it is returned. Otherwise an exception
- * is thrown.
- */
-export function createObserver<T>(observer: Observer<T>): Observer<T>;
-
-/**
- * Creates and returns an observer from the given callback arguments
- *
- * @param onNext     - Receives the next value in the sequence.
- * @param onError    - Receives the sequence error.
- * @param onComplete - Receives a completion notification.
- * @return The created observer.
- */
-export function createObserver<T>(onNext: (value: T) => void, onError?: null | ((error: Error) => void),
-    onComplete?: null | (() => void)): Observer<T>;
-
-export function createObserver<T>(observerOrOnNext: Observer<T> | ((value?: T) => void),
-        onError?: null | ((error: Error) => void), onComplete?: null | (() => void)): Observer<T> {
-    if (observerOrOnNext instanceof Function) {
-        return {
-            start: undefined,
-            next: observerOrOnNext,
-            error: onError ?? undefined,
-            complete: onComplete ?? undefined
-        };
-    } else if (observerOrOnNext instanceof Object) {
-        return observerOrOnNext;
-    } else {
-        throw new TypeError("Parameter must be an observer object or function");
-    }
-}
