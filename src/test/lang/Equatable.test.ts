@@ -13,16 +13,16 @@ class Test1 implements Equatable {
 }
 
 class Test2 extends Test1 {
-    public constructor(public readonly value: number) {
+    public constructor(value: number) {
         super(value);
     }
 }
 
 class Test3 extends Test2 {
-    public constructor(public readonly value: number) {
+    public constructor(value: number) {
         super(value);
     }
-    public equals(other: unknown): boolean {
+    public override equals(other: unknown): boolean {
         return isEqual(this, other, other => this.value === other.value);
     }
 }

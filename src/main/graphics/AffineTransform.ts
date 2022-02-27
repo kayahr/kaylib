@@ -79,7 +79,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /** @inheritDoc */
-    public clone(): AffineTransform {
+    public override clone(): AffineTransform {
         return AffineTransform.fromMatrix(this);
     }
 
@@ -93,7 +93,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     }
 
     /** @inheritDoc */
-    public equals(other: unknown): boolean {
+    public override equals(other: unknown): boolean {
         return isEqual(this, other, other => this.every((value, index) => value === other[index]));
     }
 

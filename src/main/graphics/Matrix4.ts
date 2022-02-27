@@ -29,10 +29,10 @@ export type Matrix4Like = SquareMatrixLike<4>;
 export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Serializable<Matrix4JSON>,
         Cloneable<Matrix4> {
     /** The number of columns. */
-    public readonly columns: 4;
+    public override readonly columns: 4;
 
     /** The number of rows. */
-    public readonly rows: 4;
+    public override readonly rows: 4;
 
     /**
      * Creates a matrix initialized to an identity matrix.

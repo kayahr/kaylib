@@ -27,10 +27,10 @@ export type Matrix2Like = SquareMatrixLike<2>;
 export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Serializable<Matrix2JSON>,
         Cloneable<Matrix2> {
     /** The number of columns. */
-    public readonly columns: 2;
+    public override readonly columns: 2;
 
     /** The number of rows. */
-    public readonly rows: 2;
+    public override readonly rows: 2;
 
     /**
      * Creates a matrix initialized to an identity matrix.

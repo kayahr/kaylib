@@ -45,7 +45,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
      * @param maxFractionDigits - Optional number of maximum fraction digits to use in the string. Defaults to 5.
      * @return The human-readable string representation of the vector.
      */
-    public toString(maxFractionDigits = 5): string {
+    public override toString(maxFractionDigits = 5): string {
         return `[ ${Array.from(this).map(v => +v.toFixed(maxFractionDigits)).join(", ")} ]`;
     }
 

@@ -25,7 +25,7 @@ export class Callable<T extends unknown[] = unknown[], R = unknown> extends Func
         return "Callable";
     }
 
-    public toString(): string {
+    public override toString(): string {
         // Redirecting toString back to Object
         return Object.prototype.toString.call(this);
     }

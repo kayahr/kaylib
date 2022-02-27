@@ -89,7 +89,7 @@ describe("class", () => {
                 private constructor() {
                     super();
                 }
-                public static create(): Test {
+                public static override create(): Test {
                     return new Test();
                 }
             }

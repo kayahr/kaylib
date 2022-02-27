@@ -25,10 +25,10 @@ export type Matrix3x2JSON = [
 export class Matrix3x2 extends AbstractMatrix<6> implements Matrix<3, 2>, Serializable<Matrix3x2JSON>,
         Cloneable<Matrix3x2> {
     /** The number of columns. */
-    public readonly columns: 3;
+    public override readonly columns: 3;
 
     /** The number of rows. */
-    public readonly rows: 2;
+    public override readonly rows: 2;
 
     /**
      * Creates a matrix initialized to an identity matrix.

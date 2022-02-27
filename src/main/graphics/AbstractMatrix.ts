@@ -69,7 +69,7 @@ export abstract class AbstractMatrix extends Float32Array {
      * @param maximumFractionDigits - Optional number of maximum fraction digits to use in the string. Defaults to 5.
      * @return The human-readable string representation of the matrix.
      */
-    public toString(maximumFractionDigits = 5): string {
+    public override toString(maximumFractionDigits = 5): string {
         return `[ ${Array.from(this).map(v => formatNumber(v, { maximumFractionDigits })).join(", ")} ]`;
     }
 
