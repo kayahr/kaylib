@@ -10,6 +10,9 @@ import { Subscription } from "../../../main/observable/Subscription";
 import { SubscriptionObserver } from "../../../main/observable/SubscriptionObserver";
 import { BenchmarkCandidate } from "../../../main/util/benchmark";
 
+const NUM_OBSERVABLES = 10;
+const NUM_EMITS = 1000;
+
 function withRxJS(): number {
     let rxjsSubscriber: RxjsSubscriber<number> | undefined;
     const rxjsObservable = new RxjsObservable<number>(subscriber2 => {
@@ -18,11 +21,11 @@ function withRxJS(): number {
     let sum1 = 0;
     sum1 += rxjsSubscriber != null ? 0 : 1;
     const rxjsSubscriptions: RxjsSubscription[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < NUM_OBSERVABLES; i++) {
         const subscription = rxjsObservable.subscribe(a => { sum1 += a; });
         rxjsSubscriptions.push(subscription);
     }
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < NUM_EMITS; i++) {
         rxjsSubscriber?.next(10);
     }
     for (const rxjsSubscription of rxjsSubscriptions) {
@@ -39,11 +42,11 @@ function withKaylib(): number {
     let sum2 = 0;
     sum2 += kaylibSubscriber != null ? 0 : 1;
     const kaylibSubscriptions: Subscription[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < NUM_OBSERVABLES; i++) {
         const subscription = kaylibObservable.subscribe(a => { sum2 += a; });
         kaylibSubscriptions.push(subscription);
     }
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < NUM_EMITS; i++) {
         kaylibSubscriber?.next(10);
     }
     for (const kaylibSubscription of kaylibSubscriptions) {
@@ -54,11 +57,11 @@ function withKaylib(): number {
 
 export const observableBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "RxJS",
-        "func": (): number => withRxJS()
-    },
-    {
         "name": "Kaylib",
         "func": (): number => withKaylib()
+    },
+    {
+        "name": "RxJS",
+        "func": (): number => withRxJS()
     }
 ];

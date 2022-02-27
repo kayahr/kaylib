@@ -12,3 +12,13 @@ export interface Unsubscribable {
      */
     unsubscribe(): void;
 }
+
+/**
+ * Checks if given object is an [[Unsubscribable]].
+ *
+ * @param o - The object to check.
+ * @return True if unsubscribable, false if not.
+ */
+export function isUnsubscribable(o: unknown): o is Unsubscribable {
+    return o !== null && typeof (o as (Unsubscribable)).unsubscribe === "function";
+}
