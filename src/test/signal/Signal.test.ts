@@ -349,7 +349,7 @@ describe("Signal", () => {
             expect(result).toEqual([ "FOO", "BAR" ]);
         });
     });
-    describe("@@Symbol_observable]", () => {
+    describe("[Symbol.observable]", () => {
         it("can be passed to RxJS from() function", () => {
             const signal = new Signal<[string]>();
             const observable = from(signal[Symbol.observable]()).pipe(map(v => v.toUpperCase()));
