@@ -3,9 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
+import type { Subscribable as RxJSSubscribable } from "rxjs";
+
 import { Callable } from "../lang/Callable";
 import { Observable } from "../observable/Observable";
-import { Subscribable } from "../observable/Subscribable";
 import { Exception } from "../util/exception";
 import { bind } from "../util/function";
 
@@ -211,9 +212,9 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
     /**
      * Returns an observable connected to this signal.
      *
-     * @Return A new observable.
+     * @return A new observable.
      */
-    public asObservable<R extends ObservableSignalValue<T>>(this: Signal<T>): Subscribable<R> {
+    public asObservable<R extends ObservableSignalValue<T>>(): Observable<R> & RxJSSubscribable<R> {
         return new Observable(subscriber => {
             const slot = (...values: unknown[]): void => {
                 subscriber.next((values.length === 1 ? values[0] : values) as R);
@@ -225,11 +226,11 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
         });
     }
 
-    public [Symbol.observable](this: Signal<T>): Subscribable<ObservableSignalValue<T>> {
+    public [Symbol.observable]<R extends ObservableSignalValue<T>>(): Observable<R> & RxJSSubscribable<R> {
         return this.asObservable();
     }
 
-    public "@@observable"(this: Signal<T>): Subscribable<ObservableSignalValue<T>> {
+    public "@@observable"<R extends ObservableSignalValue<T>>(): Observable<R> & RxJSSubscribable<R> {
         return this.asObservable();
     }
 }

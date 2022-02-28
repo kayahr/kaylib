@@ -1,3 +1,5 @@
+import { from, map } from "rxjs";
+
 import { Signal, SignalException } from "../../main/signal/Signal";
 
 describe("Signal", () => {
@@ -325,4 +327,46 @@ describe("Signal", () => {
             });
         });
     }
+    describe("asObservable", () => {
+        it("can be passed to RxJS from() function", () => {
+            const signal = new Signal<[string]>();
+            const observable = from(signal.asObservable()).pipe(map(v => v.toUpperCase()));
+            const result: string[] = [];
+            observable.subscribe(v => result.push(v));
+            signal("foo");
+            signal("bar");
+            expect(result).toEqual([ "FOO", "BAR" ]);
+        });
+    });
+    describe("[@@observable]", () => {
+        it("can be passed to RxJS from() function", () => {
+            const signal = new Signal<[string]>();
+            const observable = from(signal["@@observable"]()).pipe(map(v => v.toUpperCase()));
+            const result: string[] = [];
+            observable.subscribe(v => result.push(v));
+            signal("foo");
+            signal("bar");
+            expect(result).toEqual([ "FOO", "BAR" ]);
+        });
+    });
+    describe("@@Symbol_observable]", () => {
+        it("can be passed to RxJS from() function", () => {
+            const signal = new Signal<[string]>();
+            const observable = from(signal[Symbol.observable]()).pipe(map(v => v.toUpperCase()));
+            const result: string[] = [];
+            observable.subscribe(v => result.push(v));
+            signal("foo");
+            signal("bar");
+            expect(result).toEqual([ "FOO", "BAR" ]);
+        });
+    });
+    it("can be passed to RxJS from() function", () => {
+        const signal = new Signal<[string]>();
+        const observable = from(signal).pipe(map(v => v.toUpperCase()));
+        const result: string[] = [];
+        observable.subscribe(v => result.push(v));
+        signal("foo");
+        signal("bar");
+        expect(result).toEqual([ "FOO", "BAR" ]);
+    });
 });
