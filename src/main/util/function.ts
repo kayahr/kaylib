@@ -117,6 +117,39 @@ export function pipe(...fns: Array<(a: unknown) => unknown>): unknown {
     return (arg: unknown) => fns.reduce((result, fn) => fn(result), arg);
 }
 
+/* eslint-disable max-len */
+export function pipeWith<A>(a: A): A;
+export function pipeWith<A, B>(a: A, b: (a: A) => B): B;
+export function pipeWith<A, B, C>(a: A, b: (a: A) => B, c: (a: B) => C): C;
+export function pipeWith<A, B, C, D>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D): D;
+export function pipeWith<A, B, C, D, E>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E): E;
+export function pipeWith<A, B, C, D, E, F>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F): F;
+export function pipeWith<A, B, C, D, E, F, G>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G): G;
+export function pipeWith<A, B, C, D, E, F, G, H>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H): H;
+export function pipeWith<A, B, C, D, E, F, G, H, I>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I): I;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J): J;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K): K;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L): L;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M): M;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N): N;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O): O;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P): P;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q): Q;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R): R;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S): S;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T): T;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U): U;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V): V;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W): W;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X): X;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X, y: (a: X) => Y): Y;
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X, y: (a: X) => Y, z: (a: Y) => Z): Z;
+/* eslint-enable max-len */
+export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown;
+export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown {
+    return fns.reduce((result, fn) => fn(result), a);
+}
+
 export function compose(): <A>(a: A) => A;
 /* eslint-disable max-len */
 export function compose<B, A>(a: (a: A) => B): (a: A) => B;
@@ -150,6 +183,39 @@ export function compose(...fns: Array<(a: unknown) => unknown>): unknown {
     return (arg: unknown) => fns.reduceRight((result, fn) => fn(result), arg);
 }
 
+/* eslint-disable max-len */
+export function composeWith<A>(a: A): A;
+export function composeWith<B, A>(a: A, b: (a: A) => B): B;
+export function composeWith<C, B, A>(a: A, c: (a: B) => C, b: (a: A) => B): C;
+export function composeWith<D, C, B, A>(a: A, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): D;
+export function composeWith<E, D, C, B, A>(a: A, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): E;
+export function composeWith<F, E, D, C, B, A>(a: A, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): F;
+export function composeWith<G, F, E, D, C, B, A>(a: A, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): G;
+export function composeWith<H, G, F, E, D, C, B, A>(a: A, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): H;
+export function composeWith<I, H, G, F, E, D, C, B, A>(a: A, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): I;
+export function composeWith<J, I, H, G, F, E, D, C, B, A>(a: A, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): J;
+export function composeWith<K, J, I, H, G, F, E, D, C, B, A>(a: A, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): K;
+export function composeWith<L, K, J, I, H, G, F, E, D, C, B, A>(a: A, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): L;
+export function composeWith<M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): M;
+export function composeWith<N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): N;
+export function composeWith<O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): O;
+export function composeWith<P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): P;
+export function composeWith<Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): Q;
+export function composeWith<R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): R;
+export function composeWith<S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): S;
+export function composeWith<T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): T;
+export function composeWith<U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): U;
+export function composeWith<V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, v: (a: U) => V, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): V;
+export function composeWith<W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, w: (a: V) => W, v: (a: U) => V, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): W;
+export function composeWith<X, W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, x: (a: W) => X, w: (a: V) => W, v: (a: U) => V, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): X;
+export function composeWith<Y, X, W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, y: (a: X) => Y, x: (a: W) => X, w: (a: V) => W, v: (a: U) => V, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): Y;
+export function composeWith<Z, Y, X, W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A>(a: A, z: (a: Y) => Z, y: (a: X) => Y, x: (a: W) => X, w: (a: V) => W, v: (a: U) => V, u: (a: T) => U, t: (a: S) => T, s: (a: R) => S, r: (a: Q) => R, q: (a: P) => Q, p: (a: O) => P, o: (a: N) => O, n: (a: M) => N, m: (a: L) => M, l: (a: K) => L, k: (a: J) => K, j: (a: I) => J, i: (a: H) => I, h: (a: G) => H, g: (a: F) => G, f: (a: E) => F, e: (a: D) => E, d: (a: C) => D, c: (a: B) => C, b: (a: A) => B): Z;
+/* eslint-enable max-len */
+export function composeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown;
+export function composeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown {
+    return fns.reduceRight((result, fn) => fn(result), a);
+}
+
 // Code to generate all these pipe/compose signatures above. Uncomment, execute with Node and copy the output to the
 // source. Hopefully some day typescript has recursive types which makes these signatures obsolete.
 /*
@@ -163,8 +229,18 @@ for (let i = 2; i < 27; i++) {
         `${c(i)}: ${f(i)}`).join(", ")}): ${f(0, i - 1)};`);
 }
 console.log("");
+for (let i = 1; i < 27; i++) {
+    console.log(`export function pipeWith<${a(i).map(i => C(i)).join(", ")}>(${[ `a: ${C(0)}`, ...a(i - 1).map(i =>
+        `${c(i + 1)}: ${f(i)}`) ].join(", ")}): ${C(i - 1)};`);
+}
+console.log("");
 for (let i = 2; i < 27; i++) {
     console.log(`export function compose<${A(i).map(i => C(i)).join(", ")}>(${A(i - 1).map(i =>
         `${c(i)}: ${f(i)}`).join(", ")}): ${f(0, i - 1)};`);
+}
+console.log("");
+for (let i = 1; i < 27; i++) {
+    console.log(`export function composeWith<${A(i).map(i => C(i)).join(", ")}>(${[ `a: ${C(0)}`, ...A(i - 1).map(i =>
+        `${c(i + 1)}: ${f(i)}`) ].join(", ")}): ${C(i - 1)};`);
 }
 */
