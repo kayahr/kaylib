@@ -1,4 +1,4 @@
-import { bind, weakBind, weakFunctionDestroyedException } from "../../main/util/function";
+import { bind, compose, pipe, weakBind, weakFunctionDestroyedException } from "../../main/util/function";
 import { garbageCollect } from "../support/gc";
 
 describe("function", () => {
@@ -124,6 +124,28 @@ describe("function", () => {
             scope = null;
             await garbageCollect();
             expect(() => bound()).toThrowError(weakFunctionDestroyedException);
+        });
+    });
+    describe("pipe", () => {
+        it("creates a composite function executing the given functions from left to right", () => {
+            const toNumber = (a: string): number => +a;
+            const double = (a: number): number => a * 2;
+            const toString = (a: number): string => "" + a;
+            expect(pipe(toNumber, double, toString)("3")).toBe("6");
+        });
+        it("works without arguments", () => {
+            expect(pipe()("3")).toBe("3");
+        });
+    });
+    describe("compose", () => {
+        it("creates a composite function executing the given functions from right to left", () => {
+            const toNumber = (a: string): number => +a;
+            const double = (a: number): number => a * 2;
+            const toString = (a: number): string => "" + a;
+            expect(compose(toString, double, toNumber)("3")).toBe("6");
+        });
+        it("works without arguments", () => {
+            expect(compose()("3")).toBe("3");
         });
     });
 });
