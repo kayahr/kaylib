@@ -133,19 +133,11 @@ describe("function", () => {
             const toString = (a: number): string => "" + a;
             expect(pipe(toNumber, double, toString)("3")).toBe("6");
         });
-        it("works without arguments", () => {
-            expect(pipe()("3")).toBe("3");
-        });
-    });
-    describe("compose", () => {
-        it("creates a composite function executing the given functions from right to left", () => {
-            const toNumber = (a: string): number => +a;
+        it("allows multiple arguments to first function", () => {
+            const toNumber = (a: string, radix: number): number => Number.parseInt(a, radix);
             const double = (a: number): number => a * 2;
             const toString = (a: number): string => "" + a;
-            expect(compose(toString, double, toNumber)("3")).toBe("6");
-        });
-        it("works without arguments", () => {
-            expect(compose()("3")).toBe("3");
+            expect(pipe(toNumber, double, toString)("F", 16)).toBe("30");
         });
     });
     describe("pipeWith", () => {
@@ -157,17 +149,6 @@ describe("function", () => {
         });
         it("works without function arguments", () => {
             expect(pipeWith("3")).toBe("3");
-        });
-    });
-    describe("composeWith", () => {
-        it("pipes a values through the given function from right to left", () => {
-            const toNumber = (a: string): number => +a;
-            const double = (a: number): number => a * 2;
-            const toString = (a: number): string => "" + a;
-            expect(composeWith("3", toString, double, toNumber)).toBe("6");
-        });
-        it("works without function arguments", () => {
-            expect(composeWith("3")).toBe("3");
         });
     });
 });
