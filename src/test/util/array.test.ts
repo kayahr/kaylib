@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { concat, findLast, findLastIndex, isArrayLike, permute, swap } from "../../main/util/array";
+import { concat, findLast, findLastIndex, isArrayLike, permute, range, swap } from "../../main/util/array";
 
 describe("array", () => {
     describe("isArrayLike", () => {
@@ -226,6 +226,18 @@ describe("array", () => {
         });
         it("returns just one permutation when only the same values are given", () => {
             expect(permute([ 2, 2, 2 ])).toEqual([ [ 2, 2, 2 ] ]);
+        });
+    });
+
+    describe("range", () => {
+        it("creates array with specified number of entries starting at 0", () => {
+            expect(range(5)).toEqual([ 0, 1, 2, 3, 4 ]);
+        });
+        it("creates array with specified number of entries starting at given offset", () => {
+            expect(range(6, -2)).toEqual([ -2, -1, 0, 1, 2, 3 ]);
+        });
+        it("creates array with specified number of entries starting at given offset and using given stepping", () => {
+            expect(range(7, 1, -3)).toEqual([ 1, -2, -5, -8, -11, -14, -17 ]);
         });
     });
 });

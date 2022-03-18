@@ -163,3 +163,18 @@ export function permute<T>(values: T[]): T[][] {
         }
     } while (true);
 }
+
+/**
+ * Creates and returns a sequence of numbers.
+ *
+ * @param size  - The number of values to generate.
+ * @param start - Optional start value. Defaults to 0.
+ * @param step  - Optional step to the next number. Defaults to 1.
+ */
+export function range(size: number, start = 0, step = 1): number[] {
+    const result = new Array<number>(size);
+    for (let i = 0, v = start; i < size; i++, v += step) {
+        result[i] = v;
+    }
+    return result;
+}
