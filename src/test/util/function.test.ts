@@ -1,4 +1,4 @@
-import { bind, compose, composeWith, pipe, pipeWith, weakBind, weakFunctionDestroyedException } from "../../main/util/function";
+import { bind, pipe, pipeWith, weakBind, weakFunctionDestroyedException } from "../../main/util/function";
 import { garbageCollect } from "../support/gc";
 
 describe("function", () => {
