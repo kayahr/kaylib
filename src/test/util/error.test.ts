@@ -1,4 +1,4 @@
-import { toError } from "../../main/util/error";
+import { throwError, toError } from "../../main/util/error";
 
 describe("error", () => {
     describe("toError", () => {
@@ -10,6 +10,12 @@ describe("error", () => {
             expect(toError("Test")).toEqual(new Error("Test"));
             expect(toError(2)).toEqual(new Error("2"));
             expect(toError(null)).toEqual(new Error("null"));
+        });
+    });
+    describe("throwError", () => {
+        it("throws the given error", () => {
+            const error = new Error("Bam!");
+            expect(() => throwError(error)).toThrowError(error);
         });
     });
 });
