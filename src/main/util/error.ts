@@ -17,3 +17,13 @@ export function toError(errorOrMessage: unknown): Error {
         return new Error("" + errorOrMessage);
     }
 }
+
+/**
+ * Function which simply throws the given error and never returns. This function is useful to throw exceptions in
+ * expressions.
+ *
+ * @param error - The error to throw.
+ */
+export function throwError(error: unknown): never {
+    throw error;
+}
