@@ -8,8 +8,8 @@ import { Observer } from "./Observer";
 import { SubscriptionObserver } from "./SubscriptionObserver";
 
 /**
- * Implementation of [[SubscriptionObserver]] which is internally passed to the subscriber function of an
- * [[Observable]].
+ * Implementation of {@link observable/SubscriptionObserver} which is internally passed to the subscriber function of
+ * an {@link observable/Observable}.
  */
 export class SubscriptionObserverImpl<T> implements SubscriptionObserver<T> {
     /**

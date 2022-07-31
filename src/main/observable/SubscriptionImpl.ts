@@ -12,7 +12,7 @@ import { TeardownLogic } from "./TeardownLogic";
 import { isUnsubscribable } from "./Unsubscribable";
 
 /**
- * Subscription implementation used internally by [[Observable]].
+ * Subscription implementation used internally by {@link observable/Observable}.
  */
 export class SubscriptionImpl<T> implements Subscription {
     private observer: Observer<T> | null;

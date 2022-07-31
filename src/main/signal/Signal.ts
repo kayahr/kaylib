@@ -166,8 +166,8 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
             if (index === -1) {
                 throw new SignalException(`Slot '${slotName(slotFunction, slotReceiver)}' is not connected`);
             }
-            // Disconnecting only sets the slot to null so the for loop in [[emit]] is not affected. The actual
-            // slot removal is done in [[emit]] when the for loop encounters a nulled slot.
+            // Disconnecting only sets the slot to null so the for loop in {@link emit} is not affected. The actual
+            // slot removal is done in {@link emit} when the for loop encounters a nulled slot.
             this.slots[index] = null;
             this.slotCounter--;
         }

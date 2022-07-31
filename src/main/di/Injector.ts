@@ -11,7 +11,7 @@ import { createQualifier, QualifierLike } from "./Qualifier";
 /**
  * Dependency Injector
  */
-class Injector {
+export class Injector {
     /** The registered injectables. */
     private readonly injectables: Injectable[] = [];
 

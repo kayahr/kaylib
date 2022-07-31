@@ -20,7 +20,7 @@
         "compile": "tsc",
         "watch": "tsc -w",
         "check": "better-jest",
-        "doc": "typedoc --excludeNotExported --excludePrivate --mode file --includes doc --out doc/api src/main ../../node_modules/**/*.d.ts",
+        "doc": "typedoc",
         "lint": "eslint --max-warnings 0 --ext .ts src",
         "cspell": "cspell --no-progress",
         "prepare": "npm run -s clean && npm run -s compile",

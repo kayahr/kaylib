@@ -7,7 +7,7 @@ import { Subscription } from "./Subscription";
 
 /**
  * Partial interface type for observer defining a mandatory `next` method. Used to construct the actual
- * [[Observer]] type.
+ * {@link Observer} type.
  */
 export type NextObserver<T> = {
     /**
@@ -20,7 +20,7 @@ export type NextObserver<T> = {
 
 /**
  * Partial interface type for observer defining a mandatory `error` method. Used to construct the actual
- * [[Observer]] type.
+ * {@link Observer} type.
  */
 export type ErrorObserver = {
     /**
@@ -33,7 +33,7 @@ export type ErrorObserver = {
 
 /**
  * Partial interface type for observer defining a mandatory `complete` method. Used to construct the actual
- * [[Observer]] type.
+ * {@link Observer} type.
  */
 export type CompleteObserver = {
     /**

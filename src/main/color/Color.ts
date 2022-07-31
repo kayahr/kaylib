@@ -66,7 +66,7 @@ export namespace Color {
     }
 
     /**
-     * Deserializes the given serialized color. This simply does the same same as [[fromString]].
+     * Deserializes the given serialized color. This simply does the same same as {@link fromString}.
      *
      * @param The serialized color.
      * @return The deserialized color.

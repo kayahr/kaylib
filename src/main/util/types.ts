@@ -13,7 +13,7 @@ export type Constructor<T = unknown, A extends unknown[] = any[]> = (new (...arg
 
 /**
  * Class type which even works for classes with a private constructor. If you have a public constructor consider
- * using [[Constructor]] instead.
+ * using {@link Constructor} instead.
  *
  * @param T - The class instance type.
  */

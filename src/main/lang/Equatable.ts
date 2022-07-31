@@ -4,12 +4,12 @@
  */
 
 /**
- * Interface for equatable objects providing an [[equal]] method.
+ * Interface for equatable objects providing an {@link equals} method.
  */
 export interface Equatable {
     /**
-     * Checks if the given object is equal to this one. It is recommended to use the [[isEqual]] function in the
-     * method implementation to correctly implement the equality contract.
+     * Checks if the given object is equal to this one. It is recommended to use the {@link lang/Equatable.isEqual}
+     * function in the method implementation to correctly implement the equality contract.
      *
      * @param object - The object to check for equality.
      * @return True if object is equal, false if not.

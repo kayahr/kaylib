@@ -7,7 +7,7 @@
  * A shortcut for the property descriptor type in method decorators. Describes a method with any kind of arguments
  * and any return value.
  */
-type Method<T> = (this: T, ...args: any[]) => any;
+export type Method<T> = (this: T, ...args: any[]) => any;
 
 /** The two types of allowed method decorator arguments for call without and with decorator parameter. */
 type MethodDecoratorArgs<T, K, V, P> = [ T, K, TypedPropertyDescriptor<V> ] | [ P ];
@@ -26,17 +26,17 @@ function isParameterizedMethodDecoratorArgs<T, K, V, O>(args: MethodDecoratorArg
  * Type of a parameterless method decorator. This is pretty much the same as the standard method decorator type
  * but with more strict typings.
  */
-type ParameterlessMethodDecorator<T, V extends Method<T>> = <T extends Record<K, V>, K extends string>
+export type ParameterlessMethodDecorator<T, V extends Method<T>> = <T extends Record<K, V>, K extends string>
     (target: T, propertyKey: K, descriptor: TypedPropertyDescriptor<V>) => void;
 
 /**
  * Type of a parameterized method decorator which is a function receiving the decorator parameter and returning
  * the real (parameterless) method decorator.
  */
-type ParameterizedMethodDecorator<T, V extends Method<T>, P> = (params: P) => ParameterlessMethodDecorator<T, V>;
+export type ParameterizedMethodDecorator<T, V extends Method<T>, P> = (params: P) => ParameterlessMethodDecorator<T, V>;
 
 /** Union type grouping the parameterless and parameterized method decorator type into one. */
-type MethodDecorator<T, V extends Method<T>, P> = ParameterlessMethodDecorator<T, V>
+export type MethodDecorator<T, V extends Method<T>, P> = ParameterlessMethodDecorator<T, V>
     & ParameterizedMethodDecorator<T, V, P>;
 
 /**
@@ -82,17 +82,17 @@ function isParameterizedPropertyDecoratorArgs<T, K, O>(args: PropertyDecoratorAr
  * Type of a parameterless method decorator. This is pretty much the same as the standard method decorator type
  * but with more strict typings.
  */
-type ParameterlessPropertyDecorator<T extends object, K extends string> = (target: T, propertyKey: K) => void;
+export type ParameterlessPropertyDecorator<T extends object, K extends string> = (target: T, propertyKey: K) => void;
 
 /**
  * Type of a parameterized method decorator which is a function receiving the decorator parameter and returning
  * the real (parameterless) method decorator.
  */
-type ParameterizedPropertyDecorator<T extends object, K extends string, P> = (params: P) =>
+export type ParameterizedPropertyDecorator<T extends object, K extends string, P> = (params: P) =>
     ParameterlessPropertyDecorator<T, K>;
 
 /** Union type grouping the parameterless and parameterized method decorator type into one. */
-type PropertyDecorator<T extends object, K extends string, P> = ParameterlessPropertyDecorator<T, K>
+export type PropertyDecorator<T extends object, K extends string, P> = ParameterlessPropertyDecorator<T, K>
     & ParameterizedPropertyDecorator<T, K, P>;
 
 /**
