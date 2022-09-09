@@ -41,6 +41,15 @@ export interface ObservableConstructor<T> {
     from(observable: Subscribable<T> | Iterable<T>): ObservableLike<T>;
 }
 
+export type SubscribeArgs<T> =
+    | [ Observer<T> ]
+    | [ (value: T) => void, ((error: Error) => void)?, (() => void)? ]
+    | [
+        (((value: T) => void) | null | undefined),
+        (((error: any) => void) | null | undefined)?,
+        ((() => void) | null | undefined)?
+    ];
+
 /**
  * Observable implementation.
  */
@@ -93,16 +102,15 @@ export class Observable<T> implements ObservableLike<T> {
     public subscribe(next: (value: T) => void, error: null | undefined, complete: () => void): Subscription;
 
     /** @inheritDoc */
-    public subscribe(arg: unknown): Subscription {
-        // The `arguments` object is used here because the observable spec unit tests don't like typescripts
-        // optional parameters... For the same reason the subscribe function implementation has a single unused
-        // argument. IMHO the tests are too strict here and we could write this stuff in a much easier to read syntax.
-        // eslint-disable-next-line prefer-rest-params
-        const args = arguments as unknown as [ Observer<T> ]
-            | [ (value: T) => void, ((error: Error) => void) | undefined, (() => void) | undefined ]
-            | [ null | undefined, null | undefined, (() => void) ]
-            | [ null | undefined, ((error: any) => void) | undefined, (() => void) | undefined ]
-            | [ (value: T) => void, null | undefined, () => void ];
+    public subscribe(...args: SubscribeArgs<T>): Subscription;
+
+    /** @inheritDoc */
+    public subscribe(arg1: (Observer<T> | ((value: T) => void) | null | undefined),
+            ...rest: [ (((error: Error) => void) | null)?, ((() => void) | null)? ]): Subscription {
+        // This hack is needed because the observable spec unit tests require the method to have ONE fixed argument.
+        // IMHO the tests are too strict here and we could get rid of this casted array creation by using `...args`
+        // in the method signature directly.
+        const args = [ arg1, ...rest ] as SubscribeArgs<T>;
         let observer: Observer<T>;
         if (args[0] instanceof Function) {
             observer = {
