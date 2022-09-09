@@ -7,6 +7,8 @@ import type { Subscribable as RxJSSubscribable } from "rxjs";
 
 import { Callable } from "../lang/Callable";
 import { Observable } from "../observable/Observable";
+import { SharedObservable } from "../observable/SharedObservable";
+import { cacheResult } from "../util/cache";
 import { Exception } from "../util/exception";
 import { bind } from "../util/function";
 
@@ -214,8 +216,9 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
      *
      * @return A new observable.
      */
+    @cacheResult
     public asObservable<R extends ObservableSignalValue<T>>(): Observable<R> & RxJSSubscribable<R> {
-        return new Observable(subscriber => {
+        return new SharedObservable(subscriber => {
             const slot = (...values: unknown[]): void => {
                 subscriber.next((values.length === 1 ? values[0] : values) as R);
             };
