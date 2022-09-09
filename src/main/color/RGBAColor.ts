@@ -50,7 +50,7 @@ export class RGBAColor implements Color, Serializable<string> {
     }
 
     /**
-     * Deserializes the given serialized RGBA color. This simply does the same same as [[fromString]].
+     * Deserializes the given serialized RGBA color. This simply does the same same as {@link fromString}.
      *
      * @param The serialized RGBA color.
      * @return The deserialized RGBA color.

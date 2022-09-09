@@ -53,7 +53,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
      * Returns the squared length of the vector. In some cases (Like comparing vector lengths) it is not necessary to
      * compare the real length, it is enough to compare the squared length. This is faster because it only does
      * addition and multiplication without a square root. If you need the real vector length then use the
-     * [[getLength]] method instead.
+     * {@link getLength} method instead.
      *
      * @return The squared vector length.
      */
@@ -61,7 +61,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
 
     /**
      * Returns the length of the vector. If you only need to compare vector lengths so the real length doesn't matter
-     * then consider using the faster [[getSquareLength]] method which omits the expensive square root calculation.
+     * then consider using the faster {@link getSquareLength} method which omits the expensive square root calculation.
      *
      * @return The vector length.
      */
@@ -73,7 +73,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
      * Returns the squared distance between this vector and the specified one. In some cases (Like comparing
      * vector distances) it is not necessary to compare the real distance, it is enough to compare the squared
      * distance. This is faster because it only does addition and multiplication without a square root. If you need
-     * the real vector distance then use the [[getDistance]] method instead.
+     * the real vector distance then use the {@link getDistance} method instead.
      *
      * @param v - The other vector.
      * @return The squared distance between the two vectors.
@@ -82,7 +82,7 @@ export abstract class AbstractVector<Size extends number = number> extends Float
 
     /**
      * Returns the distance between this vector and the specified one. If you only need to compare vector distances so
-     * the real distance doesn't matter then consider using the faster [[getSquareDistance]] method which omits the
+     * the real distance doesn't matter then consider using the faster {@link getSquareDistance} method which omits the
      * expensive square root calculation.
      *
      * @param v - The other vector.

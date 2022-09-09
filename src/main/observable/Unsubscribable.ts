@@ -14,7 +14,7 @@ export interface Unsubscribable {
 }
 
 /**
- * Checks if given object is an [[Unsubscribable]].
+ * Checks if given object is an {@link Unsubscribable}.
  *
  * @param o - The object to check.
  * @return True if unsubscribable, false if not.

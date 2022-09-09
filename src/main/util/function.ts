@@ -8,7 +8,7 @@ import { Exception } from "./exception";
 /**
  * Exception type thrown when a weak function can not be called because it has been garbage-collected.
  */
-class WeakFunctionDestroyedException extends Exception {
+export class WeakFunctionDestroyedException extends Exception {
     public constructor() {
         super("Weak function has been destroyed");
     }
@@ -64,10 +64,10 @@ function callWeak<T extends unknown[], R>(funcRef: WeakRef<(...args: T) => R>): 
 }
 
 /**
- * Weakly binds the given function to the given scope. This does the same as the [[bind]] function but weakly
+ * Weakly binds the given function to the given scope. This does the same as the {@link bind} function but weakly
  * references the function or scope so even when a reference to the bound function is kept the original function or
  * scope can be garbage-collected. When calling the bound function after the original function or scope has been
- * garbage-collected then the bound function throws a [[weakFunctionDestroyedException]].
+ * garbage-collected then the bound function throws a {@link weakFunctionDestroyedException}.
  *
  * Note that the weakly bound function is not destroyed when function is bound to a scope and only the function is
  * garbage-collected. Supporting this would require two separate slow WeakRef derefs. This isn't worth it because this

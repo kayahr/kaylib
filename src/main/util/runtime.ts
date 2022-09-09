@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-/** Cached result of [[isLittleEndian]] function */
+/** Cached result of {@link isLittleEndian} function */
 let littleEndian: boolean | null = null;
 
 /**

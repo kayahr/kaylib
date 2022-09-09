@@ -6,8 +6,8 @@
 import { FastWeakSet } from "../../../main/lang/FastWeakSet";
 import { BenchmarkCandidate } from "../../../main/util/benchmark";
 
-const set = new WeakSet<object>();
-const fastSet = new FastWeakSet<object>();
+const set = new WeakSet();
+const fastSet = new FastWeakSet();
 
 function weakSet(value: object): void {
     const present = set.has(value);

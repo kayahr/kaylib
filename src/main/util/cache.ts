@@ -32,7 +32,7 @@ export function createCacheKey(value: unknown): string {
 
 /**
  * Returns a cache key for the given set of values. For each value a cache key is generated (See
- * [[createCacheKey]] and the cache keys are then combined into a single string separated by ':'.
+ * {@link createCacheKey} and the cache keys are then combined into a single string separated by ':'.
  *
  * @return values - The set of values for which to create a unique cache key.
  * @return The created cache key.

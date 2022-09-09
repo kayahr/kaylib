@@ -45,7 +45,7 @@ export class RGBColor implements Color, Serializable<string> {
     }
 
     /**
-     * Deserializes the given serialized RGB color. This simply does the same same as [[fromString]].
+     * Deserializes the given serialized RGB color. This simply does the same same as {@link fromString}.
      *
      * @param The serialized RGB color.
      * @return The deserialized RGB color.

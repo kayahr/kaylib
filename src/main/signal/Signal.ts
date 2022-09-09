@@ -7,6 +7,8 @@ import type { Subscribable as RxJSSubscribable } from "rxjs";
 
 import { Callable } from "../lang/Callable";
 import { Observable } from "../observable/Observable";
+import { SharedObservable } from "../observable/SharedObservable";
+import { cacheResult } from "../util/cache";
 import { Exception } from "../util/exception";
 import { bind } from "../util/function";
 
@@ -166,8 +168,8 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
             if (index === -1) {
                 throw new SignalException(`Slot '${slotName(slotFunction, slotReceiver)}' is not connected`);
             }
-            // Disconnecting only sets the slot to null so the for loop in [[emit]] is not affected. The actual
-            // slot removal is done in [[emit]] when the for loop encounters a nulled slot.
+            // Disconnecting only sets the slot to null so the for loop in {@link emit} is not affected. The actual
+            // slot removal is done in {@link emit} when the for loop encounters a nulled slot.
             this.slots[index] = null;
             this.slotCounter--;
         }
@@ -214,8 +216,9 @@ export class Signal<T extends unknown[] = []> extends Callable<T, void> {
      *
      * @return A new observable.
      */
+    @cacheResult
     public asObservable<R extends ObservableSignalValue<T>>(): Observable<R> & RxJSSubscribable<R> {
-        return new Observable(subscriber => {
+        return new SharedObservable(subscriber => {
             const slot = (...values: unknown[]): void => {
                 subscriber.next((values.length === 1 ? values[0] : values) as R);
             };

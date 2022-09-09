@@ -1,4 +1,5 @@
 import { from, map } from "rxjs";
+import { SharedObservable } from "../../main/observable/SharedObservable";
 
 import { Signal, SignalException } from "../../main/signal/Signal";
 
@@ -336,6 +337,12 @@ describe("Signal", () => {
             signal("foo");
             signal("bar");
             expect(result).toEqual([ "FOO", "BAR" ]);
+        });
+        it("returns a SharedObservable which is cached", () => {
+            const signal = new Signal<[string]>();
+            const observable = signal.asObservable();
+            expect(observable).toBeInstanceOf(SharedObservable);
+            expect(signal.asObservable()).toBe(observable);
         });
     });
     describe("[@@observable]", () => {

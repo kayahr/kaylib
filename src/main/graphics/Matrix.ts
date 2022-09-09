@@ -6,7 +6,7 @@
 import { Serializable } from "../lang/Serializable";
 import { WritableArrayLike } from "../util/types";
 
-type MatrixSize<Columns extends number, Rows extends number> =
+export type MatrixSize<Columns extends number, Rows extends number> =
     Columns extends 2 ?
         Rows extends 2 ? 4 :
         Rows extends 3 ? 6 :

@@ -4,7 +4,7 @@
  */
 
 /**
- * Interface for comparable objects providing a [[compareTo]] method.
+ * Interface for comparable objects providing a {@link compareTo} method.
  */
 export interface Comparable<T = unknown> {
     /**
