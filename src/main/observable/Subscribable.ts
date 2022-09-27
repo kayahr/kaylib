@@ -16,7 +16,7 @@ export interface Subscribable<T> {
      * @param observer - The observer to subscribe.
      * @return Object which can be used to unsubscribe the observer.
      */
-    subscribe(observer?: Observer<T>): Unsubscribable;
+    subscribe(observer: Observer<T>): Unsubscribable;
 
     /**
      * Constructs a new observer using the given callback functions and subscribes it to this object.
@@ -26,16 +26,7 @@ export interface Subscribable<T> {
      * @param complete -  Receives a completion notification.
      * @return Object which can be used to unsubscribe the observer.
      */
-    subscribe(next?: (value: T) => void, error?: (error: Error) => void, complete?: () => void): Unsubscribable;
-
-    /** @deprecated Use an observer instead of a complete callback */
-    subscribe(next: null | undefined, error: null | undefined, complete: () => void): Unsubscribable;
-
-    /** @deprecated Use an observer instead of an error callback */
-    subscribe(next: null | undefined, error: (error: any) => void, complete?: () => void): Unsubscribable;
-
-    /** @deprecated Use an observer instead of a complete callback */
-    subscribe(next: (value: T) => void, error: null | undefined, complete: () => void): Unsubscribable;
+    subscribe(next: (value: T) => void, error?: (error: Error) => void, complete?: () => void): Unsubscribable;
 }
 
 /**

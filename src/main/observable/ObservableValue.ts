@@ -13,8 +13,8 @@ import { SubscriptionObserver } from "./SubscriptionObserver";
  * is immediately informed about the current value.
  */
 export class ObservableValue<T> extends SharedObservable<T> {
-    private value: T;
-    private observer!: SubscriptionObserver<T>;
+    protected value: T;
+    private observer: SubscriptionObserver<T> | null = null;
 
     /**
      * Creates a new observable value.
@@ -24,6 +24,9 @@ export class ObservableValue<T> extends SharedObservable<T> {
     public constructor(value: T) {
         super(observer => {
             this.observer = observer;
+            return () => {
+                this.observer = null;
+            };
         });
         this.value = value;
     }
@@ -54,7 +57,7 @@ export class ObservableValue<T> extends SharedObservable<T> {
     public set(value: T): this {
         if (value !== this.value) {
             this.value = value;
-            this.observer.next(value);
+            this.observer?.next(value);
         }
         return this;
     }
