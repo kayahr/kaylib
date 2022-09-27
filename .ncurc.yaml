@@ -1,2 +1,0 @@
-reject:
-  - jest-extended # 3.0.1 has broken types for toThrowWithMessage
