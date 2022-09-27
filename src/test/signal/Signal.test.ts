@@ -1,6 +1,6 @@
 import { from, map } from "rxjs";
-import { SharedObservable } from "../../main/observable/SharedObservable";
 
+import { SharedObservable } from "../../main/observable/SharedObservable";
 import { Signal, SignalException } from "../../main/signal/Signal";
 
 describe("Signal", () => {
