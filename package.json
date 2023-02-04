@@ -92,6 +92,6 @@
     },
     "dependencies": {
         "reflect-metadata": "^0.1.13",
-        "tslib": "^2.4.0"
+        "tslib": "^2.4.1"
     }
 }
