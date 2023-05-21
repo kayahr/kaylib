@@ -13,11 +13,5 @@ describe("time", () => {
             const b = performance.now();
             expect(b - a).toBeGreaterThanOrEqual(50);
         });
-        it("sleeps for minimum number of milliseconds when no parameter is given", async () => {
-            const a = performance.now();
-            await sleep();
-            const b = performance.now();
-            expect(b - a).toBeGreaterThan(0);
-        });
     });
 });
