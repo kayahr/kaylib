@@ -5,6 +5,7 @@
 
 export * from "./benchmarks/bindBenchmark";
 export * from "./benchmarks/clearArrayBenchmark";
+export * from "./benchmarks/cloneArrayBenchmark";
 export * from "./benchmarks/eventBenchmark";
 export * from "./benchmarks/exceptionBenchmark";
 export * from "./benchmarks/functionsBenchmark";
