@@ -14,11 +14,11 @@ export class AssertException extends Exception {}
  * Asserts that the given condition is true.
  *
  * @param condition - The condition to check.
- * @param message   - Optional exception message when assertion fails.
+ * @param message   - Optional message or function returning this message for the thrown exception when assert fails.
  */
-export function assert(condition: boolean, message = "Assertion failed"): asserts condition {
+export function assert(condition: boolean, message: string | (() => string) = "Assertion failed"): asserts condition {
     if (!condition) {
-        throw new AssertException(message);
+        throw new AssertException(typeof message === "string" ? message : message());
     }
 }
 
@@ -26,73 +26,81 @@ export function assert(condition: boolean, message = "Assertion failed"): assert
  * Asserts that the given value is not null and not undefined.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertDefined<T>(value: T): asserts value is NonNullable<T> {
-    return assert(value != null, "Must be defined");
+export function assertDefined<T>(value: T, name = "value"): asserts value is NonNullable<T> {
+    return assert(value != null, () => `${name} must be defined`);
 }
 
 /**
  * Asserts that the given value is not null.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertNotNull<T>(value: T): asserts value is Exclude<T, null> {
-    assert(value !== null, "Must not be null");
+export function assertNotNull<T>(value: T, name = "value"): asserts value is Exclude<T, null> {
+    assert(value !== null, () => `${name} must not be null`);
 }
 
 /**
  * Asserts that the given value is not undefined.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertNotUndefined<T>(value: T): asserts value is Exclude<T, undefined> {
-    assert(value !== undefined, "Must not be undefined");
+export function assertNotUndefined<T>(value: T, name = "value"): asserts value is Exclude<T, undefined> {
+    assert(value !== undefined, () => `${name} must not be undefined`);
 }
 
 /**
  * Asserts that the given value is a string.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertString(value: unknown): asserts value is string {
-    assert(typeof value === "string", "Must be a string");
+export function assertString(value: unknown, name = "value"): asserts value is string {
+    assert(typeof value === "string", () => `${name} must be a string`);
 }
 
 /**
- * Asserts that the given value is a number.
+ * Asserts that the given value is a number (including NaN and Infinity).
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertNumber(value: unknown): asserts value is number {
-    assert(typeof value === "number", "Must be a number");
+export function assertNumber(value: unknown, name = "value"): asserts value is number {
+    assert(typeof value === "number", () => `${name} must be a number`);
 }
 
 /**
- * Asserts that the given value is a number and not NaN.
+ * Asserts that the given value is a number (including Infinity) and not NaN.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertNotNaN(value: unknown): asserts value is number {
+export function assertNotNaN(value: unknown, name = "value"): asserts value is number {
     assertNumber(value);
-    assert(!Number.isNaN(value), "Must not be NaN");
+    assert(!Number.isNaN(value), () => `${name} must not be NaN`);
 }
 
 /**
- * Asserts that the given value is a number and not Infinity.
+ * Asserts that the given value is a number (including NaN) and not Infinity.
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertNotInfinity(value: unknown): asserts value is number {
+export function assertNotInfinity(value: unknown, name = "value"): asserts value is number {
     assertNumber(value);
-    assert(value !== Infinity && value !== -Infinity, "Must not be Infinity");
+    assert(value !== Infinity && value !== -Infinity, () => `${name} must not be Infinity`);
 }
 
 /**
  * Asserts that the given value is a finite number (Not NaN and not Infinity).
  *
  * @param value - The value to check.
+ * @param name  - Optional property name used in the assert exception message. Defaults to `value`.
  */
-export function assertFiniteNumber(value: unknown): asserts value is number {
+export function assertFiniteNumber(value: unknown, name = "value"): asserts value is number {
     assertNumber(value);
-    assert(Number.isFinite(value), "Must be a finite number");
+    assert(Number.isFinite(value), () => `${name} must be a finite number`);
 }
