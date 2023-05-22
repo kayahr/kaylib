@@ -24,14 +24,8 @@ export type Matrix2Like = SquareMatrixLike<2>;
 /**
  * 2x2 matrix using 32 bit floating point components.
  */
-export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Serializable<Matrix2JSON>,
+export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Serializable<Matrix2JSON>,
         Cloneable<Matrix2> {
-    /** The number of columns. */
-    public override readonly columns: 2;
-
-    /** The number of rows. */
-    public override readonly rows: 2;
-
     /**
      * Creates a matrix initialized to an identity matrix.
      */
@@ -54,18 +48,16 @@ export class Matrix2 extends AbstractMatrix<4> implements SquareMatrix<2>, Seria
 
     public constructor(...args: [] | Matrix2JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
-            super(4);
+            super(2, 2);
             this[0] = this[3] = 1;
         } else if (AbstractMatrix.isInitFromComponents(args)) {
-            super(4);
+            super(2, 2);
             // Manually setting elements is much faster than passing them as array to Float32Array constructor
             this[0] = args[0]; this[1] = args[1];
             this[2] = args[2]; this[3] = args[3];
         } else {
-            super(args[0], args[1] ?? 0, 4);
+            super(2, 2, args[0], args[1]);
         }
-        this.columns = 2;
-        this.rows = 2;
     }
 
     /**

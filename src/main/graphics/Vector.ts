@@ -90,7 +90,7 @@ export interface ReadonlyVector<Size extends number = 2 | 3 | 4> extends Readonl
 /**
  * Interface for a vector.
  */
-export interface Vector<Size extends number = 2 | 3 | 4> extends ReadonlyVector<Size>, VectorLike<Size> {
+export interface Vector<Size extends 2 | 3 | 4> extends ReadonlyVector<Size>, VectorLike<Size> {
     /**
      * Negates this vector.
      */

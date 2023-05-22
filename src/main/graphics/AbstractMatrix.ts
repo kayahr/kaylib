@@ -5,19 +5,40 @@
 
 import { formatNumber } from "../util/string";
 import { Constructor, StrictArrayBufferLike } from "../util/types";
-import { ReadonlyMatrixLike } from "./Matrix";
+import { MatrixSize, ReadonlyMatrixLike } from "./Matrix";
 
-export interface AbstractMatrix<Size extends number = 4 | 6 | 9 | 16> {
-    length: Size;
+export interface AbstractMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4> {
+    length: MatrixSize<Columns, Rows>;
 }
 
 /**
  * Abstract base class for 32-bit floating point matrices.
  */
-export abstract class AbstractMatrix extends Float32Array {
-    public readonly columns!: number;
+export abstract class AbstractMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4>
+        extends Float32Array {
+    /** The number of columns. */
+    public readonly columns: Columns;
 
-    public readonly rows!: number;
+    /** The number of rows. */
+    public readonly rows: Rows;
+
+    /**
+     * Constructs a matrix with the given number of columns and rows optionally backed by the given buffer.
+     *
+     * @param columns - The number of columns.
+     * @param rows    - The number of rows.
+     * @param buffer  - Optional buffer to back the matrix.
+     * @param
+     */
+    public constructor(columns: Columns, rows: Rows, buffer?: StrictArrayBufferLike, offset?: number) {
+        if (buffer == null) {
+            super(columns * rows);
+        } else {
+            super(buffer, offset, columns * rows);
+        }
+        this.columns = columns;
+        this.rows = rows;
+    }
 
     /**
      * Helper method to check if constructor arguments are for initializing a matrix from a components array.
@@ -36,11 +57,13 @@ export abstract class AbstractMatrix extends Float32Array {
      * @param matrix - The matrix to copy the components from.
      * @return The created matrix.
      */
-    public static fromMatrix<T extends AbstractMatrix>(this: Constructor<T>, source: ReadonlyMatrixLike): T {
+    public static fromMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4,
+            T extends AbstractMatrix<Columns, Rows>>(
+                this: Constructor<T>, source: ReadonlyMatrixLike<2 | 3 | 4, 2 | 3 | 4>): T {
         return new this().copyFromMatrix(source);
     }
 
-    private copyFromMatrix(matrix: ReadonlyMatrixLike): this {
+    private copyFromMatrix(matrix: ReadonlyMatrixLike<2 | 3 | 4, 2 | 3 | 4>): this {
         const otherRows = matrix.rows;
         const thisRows = this.rows;
         const columns = Math.min(this.columns, matrix.columns);
@@ -59,7 +82,7 @@ export abstract class AbstractMatrix extends Float32Array {
      *
      * @param matrix - The matrix to copy the component values from.
      */
-    public setMatrix(matrix: ReadonlyMatrixLike): this {
+    public setMatrix(matrix: ReadonlyMatrixLike<2 | 3 | 4, 2 | 3 | 4>): this {
         return this.reset().copyFromMatrix(matrix);
     }
 

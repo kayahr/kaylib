@@ -26,14 +26,8 @@ export type Matrix3Like = SquareMatrixLike<3>;
 /**
  * 3x3 matrix using 32 bit floating point components.
  */
-export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Serializable<Matrix3JSON>,
+export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Serializable<Matrix3JSON>,
         Cloneable<Matrix3> {
-    /** The number of columns. */
-    public override readonly columns: 3;
-
-    /** The number of rows. */
-    public override readonly rows: 3;
-
     /**
      * Creates a matrix initialized to an identity matrix.
      */
@@ -56,19 +50,17 @@ export class Matrix3 extends AbstractMatrix<9> implements SquareMatrix<3>, Seria
 
     public constructor(...args: [] | Matrix3JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
-            super(9);
+            super(3, 3);
             this[0] = this[4] = this[8] = 1;
         } else if (AbstractMatrix.isInitFromComponents(args)) {
-            super(9);
+            super(3, 3);
             // Manually setting elements is much faster than passing them as array to Float32Array constructor
             this[0] = args[0]; this[1] = args[1]; this[2] = args[2];
             this[3] = args[3]; this[4] = args[4]; this[5] = args[5];
             this[6] = args[6]; this[7] = args[7]; this[8] = args[8];
         } else {
-            super(args[0], args[1] ?? 0, 9);
+            super(3, 3, args[0], args[1]);
         }
-        this.columns = 3;
-        this.rows = 3;
     }
 
     /**

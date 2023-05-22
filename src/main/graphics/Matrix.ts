@@ -23,10 +23,7 @@ export type MatrixSize<Columns extends number, Rows extends number> =
 /**
  * Interface for a readonly matrix like data structure.
  */
-export interface ReadonlyMatrixLike<
-            Columns extends number = 2 | 3 | 4,
-            Rows extends number = 2 | 3 | 4
-        > extends ArrayLike<number> {
+export interface ReadonlyMatrixLike<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4> extends ArrayLike<number> {
     /** The number of matrix elements. */
     readonly length: MatrixSize<Columns, Rows>;
 
@@ -57,10 +54,8 @@ export interface MatrixLike<
 /**
  * Interface for a readonly matrix.
  */
-export interface ReadonlyMatrix<
-            Columns extends number = 2 | 3 | 4,
-            Rows extends number = 2 | 3 | 4
-        > extends ReadonlyMatrixLike<Columns, Rows>, Equatable, Serializable<number[]> {
+export interface ReadonlyMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4>
+        extends ReadonlyMatrixLike<Columns, Rows>, Equatable, Serializable<number[]> {
     readonly [index: number]: number;
 
     /**
@@ -74,10 +69,8 @@ export interface ReadonlyMatrix<
 /**
  * Interface for a matrix.
  */
-export interface Matrix<
-            Columns extends number = 2 | 3 | 4,
-            Rows extends number = 2 | 3 | 4,
-        > extends ReadonlyMatrix<Columns, Rows>, MatrixLike<Columns, Rows> {
+export interface Matrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4,>
+        extends ReadonlyMatrix<Columns, Rows>, MatrixLike<Columns, Rows> {
     [index: number]: number;
 
     /**
