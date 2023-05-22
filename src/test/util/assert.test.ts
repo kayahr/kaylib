@@ -4,7 +4,8 @@
  */
 
 import {
-    assert, assertDefined, AssertException, assertFiniteNumber, assertNotInfinity, assertNotNaN, assertNotNull, assertNotUndefined, assertNumber, assertString
+    assert, assertDefined, AssertException, assertFiniteNumber, assertNotInfinity, assertNotNaN, assertNotNull,
+    assertNotUndefined, assertNumber, assertString
 } from "../../main/util/assert";
 
 describe("assert", () => {
