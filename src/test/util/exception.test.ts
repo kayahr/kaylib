@@ -23,15 +23,15 @@ describe("exception", () => {
         });
         it("has cause set to null if not specified", () => {
             const e = new IllegalArgumentException("foo");
-            expect(e.cause).toBeNull();
+            expect(e.cause).toBeUndefined();
         });
         it("supports a root cause", () => {
             const cause = new IllegalStateException("illegal state");
-            const e = new IllegalArgumentException("illegal arg", cause);
+            const e = new IllegalArgumentException("illegal arg", { cause });
             expect(e.cause).toBe(cause);
         });
         it("supports any value as root cause", () => {
-            const e = new IllegalArgumentException("illegal arg", 23);
+            const e = new IllegalArgumentException("illegal arg", { cause: 23 });
             expect(e.cause).toBe(23);
         });
     });
@@ -42,7 +42,7 @@ describe("exception", () => {
             expect(getStackTrace(e)).toMatch(/^IllegalArgumentException: foo\n\s+at /);
         });
         it("returns stack trace for given exception with root causes", () => {
-            const e = new IllegalArgumentException("foo", new IllegalStateException("bar", 23));
+            const e = new IllegalArgumentException("foo", { cause: new IllegalStateException("bar", { cause: 23 }) });
             const stack = getStackTrace(e);
             expect(stack).toMatch(/^IllegalArgumentException: foo\n\s+at /);
             expect(stack).toMatch(/^Caused by: IllegalStateException: bar\n\s+at /m);
