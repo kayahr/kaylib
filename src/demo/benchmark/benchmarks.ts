@@ -14,6 +14,7 @@ export * from "./benchmarks/observableBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/sequenceBenchmark";
+export * from "./benchmarks/stringBenchmark";
 export * from "./benchmarks/weakMapBenchmark";
 export * from "./benchmarks/weakRefBenchmark";
 export * from "./benchmarks/weakSetBenchmark";
