@@ -28,6 +28,8 @@ export type Matrix3Like = SquareMatrixLike<3>;
  */
 export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Serializable<Matrix3JSON>,
         Cloneable<Matrix3> {
+    public override readonly length = 9;
+
     /**
      * Creates a matrix initialized to an identity matrix.
      */

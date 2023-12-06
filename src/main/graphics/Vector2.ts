@@ -31,15 +31,13 @@ export interface ReadonlyVector2 extends ReadonlyVector<2> {
     readonly y: number;
 }
 
-export interface Vector2 {
-    length: 2;
-}
-
 /**
  * Vector with two 32-bit floating point components. This class extends the standard Float32Array type so a vector
  * instance can be directly created from a buffer and passed to WebGL calls.
  */
 export class Vector2 extends AbstractVector<2> implements Vector<2>, Cloneable<Vector2>, Serializable<Vector2JSON> {
+    public override readonly length = 2 as const;
+
     /**
      * Creates a new vector with all components set to 0.
      */

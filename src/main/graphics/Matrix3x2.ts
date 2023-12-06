@@ -24,6 +24,8 @@ export type Matrix3x2JSON = [
  */
 export class Matrix3x2 extends AbstractMatrix<3, 2> implements Matrix<3, 2>, Serializable<Matrix3x2JSON>,
         Cloneable<Matrix3x2> {
+    public override readonly length = 6;
+
     /**
      * Creates a matrix initialized to an identity matrix.
      */

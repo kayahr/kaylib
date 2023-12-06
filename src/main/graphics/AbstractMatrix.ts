@@ -7,15 +7,13 @@ import { formatNumber } from "../util/string";
 import { Constructor, StrictArrayBufferLike } from "../util/types";
 import { MatrixSize, ReadonlyMatrixLike } from "./Matrix";
 
-export interface AbstractMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4> {
-    length: MatrixSize<Columns, Rows>;
-}
-
 /**
  * Abstract base class for 32-bit floating point matrices.
  */
 export abstract class AbstractMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4>
         extends Float32Array {
+    public abstract override readonly length: MatrixSize<Columns, Rows>;
+
     /** The number of columns. */
     public readonly columns: Columns;
 

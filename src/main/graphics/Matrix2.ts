@@ -26,6 +26,8 @@ export type Matrix2Like = SquareMatrixLike<2>;
  */
 export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Serializable<Matrix2JSON>,
         Cloneable<Matrix2> {
+    public override readonly length = 4;
+
     /**
      * Creates a matrix initialized to an identity matrix.
      */
