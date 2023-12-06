@@ -28,7 +28,7 @@ export class Parameter<T = unknown> {
      *                    into this parameter.
      */
     public constructor(type: Constructor<T>, qualifier?: Qualifier<T>) {
-        if ((this.isArray = type as Constructor === Array)) {
+        if ((this.isArray = (type as unknown as ArrayConstructor === Array))) {
             if (qualifier == null) {
                 throw new InjectionException(
                     "Array parameters must be qualified by using the @qualify decorator");

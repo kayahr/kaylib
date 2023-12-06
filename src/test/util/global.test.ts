@@ -44,10 +44,10 @@ describe("global", () => {
             delete global.foo;
         });
         it("throws error when namespace or expose name is empty", () => {
-            expect(() => expose("", 1)).toThrowError(IllegalArgumentException);
-            expect(() => expose(".foo", 1)).toThrowError(IllegalArgumentException);
-            expect(() => expose("foo.", 1)).toThrowError(IllegalArgumentException);
-            expect(() => expose("foo..bar", 1)).toThrowError(IllegalArgumentException);
+            expect(() => expose("", 1)).toThrow(IllegalArgumentException);
+            expect(() => expose(".foo", 1)).toThrow(IllegalArgumentException);
+            expect(() => expose("foo.", 1)).toThrow(IllegalArgumentException);
+            expect(() => expose("foo..bar", 1)).toThrow(IllegalArgumentException);
             delete global.foo;
         });
         it("registers a class in global namespace", () => {

@@ -26,13 +26,9 @@ export type Matrix4Like = SquareMatrixLike<4>;
 /**
  * 4x4 matrix using 32 bit floating point components.
  */
-export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Serializable<Matrix4JSON>,
+export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Serializable<Matrix4JSON>,
         Cloneable<Matrix4> {
-    /** The number of columns. */
-    public override readonly columns: 4;
-
-    /** The number of rows. */
-    public override readonly rows: 4;
+    public override readonly length = 16;
 
     /**
      * Creates a matrix initialized to an identity matrix.
@@ -56,20 +52,18 @@ export class Matrix4 extends AbstractMatrix<16> implements SquareMatrix<4>, Seri
 
     public constructor(...args: [] | Matrix4JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
-            super(16);
+            super(4, 4);
             this[0] = this[5] = this[10] = this[15] = 1;
         } else if (AbstractMatrix.isInitFromComponents(args)) {
-            super(16);
+            super(4, 4);
             // Manually setting elements is much faster than passing them as array to Float32Array constructor
             this[ 0] = args[ 0]; this[ 1] = args[ 1]; this[ 2] = args[ 2]; this[ 3] = args[ 3];
             this[ 4] = args[ 4]; this[ 5] = args[ 5]; this[ 6] = args[ 6]; this[ 7] = args[ 7];
             this[ 8] = args[ 8]; this[ 9] = args[ 9]; this[10] = args[10]; this[11] = args[11];
             this[12] = args[12]; this[13] = args[13]; this[14] = args[14]; this[15] = args[15];
         } else {
-            super(args[0], args[1] ?? 0, 16);
+            super(4, 4, args[0], args[1]);
         }
-        this.columns = 4;
-        this.rows = 4;
     }
 
     /**

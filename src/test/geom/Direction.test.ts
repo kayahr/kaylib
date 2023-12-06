@@ -121,7 +121,7 @@ describe("Direction", () => {
         it("throws error when direction has no angle", () => {
             expect(() => Direction.toAngle(Direction.CENTER)).toThrowWithMessage(IllegalArgumentException,
                 "Direction has no angle: CENTER");
-            expect(() => Direction.toAngle(123)).toThrowWithMessage(IllegalArgumentException,
+            expect(() => Direction.toAngle(123 as Direction)).toThrowWithMessage(IllegalArgumentException,
                 "Direction has no angle: 123");
         });
     });

@@ -15,7 +15,7 @@ describe("error", () => {
     describe("throwError", () => {
         it("throws the given error", () => {
             const error = new Error("Bam!");
-            expect(() => throwError(error)).toThrowError(error);
+            expect(() => throwError(error)).toThrow(error);
         });
     });
 });

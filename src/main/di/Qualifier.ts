@@ -94,7 +94,7 @@ function createNewQualifier<T>(check: (type: Injectable) => boolean, name: strin
         // eslint-disable-next-line @typescript-eslint/ban-types
         (target: object, propertyKey: string | symbol, index: number) => {
             const paramQualifiers = Reflect.getMetadata("di:qualifiers", target, propertyKey) as Qualifier[] ?? [];
-            paramQualifiers[index] = qualifierInstance;
+            paramQualifiers[index] = qualifierInstance as Qualifier<T>;
             Reflect.defineMetadata("di:qualifiers", paramQualifiers, target, propertyKey);
         },
         {
@@ -134,7 +134,7 @@ function createNewQualifier<T>(check: (type: Injectable) => boolean, name: strin
             }
         }
     );
-    return qualifierInstance;
+    return qualifierInstance as Qualifier<T>;
 }
 
 /**

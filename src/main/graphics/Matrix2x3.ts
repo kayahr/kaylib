@@ -22,13 +22,9 @@ export type Matrix2x3JSON = [
 /**
  * 2x3 matrix using 32 bit floating point components.
  */
-export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serializable<Matrix2x3JSON>,
+export class Matrix2x3 extends AbstractMatrix<2, 3> implements Matrix<2, 3>, Serializable<Matrix2x3JSON>,
         Cloneable<Matrix2x3> {
-    /** The number of columns. */
-    public override readonly columns: 2;
-
-    /** The number of rows. */
-    public override readonly rows: 3;
+    public override readonly length = 6;
 
     /**
      * Creates a matrix initialized to an identity matrix.
@@ -52,18 +48,16 @@ export class Matrix2x3 extends AbstractMatrix<6> implements Matrix<2, 3>, Serial
 
     public constructor(...args: [] | Matrix2x3JSON | [ StrictArrayBufferLike, number? ]) {
         if (args.length === 0) {
-            super(6);
+            super(2, 3);
             this[0] = this[4] = 1;
         } else if (AbstractMatrix.isInitFromComponents(args)) {
-            super(6);
+            super(2, 3);
             // Manually setting elements is much faster than passing them as array to Float32Array constructor
             this[0] = args[0]; this[1] = args[1]; this[2] = args[2];
             this[3] = args[3]; this[4] = args[4]; this[5] = args[5];
         } else {
-            super(args[0], args[1] ?? 0, 6);
+            super(2, 3, args[0], args[1]);
         }
-        this.columns = 2;
-        this.rows = 3;
     }
 
     /**

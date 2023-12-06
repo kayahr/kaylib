@@ -103,7 +103,7 @@ describe("function", () => {
             expect(bound()).toBe(23);
             func = null;
             await garbageCollect();
-            expect(() => bound()).toThrowError(weakFunctionDestroyedException);
+            expect(() => bound()).toThrow(weakFunctionDestroyedException);
         });
         it("returns weakly bound function which is not destroyed when function is garbage collected but scope is not",
                 async () => {
@@ -123,7 +123,7 @@ describe("function", () => {
             expect(bound()).toBe(23);
             scope = null;
             await garbageCollect();
-            expect(() => bound()).toThrowError(weakFunctionDestroyedException);
+            expect(() => bound()).toThrow(weakFunctionDestroyedException);
         });
     });
     describe("pipe", () => {

@@ -48,8 +48,7 @@ export function isRecord(object: unknown): object is Record<string, unknown> {
  * @param seen - Optional weak map with already seen objects to prevent recursion loops.
  * @return True if objects are equal, false if not.
  */
-function deepEquals(a: unknown | null | undefined, b: unknown | null | undefined,
-        seen = new WeakMap<object, object>()): boolean {
+function deepEquals(a: unknown, b: unknown, seen = new WeakMap<object, object>()): boolean {
     // Check if objects are exactly the same instance or same primitive value
     if (a === b) {
         return true;
@@ -154,6 +153,6 @@ function deepEquals(a: unknown | null | undefined, b: unknown | null | undefined
  * @param b - The second object to compare.
  * @return True if objects are equal, false if not.
  */
-export function equals(a: unknown | null | undefined, b: unknown | null | undefined): boolean {
+export function equals(a: unknown, b: unknown): boolean {
     return deepEquals(a, b);
 }

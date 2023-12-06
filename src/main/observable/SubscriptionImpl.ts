@@ -17,7 +17,7 @@ import { isUnsubscribable } from "./Unsubscribable";
 export class SubscriptionImpl<T> implements Subscription {
     private observer: Observer<T> | null;
     private subscriptionObserver: SubscriptionObserverImpl<T> | null = null;
-    private teardown: TeardownLogic | null;
+    private teardown: TeardownLogic | null = null;
 
     /**
      * Creates a new subscription on an observable.

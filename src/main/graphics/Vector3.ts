@@ -33,15 +33,13 @@ export interface ReadonlyVector3 extends ReadonlyVector<3> {
     readonly z: number;
 }
 
-export interface Vector3 {
-    length: 3;
-}
-
 /**
  * Vector with three 32-bit floating point components. This class extends the standard Float32Array type so a vector
  * instance can be directly created from a buffer and passed to WebGL calls.
  */
 export class Vector3 extends AbstractVector<3> implements Vector<3>, Cloneable<Vector3>, Serializable<Vector3JSON> {
+    public override readonly length = 3 as const;
+
     /**
      * Creates a new vector with all components set to 0.
      */

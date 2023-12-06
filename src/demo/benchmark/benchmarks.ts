@@ -5,6 +5,7 @@
 
 export * from "./benchmarks/bindBenchmark";
 export * from "./benchmarks/clearArrayBenchmark";
+export * from "./benchmarks/cloneArrayBenchmark";
 export * from "./benchmarks/eventBenchmark";
 export * from "./benchmarks/exceptionBenchmark";
 export * from "./benchmarks/functionsBenchmark";
@@ -13,6 +14,7 @@ export * from "./benchmarks/observableBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/sequenceBenchmark";
+export * from "./benchmarks/stringBenchmark";
 export * from "./benchmarks/weakMapBenchmark";
 export * from "./benchmarks/weakRefBenchmark";
 export * from "./benchmarks/weakSetBenchmark";

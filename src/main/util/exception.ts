@@ -6,18 +6,16 @@
 /**
  * Base class for all exceptions. Automatically corrects its prototype and name and also supports a cause
  * parameter.
- *
- * @param T - The exception cause type.
  */
-export abstract class Exception<T = unknown> extends Error {
+export abstract class Exception extends Error {
     /**
      * Creates a new exception.
      *
      * @param message - The exception message.
      * @param cause   - Optional error cause.
      */
-    public constructor(message: string, public readonly cause: T | null = null) {
-        super(message);
+    public constructor(message: string, options?: ErrorOptions) {
+        super(message, options);
         this.name = this.constructor.name;
         Object.setPrototypeOf(this, this.constructor.prototype as Function);
     }

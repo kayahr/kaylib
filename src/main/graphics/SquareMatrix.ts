@@ -8,7 +8,7 @@ import { Matrix, MatrixLike, ReadonlyMatrix, ReadonlyMatrixLike } from "./Matrix
 /**
  * Interface for a readonly square matrix like data structure.
  */
-export type ReadonlySquareMatrixLike<Dimensions extends number = 2 | 3 | 4> =
+export type ReadonlySquareMatrixLike<Dimensions extends 2 | 3 | 4> =
     ReadonlyMatrixLike<Dimensions, Dimensions>;
 
 /**
@@ -19,7 +19,7 @@ export type SquareMatrixLike<Dimensions extends number = 2 | 3 | 4> = MatrixLike
 /**
  * Interface for a readonly square matrix.
  */
-export interface ReadonlySquareMatrix<Dimensions extends number = 2 | 3 | 4>
+export interface ReadonlySquareMatrix<Dimensions extends 2 | 3 | 4>
         extends ReadonlyMatrix<Dimensions, Dimensions> {
     /**
      * Returns the determinant of this matrix.
@@ -32,7 +32,7 @@ export interface ReadonlySquareMatrix<Dimensions extends number = 2 | 3 | 4>
 /**
  * Interface for a square matrix.
  */
-export interface SquareMatrix<Dimensions extends number = 2 | 3 | 4> extends Matrix<Dimensions, Dimensions>,
+export interface SquareMatrix<Dimensions extends 2 | 3 | 4> extends Matrix<Dimensions, Dimensions>,
         ReadonlyMatrix<Dimensions, Dimensions>, MatrixLike<Dimensions, Dimensions> {
     /**
      * Multiplies this matrix with the specified matrix (`this = this * other`).

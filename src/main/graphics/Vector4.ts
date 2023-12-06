@@ -36,15 +36,13 @@ export interface ReadonlyVector4 extends ReadonlyVector<4> {
     readonly w: number;
 }
 
-export interface Vector4 {
-    length: 4;
-}
-
 /**
  * Vector with four 32-bit floating point components. This class extends the standard Float32Array type so a vector
  * instance can be directly created from a buffer and passed to WebGL calls.
  */
 export class Vector4 extends AbstractVector<4> implements Vector<4>, Cloneable<Vector4>, Serializable<Vector4JSON> {
+    public override readonly length = 4 as const;
+
     /**
      * Creates a new vector with all components set to 0.
      */
