@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Class, Constructor, Immutable, Mutable, TypedArray, type TypeOf, WritableArrayLike, type Parameter } from "../../main/util/types";
+import { Class, Constructor, Immutable, Mutable, type Parameter, TypedArray, type TypeOf, WritableArrayLike } from "../../main/util/types";
 
 describe("types", () => {
     describe("Constructor", () => {
