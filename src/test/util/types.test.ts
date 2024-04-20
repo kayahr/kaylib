@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Class, Constructor, Immutable, Mutable, TypedArray, type TypeOf, WritableArrayLike } from "../../main/util/types";
+import { Class, Constructor, Immutable, Mutable, TypedArray, type TypeOf, WritableArrayLike, type Parameter } from "../../main/util/types";
 
 describe("types", () => {
     describe("Constructor", () => {
@@ -199,6 +199,19 @@ describe("types", () => {
             const test: TypeOf<Test> = Test;
             // Actual test is done by TypeScript compiler.
             expect(test).toBe(Test);
+        });
+    });
+
+    describe("Parameter", () => {
+        it("obtains specific indexed parameter of a function type", () => {
+            const func = (a: number, b: string, c: boolean): string => b + c + a;
+            const a: Parameter<typeof func, 0> = 1;
+            const b: Parameter<typeof func, 1> = "test";
+            const c: Parameter<typeof func, 2> = true;
+            // Actual test is done by TypeScript compiler.
+            expect(a).toBe(1);
+            expect(b).toBe("test");
+            expect(c).toBe(true);
         });
     });
 });

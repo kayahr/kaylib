@@ -65,3 +65,8 @@ export type TypeOf<T> =
     T extends string ? StringConstructor :
     T extends boolean ? BooleanConstructor :
     Constructor<T>;
+
+/**
+ * Obtain a specific indexed parameter of a function type.
+ */
+export type Parameter<T extends (...args: any) => any, I extends number> = Parameters<T>[I];
