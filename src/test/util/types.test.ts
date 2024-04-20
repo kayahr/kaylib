@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Class, Constructor, Immutable, Mutable, TypedArray, WritableArrayLike } from "../../main/util/types";
+import { Class, Constructor, Immutable, Mutable, TypedArray, type TypeOf, WritableArrayLike } from "../../main/util/types";
 
 describe("types", () => {
     describe("Constructor", () => {
@@ -153,6 +153,52 @@ describe("types", () => {
             b[0] = 23;
             expect(b.length).toBe(4);
             expect(b[0]).toBe(23);
+        });
+    });
+
+    describe("TypeOf", () => {
+        it("maps null to null", () => {
+            const test: TypeOf<null> = null;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(null);
+        });
+        it("maps undefined to undefined", () => {
+            const test: TypeOf<undefined> = undefined;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(undefined);
+        });
+        it("maps string to StringConstructor", () => {
+            const test: TypeOf<string> = String;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(String);
+        });
+        it("maps number to NumberConstructor", () => {
+            const test: TypeOf<number> = Number;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(Number);
+        });
+        it("maps boolean to BooleanConstructor", () => {
+            const test: TypeOf<boolean> = Boolean;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(Boolean);
+        });
+        it("maps array to Array constructor", () => {
+            const test: TypeOf<number[]> = Array;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(Array);
+        });
+        it("maps Date to Date constructor", () => {
+            const test: TypeOf<Date> = Date;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(Date);
+        });
+        it("maps custom class to class constructor", () => {
+            class Test {
+                public foo = 53;
+            }
+            const test: TypeOf<Test> = Test;
+            // Actual test is done by TypeScript compiler.
+            expect(test).toBe(Test);
         });
     });
 });

@@ -54,3 +54,14 @@ export interface WritableArrayLike<T> extends ArrayLike<T> {
     [n: number]: T;
     readonly length: number;
 }
+
+/**
+ * Map value to type.
+ */
+export type TypeOf<T> =
+    T extends null ? null :
+    T extends undefined ? undefined :
+    T extends number ? NumberConstructor :
+    T extends string ? StringConstructor :
+    T extends boolean ? BooleanConstructor :
+    Constructor<T>;
