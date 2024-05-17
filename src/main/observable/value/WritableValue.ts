@@ -3,33 +3,35 @@
  * See LICENSE.md for licensing information.
  */
 
-import { equals } from "../../util/object";
-import { AbstractValue } from "./AbstractValue";
-import { ComputeContext } from "./ComputeContext";
+import { Value } from "./Value";
 
-export class WritableValue<T = unknown> extends AbstractValue<T> {
-    private value: T;
-
+export class WritableValue<T = unknown> extends Value<T> {
+    public value: T;
     public constructor(value: T) {
         super();
         this.value = value;
     }
 
-    public get(): T {
-        ComputeContext.registerDependency(this);
-        return this.value;
+    public isValid(): boolean {
+        return true;
     }
 
-    public set(value: T): this {
-        if (!equals(value, this.value)) {
+    public validate(): void {}
+
+    public set(value: T): void {
+        if (value !== this.value) {
             this.value = value;
             this.incrementVersion();
             this.observer?.next(value);
         }
-        return this;
+    }
+
+    public override get(): T {
+        this.registerDependency();
+        return this.value;
     }
 }
 
-export function value<T>(v: T): WritableValue<T> {
+export function writable<T>(v: T): WritableValue<T> {
     return new WritableValue(v);
 }

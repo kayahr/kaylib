@@ -3,49 +3,80 @@
  * See LICENSE.md for licensing information.
  */
 
-import { equals } from "../../util/object";
-import { AbstractValue } from "./AbstractValue";
-import { ComputeContext } from "./ComputeContext";
+import type { Dependency } from "./Dependency";
+import { Value } from "./Value";
 
-export type ComputeFunction<T> = () => T;
+export class ComputedValue<T = unknown> extends Value<T> {
+    public value?: T;
+    private readonly dependencies = new Map<Value, Dependency>();
+    private watched = false;
 
-const NONE = Symbol("None");
-
-export class ComputedValue<T = unknown> extends AbstractValue<T> {
-    private readonly compute: ComputeFunction<T>;
-    private readonly computeContext = new ComputeContext(() => this.update());
-    private value: T | typeof NONE = NONE;
-
-    public constructor(compute: ComputeFunction<T>) {
+    public constructor(public func: () => T) {
         super(
             () => {
-                this.update();
-                this.computeContext.watch();
+                this.get();
+                for (const dependency of this.dependencies.values()) {
+                    dependency.watch(() => this.get());
+                }
+                this.watched = true;
             },
-            () => this.computeContext.unwatch()
+            () => {
+                for (const dependency of this.dependencies.values()) {
+                    dependency.unwatch();
+                }
+                this.watched = false;
+            }
         );
-        this.compute = compute;
     }
 
-    private update(): void {
-        this.get();
-    }
-
-    public get(): T {
-        let value = this.value;
-        if (value === NONE || this.computeContext.isDirty()) {
-            value = this.computeContext.runInContext(() => this.compute());
-            if (!equals(value, this.value)) {
-                this.value = value;
-                this.incrementVersion();
-                this.observer?.next(value);
+    public override isValid(): boolean {
+        for (const dependency of this.dependencies.values()) {
+            if (!dependency.isValid()) {
+                return false;
             }
         }
-        ComputeContext.registerDependency(this);
-        return value;
+        return true;
+    }
+
+    public override validate(): void {
+        let needUpdate = false;
+        for (const dependency of this.dependencies.values()) {
+            if (dependency.validate()) {
+                needUpdate = true;
+            }
+        }
+        if (needUpdate) {
+            const newValue = this.recordDependencies(this.dependencies, this, this.func);
+            if (newValue !== this.value) {
+                this.value = newValue;
+                this.incrementVersion();
+                this.observer?.next(newValue);
+            }
+        }
+    }
+
+    public override get(): T {
+        if (this.value === undefined) {
+            this.value = this.recordDependencies(this.dependencies, this, this.func);
+        } else if (!this.isValid()) {
+            this.validate();
+        }
+        this.registerDependency();
+        return this.value;
+    }
+
+    protected override registerDependency(): Dependency | null {
+        const dep = super.registerDependency();
+        if (dep != null && this.watched) {
+            dep.watch(() => this.get());
+        }
+        return dep;
+    }
+
+    public isWatched(): boolean {
+        return this.watched;
     }
 }
-
 
 export function computed<T>(compute: () => T): ComputedValue<T> {
     return new ComputedValue(compute);
