@@ -1,10 +1,10 @@
-import { ComputeContext } from "../../../main/observable/value/ComputeContext";
+import { Dependencies } from "../../../main/observable/value/Dependencies";
 import { Dependency } from "../../../main/observable/value/Dependency";
 import { Value } from "../../../main/observable/value/Value";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
 
 class RecorderValue<T = unknown> extends Value<T> {
-    public context = new ComputeContext(this);
+    public dependencies = new Dependencies(this);
     public constructor(public readonly func: () => T) {
         super();
     }
@@ -15,7 +15,7 @@ class RecorderValue<T = unknown> extends Value<T> {
         throw new Error("Method not implemented.");
     }
     public override get(): T {
-        return this.context.recordDependencies(this.func);
+        return this.dependencies.record(this.func);
     }
 }
 describe("WritableValue", () => {
@@ -39,12 +39,10 @@ describe("WritableValue", () => {
             value.set(30);
             const recorder = new RecorderValue(() => value() * 2);
             expect(recorder.get()).toBe(60);
-            expect(recorder.context.dependencies.size).toBe(1);
-            expect(recorder.context.dependencies.get(value)).toEqual(new Dependency(value));
+            expect(Array.from(recorder.dependencies)).toEqual([ new Dependency(value) ]);
             value.set(40);
             expect(recorder.get()).toBe(80);
-            expect(recorder.context.dependencies.size).toBe(1);
-            expect(recorder.context.dependencies.get(value)).toEqual(new Dependency(value));
+            expect(Array.from(recorder.dependencies)).toEqual([ new Dependency(value) ]);
         });
     });
     describe("isValid", () => {

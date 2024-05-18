@@ -10,10 +10,7 @@ import type { Observer } from "../Observer";
 import { SharedObservable } from "../SharedObservable";
 import type { Subscription } from "../Subscription";
 import type { SubscriptionObserver } from "../SubscriptionObserver";
-import { Dependency } from "./Dependency";
 
-let recordingDependencies: Map<Value, Dependency> | null = null;
-let recordingValue: Value | null = null;
 export abstract class Value<T = unknown> extends Callable<[], T> implements ObservableLike<T>  {
     private version = 0;
     private readonly observable: Observable<T>;
@@ -59,6 +56,10 @@ export abstract class Value<T = unknown> extends Callable<[], T> implements Obse
     public abstract isValid(): boolean;
 
     public abstract validate(): void;
+
+    public isWatched(): boolean {
+        return this.observer != null;
+    }
 
     public abstract get(): T;
 }

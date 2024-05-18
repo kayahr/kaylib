@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { ComputeContext } from "./ComputeContext";
+import { Dependencies } from "./Dependencies";
 import { Value } from "./Value";
 
 export class WritableValue<T = unknown> extends Value<T> {
@@ -33,7 +33,7 @@ export class WritableValue<T = unknown> extends Value<T> {
     }
 
     public override get(): T {
-        ComputeContext.registerDependency(this);
+        Dependencies.register(this);
         return this.value;
     }
 }
