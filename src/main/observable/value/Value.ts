@@ -45,33 +45,6 @@ export abstract class Value<T = unknown> extends Callable<[], T> implements Obse
         return this;
     }
 
-    protected registerDependency(): Dependency | null {
-        if (recordingDependencies != null) {
-            const dependency = recordingDependencies.get(this);
-            if (dependency == null) {
-                const newDependency = new Dependency(recordingValue!, this);
-                recordingDependencies.set(this, newDependency);
-                return newDependency;
-            } else {
-                dependency.update();
-            }
-        }
-        return null;
-    }
-
-    protected recordDependencies<T>(dependencies: Map<Value, Dependency>, owner: Value, func: () => T): T {
-        const previousRecordingDependencies = recordingDependencies;
-        const previousRecordingValue = recordingValue;
-        recordingDependencies = dependencies;
-        recordingValue = owner;
-        try {
-            return func();
-        } finally {
-            recordingDependencies = previousRecordingDependencies;
-            recordingValue = previousRecordingValue;
-        }
-    }
-
     protected incrementVersion(): void {
         this.version++;
     }
@@ -80,7 +53,12 @@ export abstract class Value<T = unknown> extends Callable<[], T> implements Obse
         return this.version;
     }
 
+    /**
+     * @returns True if value is valid, false if it must be re-validated.
+     */
     public abstract isValid(): boolean;
-    public abstract validate(): void ;
+
+    public abstract validate(): void;
+
     public abstract get(): T;
 }

@@ -5,19 +5,14 @@
 
 import { IllegalStateException } from "../../util/exception";
 import type { Unsubscribable } from "../Unsubscribable";
-import type { ComputedValue } from "./ComputedValue";
 import type { Value } from "./Value";
 
 export class Dependency {
     private version: number;
     private subscription: Unsubscribable | null = null;
 
-    public constructor(public readonly owner: Value, private readonly value: Value) {
+    public constructor(private readonly value: Value) {
         this.version = value.getVersion();
-        // TODO Refactor dependency recording. Maybe back into a dependency context
-        if ((this.owner as ComputedValue).isWatched?.()) {
-            this.watch(() => this.owner.get());
-        }
     }
 
     public isValid(): boolean {

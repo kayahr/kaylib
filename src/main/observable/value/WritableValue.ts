@@ -3,6 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
+import { ComputeContext } from "./ComputeContext";
 import { Value } from "./Value";
 
 export class WritableValue<T = unknown> extends Value<T> {
@@ -12,11 +13,16 @@ export class WritableValue<T = unknown> extends Value<T> {
         this.value = value;
     }
 
-    public isValid(): boolean {
+    /** @inheritDoc */
+    public override isValid(): boolean {
+        // A writable value has no dependencies so it is always valid
         return true;
     }
 
-    public validate(): void {}
+    /** @inheritDoc */
+    public override validate(): void {
+        // A writable value has no dependencies so there is nothing to validate
+    }
 
     public set(value: T): void {
         if (value !== this.value) {
@@ -27,7 +33,7 @@ export class WritableValue<T = unknown> extends Value<T> {
     }
 
     public override get(): T {
-        this.registerDependency();
+        ComputeContext.registerDependency(this);
         return this.value;
     }
 }
