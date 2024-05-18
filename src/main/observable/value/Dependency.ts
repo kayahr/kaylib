@@ -8,21 +8,36 @@ import type { Unsubscribable } from "../Unsubscribable";
 import type { Value } from "./Value";
 
 export class Dependency {
-    private version: number;
+    private readonly value: Value;
+    private dependencyVersion = 0;
+    private valueVersion: number;
     private subscription: Unsubscribable | null = null;
 
-    public constructor(private readonly value: Value) {
-        this.version = value.getVersion();
+    public constructor(value: Value) {
+        this.value = value;
+        this.valueVersion = value.getVersion();
+    }
+
+    public getValue(): Value {
+        return this.value;
+    }
+
+    public use(dependencyVersion: number): void {
+        this.dependencyVersion = dependencyVersion;
+    }
+
+    public getDependencyVersion(): number {
+        return this.dependencyVersion;
     }
 
     public isValid(): boolean {
-        return this.value.getVersion() === this.version && this.value.isValid();
+        return this.value.getVersion() === this.valueVersion && this.value.isValid();
     }
 
     public validate(): boolean {
         this.value.validate();
-        const childVersion = this.value.getVersion();
-        if (childVersion !== this.version) {
+        const valueVersion = this.value.getVersion();
+        if (valueVersion !== this.valueVersion) {
             this.update();
             return true;
         }
@@ -30,7 +45,11 @@ export class Dependency {
     }
 
     public update(): void {
-        this.version = this.value.getVersion();
+        this.valueVersion = this.value.getVersion();
+    }
+
+    public isWatched(): boolean {
+        return this.subscription != null;
     }
 
     public watch(update: () => void): void {

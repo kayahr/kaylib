@@ -1,5 +1,4 @@
 import { Dependencies } from "../../../main/observable/value/Dependencies";
-import { Dependency } from "../../../main/observable/value/Dependency";
 import { Value } from "../../../main/observable/value/Value";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
 
@@ -39,10 +38,10 @@ describe("WritableValue", () => {
             value.set(30);
             const recorder = new RecorderValue(() => value() * 2);
             expect(recorder.get()).toBe(60);
-            expect(Array.from(recorder.dependencies)).toEqual([ new Dependency(value) ]);
+            expect(Array.from(recorder.dependencies).map(d => d.getValue())).toEqual([ value ]);
             value.set(40);
             expect(recorder.get()).toBe(80);
-            expect(Array.from(recorder.dependencies)).toEqual([ new Dependency(value) ]);
+            expect(Array.from(recorder.dependencies).map(d => d.getValue())).toEqual([ value ]);
         });
     });
     describe("isValid", () => {

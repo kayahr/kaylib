@@ -7,7 +7,7 @@ import { Dependency } from "./Dependency";
 import type { Value } from "./Value";
 
 /**
- * Manages the dependencies of a value which has dependencies (like a {@link ComputedValue}.
+ * Manages the dependencies of a value which has dependencies (like a {@link ComputedValue}).
  */
 export class Dependencies implements Iterable<Dependency> {
     /** The active dependencies used to record dependencies when a value is used during a computation. */
@@ -21,6 +21,12 @@ export class Dependencies implements Iterable<Dependency> {
 
     /** Index mapping values to corresponding dependencies. */
     private readonly index = new Map<Value, Dependency>();
+
+    /**
+     * Dependencies version. Increased on each recording so after recording we can easily identify dependencies which are no longer used so
+     * they can be removed.
+     */
+    private version = 0;
 
     /**
      * Creates a new dependencies container for the given owner value.
@@ -43,6 +49,10 @@ export class Dependencies implements Iterable<Dependency> {
      * update the value and (if value changed) notify its observers.
      */
     public watch(): void {
+        // Call getter once to ensure that dependencies are registered
+        this.owner.get();
+
+        // Any change on a dependency must call the getter
         for (const dependency of this.dependencies) {
             dependency.watch(() => this.owner.get());
         }
@@ -92,17 +102,18 @@ export class Dependencies implements Iterable<Dependency> {
      * @param value - The value to register as dependency.
      */
     private register(value: Value): void {
-        const dependency = this.index.get(value);
+        let dependency = this.index.get(value);
         if (dependency == null) {
-            const newDependency = new Dependency(value);
-            this.dependencies.add(newDependency);
-            this.index.set(value, newDependency);
+            dependency = new Dependency(value);
+            this.dependencies.add(dependency);
+            this.index.set(value, dependency);
             if (this.owner.isWatched()) {
-                newDependency.watch(() => this.owner.get());
+                dependency.watch(() => this.owner.get());
             }
         } else {
             dependency.update();
         }
+        dependency.use(this.version);
     }
 
     /**
@@ -115,6 +126,18 @@ export class Dependencies implements Iterable<Dependency> {
         this.active?.register(value);
     }
 
+    private removeUnused(): void {
+        for (const [ value, dependency ] of this.index) {
+            if (dependency.getDependencyVersion() !== this.version) {
+                this.index.delete(value);
+                this.dependencies.delete(dependency);
+                if (dependency.isWatched()) {
+                    dependency.unwatch();
+                }
+            }
+        }
+    }
+
     /**
      * Runs the given function and records all values used during this function execution as dependency.
      *
@@ -124,10 +147,12 @@ export class Dependencies implements Iterable<Dependency> {
     public record<T>(fn: () => T): T {
         const previousDependencies = Dependencies.active;
         Dependencies.active = this;
+        ++this.version;
         try {
             return fn();
         } finally {
             Dependencies.active = previousDependencies;
+            this.removeUnused();
         }
     }
 }
