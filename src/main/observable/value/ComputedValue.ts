@@ -4,7 +4,7 @@
  */
 
 import { Dependencies } from "./Dependencies";
-import { Value } from "./Value";
+import { AbstractValue } from "./AbstractValue";
 
 /** Special value used to indicate that none value is present yet so `null` and `undefined` can be used as actual value. */
 const NONE = Symbol("NONE");
@@ -14,7 +14,7 @@ const NONE = Symbol("NONE");
  * observer is subscribed) and on any subsequent call when one more of the dependencies have been changed. The compute function is also called when the value
  * is observed and one of the dependencies send a change notification.
  */
-export class ComputedValue<T = unknown> extends Value<T> {
+export class ComputedValue<T = unknown> extends AbstractValue<T> {
     /** The dependencies. */
     private readonly dependencies = new Dependencies(this);
 

@@ -4,9 +4,9 @@
  */
 
 import { Dependencies } from "./Dependencies";
-import { Value } from "./Value";
+import { AbstractValue } from "./AbstractValue";
 
-export class WritableValue<T = unknown> extends Value<T> {
+export class WritableValue<T = unknown> extends AbstractValue<T> {
     public value: T;
     public constructor(value: T) {
         super();

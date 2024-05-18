@@ -1,6 +1,6 @@
-import { Value } from "../../../main/observable/value/Value";
+import { AbstractValue } from "../../../main/observable/value/AbstractValue";
 
-class TestValue<T = unknown> extends Value<T> {
+class TestValue<T = unknown> extends AbstractValue<T> {
     public override isValid(): boolean {
         throw new Error("Method not implemented.");
     }
@@ -76,6 +76,26 @@ describe("Value", () => {
                 }
             }
             expect(new TestValue2().test().getVersion()).toBe(1);
+        });
+    });
+    describe("isWatched", () => {
+        it("returns false when there is none subscriber", () => {
+            const value = new TestValue();
+            expect(value.isWatched()).toBe(false);
+        });
+        it("returns true when there is at least one subscriber", () => {
+            const value = new TestValue();
+            value.subscribe(() => {});
+            expect(value.isWatched()).toBe(true);
+        });
+        it("returns false after last subscriber unsubscribes", () => {
+            const value = new TestValue();
+            const sub1 = value.subscribe(() => {});
+            const sub2 = value.subscribe(() => {});
+            sub1.unsubscribe();
+            expect(value.isWatched()).toBe(true);
+            sub2.unsubscribe();
+            expect(value.isWatched()).toBe(false);
         });
     });
 });

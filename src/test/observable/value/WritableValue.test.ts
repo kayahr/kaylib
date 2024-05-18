@@ -1,8 +1,8 @@
 import { Dependencies } from "../../../main/observable/value/Dependencies";
-import { Value } from "../../../main/observable/value/Value";
+import { AbstractValue } from "../../../main/observable/value/AbstractValue";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
 
-class RecorderValue<T = unknown> extends Value<T> {
+class RecorderValue<T = unknown> extends AbstractValue<T> {
     public dependencies = new Dependencies(this);
     public constructor(public readonly func: () => T) {
         super();
@@ -57,6 +57,27 @@ describe("WritableValue", () => {
             expect(() => new WritableValue(53).validate()).not.toThrow();
         });
     });
+    describe("isWatched", () => {
+        it("returns false when there is none subscriber", () => {
+            const value = new WritableValue(0);
+            expect(value.isWatched()).toBe(false);
+        });
+        it("returns true when there is at least one subscriber", () => {
+            const value = new WritableValue(1);
+            value.subscribe(() => {});
+            expect(value.isWatched()).toBe(true);
+        });
+        it("returns false after last subscriber unsubscribes", () => {
+            const value = new WritableValue(2);
+            const sub1 = value.subscribe(() => {});
+            const sub2 = value.subscribe(() => {});
+            sub1.unsubscribe();
+            expect(value.isWatched()).toBe(true);
+            sub2.unsubscribe();
+            expect(value.isWatched()).toBe(false);
+        });
+    });
+
 });
 
 describe("writable", () => {

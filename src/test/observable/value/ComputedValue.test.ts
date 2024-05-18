@@ -122,6 +122,26 @@ describe("ComputedValue", () => {
         a.set(4);
         expect(fn).toHaveBeenCalledExactlyOnceWith(4);
     });
+    describe("isWatched", () => {
+        it("returns false when there is none subscriber", () => {
+            const value = new ComputedValue(() => 1);
+            expect(value.isWatched()).toBe(false);
+        });
+        it("returns true when there is at least one subscriber", () => {
+            const value = new ComputedValue(() => 2);
+            value.subscribe(() => {});
+            expect(value.isWatched()).toBe(true);
+        });
+        it("returns false after last subscriber unsubscribes", () => {
+            const value = new ComputedValue(() => 2);
+            const sub1 = value.subscribe(() => {});
+            const sub2 = value.subscribe(() => {});
+            sub1.unsubscribe();
+            expect(value.isWatched()).toBe(true);
+            sub2.unsubscribe();
+            expect(value.isWatched()).toBe(false);
+        });
+    });
 });
 
 describe("computed", () => {

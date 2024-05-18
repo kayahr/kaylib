@@ -1,9 +1,9 @@
 import { Dependency } from "../../../main/observable/value/Dependency";
-import { Value } from "../../../main/observable/value/Value";
+import { AbstractValue } from "../../../main/observable/value/AbstractValue";
 import { WritableValue } from "../../../main/observable/value/WritableValue";
 import { IllegalStateException } from "../../../main/util/exception";
 
-class TestValue<T = unknown> extends Value<T> {
+class TestValue<T = unknown> extends AbstractValue<T> {
     public valid = true;
     public override isValid(): boolean {
         return this.valid;

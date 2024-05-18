@@ -23,10 +23,10 @@ export class Dependencies implements Iterable<Dependency> {
     private readonly index = new Map<Value, Dependency>();
 
     /**
-     * Dependencies version. Increased on each recording so after recording we can easily identify dependencies which are no longer used so
+     * Increased on each recording so after recording we can easily identify dependencies which are no longer used so
      * they can be removed.
      */
-    private version = 0;
+    private recordId = 0;
 
     /**
      * Creates a new dependencies container for the given owner value.
@@ -113,7 +113,7 @@ export class Dependencies implements Iterable<Dependency> {
         } else {
             dependency.update();
         }
-        dependency.use(this.version);
+        dependency.updateRecordId(this.recordId);
     }
 
     /**
@@ -128,7 +128,7 @@ export class Dependencies implements Iterable<Dependency> {
 
     private removeUnused(): void {
         for (const [ value, dependency ] of this.index) {
-            if (dependency.getDependencyVersion() !== this.version) {
+            if (dependency.getRecordId() !== this.recordId) {
                 this.index.delete(value);
                 this.dependencies.delete(dependency);
                 if (dependency.isWatched()) {
@@ -147,7 +147,7 @@ export class Dependencies implements Iterable<Dependency> {
     public record<T>(fn: () => T): T {
         const previousDependencies = Dependencies.active;
         Dependencies.active = this;
-        ++this.version;
+        ++this.recordId;
         try {
             return fn();
         } finally {
