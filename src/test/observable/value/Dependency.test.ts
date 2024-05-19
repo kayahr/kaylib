@@ -19,6 +19,25 @@ class TestValue<T = unknown> extends AbstractValue<T> {
 }
 
 describe("Dependency", () => {
+    describe("getValue", () => {
+        it("returns the dependency value", () => {
+            const value = new WritableValue(0);
+            const dependency = new Dependency(value);
+            expect(dependency.getValue()).toBe(value);
+        });
+    });
+    describe("getRecordVersion", () => {
+        it("initially returns 0", () => {
+            expect(new Dependency(new WritableValue(0)).getRecordVersion()).toBe(0);
+        });
+    });
+    describe("updateRecordVersion", () => {
+        it("updates the record version", () => {
+            const dependency = new Dependency(new WritableValue(0));
+            dependency.updateRecordVersion(2);
+            expect(dependency.getRecordVersion()).toBe(2);
+        });
+    });
     describe("isValid", () => {
         it("returns true when dependency has same version as value and value is valid", () => {
             const value = new TestValue();
@@ -107,6 +126,26 @@ describe("Dependency", () => {
             const value = new WritableValue(0);
             const dependency = new Dependency(value);
             expect(() => dependency.unwatch()).toThrowWithMessage(IllegalStateException, "Dependency is not watched");
+        });
+    });
+    describe("isWatched", () => {
+        it("returns false when dependency is not watched", () => {
+            const value = new WritableValue(0);
+            const dependency = new Dependency(value);
+            expect(dependency.isWatched()).toBe(false);
+        });
+        it("returns true when dependency is watched", () => {
+            const value = new WritableValue(0);
+            const dependency = new Dependency(value);
+            dependency.watch(() => {});
+            expect(dependency.isWatched()).toBe(true);
+        });
+        it("returns false when dependency is no longer watched", () => {
+            const value = new WritableValue(0);
+            const dependency = new Dependency(value);
+            dependency.watch(() => {});
+            dependency.unwatch();
+            expect(dependency.isWatched()).toBe(false);
         });
     });
 });
