@@ -90,6 +90,72 @@ describe("WritableValue", () => {
         a.subscribe(() => {}).unsubscribe();
         await expect(new WeakRef(a)).toBeGarbageCollected(() => { a = null; });
     });
+    describe("set", () => {
+        it("sets a new value", () => {
+            const value = new WritableValue(1);
+            value.set(2);
+            expect(value.get()).toBe(2);
+        });
+        it("increases the version when setting a new value", () => {
+            const value = new WritableValue(1);
+            expect(value.getVersion()).toBe(0);
+            value.set(2);
+            expect(value.getVersion()).toBe(1);
+        });
+        it("notifies subscribers when setting a new value", () => {
+            const value = new WritableValue(1);
+            const fn = jest.fn();
+            value.subscribe(fn);
+            value.set(2);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(2);
+        });
+        it("does not increase the version when setting the same value", () => {
+            const value = new WritableValue(1);
+            expect(value.getVersion()).toBe(0);
+            value.set(1);
+            expect(value.getVersion()).toBe(0);
+        });
+        it("does not notify subscribers when setting the same value", () => {
+            const value = new WritableValue(1);
+            const fn = jest.fn();
+            value.subscribe(fn);
+            value.set(1);
+            expect(fn).not.toHaveBeenCalled();
+        });
+    });
+    describe("update", () => {
+        it("updates the value", () => {
+            const value = new WritableValue(1);
+            value.update(v => v + 2);
+            expect(value.get()).toBe(3);
+        });
+        it("increases the version when value was updated", () => {
+            const value = new WritableValue(1);
+            expect(value.getVersion()).toBe(0);
+            value.update(v => v - 10);
+            expect(value.getVersion()).toBe(1);
+        });
+        it("notifies subscribers when value was updated", () => {
+            const value = new WritableValue(1);
+            const fn = jest.fn();
+            value.subscribe(fn);
+            value.update(() => 2);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(2);
+        });
+        it("does not increase the version when value was not updated", () => {
+            const value = new WritableValue(1);
+            expect(value.getVersion()).toBe(0);
+            value.update(() => 1);
+            expect(value.getVersion()).toBe(0);
+        });
+        it("does not notify subscribers when value was not updated", () => {
+            const value = new WritableValue(1);
+            const fn = jest.fn();
+            value.subscribe(fn);
+            value.update(v => v * 1);
+            expect(fn).not.toHaveBeenCalled();
+        });
+    });
 });
 
 describe("writable", () => {
