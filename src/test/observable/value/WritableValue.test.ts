@@ -1,3 +1,5 @@
+import "@kayahr/jest-matchers";
+
 import { AbstractValue } from "../../../main/observable/value/AbstractValue";
 import { Dependencies } from "../../../main/observable/value/Dependencies";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
@@ -76,6 +78,17 @@ describe("WritableValue", () => {
             sub2.unsubscribe();
             expect(value.isWatched()).toBe(false);
         });
+    });
+    it("is garbage collected correctly when no longer referenced", async () => {
+        let a: WritableValue | null = new WritableValue(1);
+        expect(a()).toBe(1);
+        await expect(new WeakRef(a)).toBeGarbageCollected(() => { a = null; });
+    });
+    it("is garbage collected correctly after last observer is unsubscribed", async () => {
+        let a: WritableValue | null = new WritableValue(1);
+        expect(a()).toBe(1);
+        a.subscribe(() => {}).unsubscribe();
+        await expect(new WeakRef(a)).toBeGarbageCollected(() => { a = null; });
     });
 });
 

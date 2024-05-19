@@ -1,3 +1,5 @@
+import "@kayahr/jest-matchers";
+
 import { computed, ComputedValue } from "../../../main/observable/value/ComputedValue";
 import { WritableValue } from "../../../main/observable/value/WritableValue";
 
@@ -59,6 +61,18 @@ describe("ComputedValue", () => {
             expect(output.get()).toBe(true);
             expect(compute).toHaveBeenCalledTimes(2);
             expect(output.getVersion()).toBe(0);
+        });
+        it("does not call compute function again after a transient dependency has changed but the change does not affect the value", () => {
+            const a = new WritableValue(1);
+            const odd = new ComputedValue(() => (a() & 1) === 1);
+            const compute = jest.fn(() => (odd() ? "odd" : "even"));
+            const parity = new ComputedValue(compute);
+            expect(parity.get()).toBe("odd");
+            expect(compute).toHaveBeenCalledOnce();
+            compute.mockClear();
+            a.set(3);
+            expect(parity.get()).toBe("odd");
+            expect(compute).not.toHaveBeenCalled();
         });
         it("calls the compute function again after a dependency has changed and increases the version when value has changed", () => {
             const input = new WritableValue(1);
@@ -141,6 +155,21 @@ describe("ComputedValue", () => {
             sub2.unsubscribe();
             expect(value.isWatched()).toBe(false);
         });
+    });
+    it("is garbage collected correctly when no longer referenced", async () => {
+        const a = new WritableValue(1);
+        const b = new ComputedValue(() => a() * 2);
+        let c: ComputedValue | null = new ComputedValue(() => a() + b());
+        expect(c()).toBe(3);
+        await expect(new WeakRef(c)).toBeGarbageCollected(() => { c = null; });
+    });
+    it("is garbage collected correctly after last observer is unsubscribed", async () => {
+        const a = new WritableValue(1);
+        const b = new ComputedValue(() => a() * 2);
+        let c: ComputedValue | null = new ComputedValue(() => a() + b());
+        expect(c()).toBe(3);
+        c.subscribe(() => {}).unsubscribe();
+        await expect(new WeakRef(c)).toBeGarbageCollected(() => { c = null; });
     });
 });
 
