@@ -1,4 +1,4 @@
-import { computed,ComputedValue } from "../../../main/observable/value/ComputedValue";
+import { computed, ComputedValue } from "../../../main/observable/value/ComputedValue";
 import { WritableValue } from "../../../main/observable/value/WritableValue";
 
 describe("ComputedValue", () => {

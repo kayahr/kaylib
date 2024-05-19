@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Dependencies } from "./Dependencies";
 import { AbstractValue } from "./AbstractValue";
+import { Dependencies } from "./Dependencies";
 
 export class WritableValue<T = unknown> extends AbstractValue<T> {
     public value: T;

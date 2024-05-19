@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Dependencies } from "./Dependencies";
 import { AbstractValue } from "./AbstractValue";
+import { Dependencies } from "./Dependencies";
 
 /** Special value used to indicate that none value is present yet so `null` and `undefined` can be used as actual value. */
 const NONE = Symbol("NONE");

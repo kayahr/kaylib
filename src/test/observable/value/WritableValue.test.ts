@@ -1,5 +1,5 @@
-import { Dependencies } from "../../../main/observable/value/Dependencies";
 import { AbstractValue } from "../../../main/observable/value/AbstractValue";
+import { Dependencies } from "../../../main/observable/value/Dependencies";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
 
 class RecorderValue<T = unknown> extends AbstractValue<T> {
@@ -77,7 +77,6 @@ describe("WritableValue", () => {
             expect(value.isWatched()).toBe(false);
         });
     });
-
 });
 
 describe("writable", () => {

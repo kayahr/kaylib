@@ -21,10 +21,10 @@ export class Dependency {
     private version: number;
 
     /**
-     * The record id which was current when the dependency was last used. When this diverges from the recordId of the
+     * The record version which was current when the dependency was last used. When this diverges from the record version of the
      * dependency list referencing this dependency then the dependency is no longer used and can be removed.
      */
-    private recordId = 0;
+    private recordVersion = 0;
 
     /**
      * The active subscription monitoring value changes. Only present when dependency is watched. Null otherwise.
@@ -47,20 +47,20 @@ export class Dependency {
     }
 
     /**
-     * Updates the record id to indicate that the dependency is still in use.
+     * Updates the record version to indicate that the dependency is still in use.
      *
-     * @param recordId - The current record id to set.
+     * @param recordVersion - The current record version to set.
      */
-    public updateRecordId(recordId: number): void {
-        this.recordId = recordId;
+    public updateRecordVersion(recordVersion: number): void {
+        this.recordVersion = recordVersion;
     }
 
     /**
-     * @returns The last seen record id. When this diverges from the current record id then this dependency is no longer used
+     * @returns The last seen record version. When this diverges from the current record version then this dependency is no longer used
      *          and can be removed.
      */
-    public getRecordId(): number {
-        return this.recordId;
+    public getRecordVersion(): number {
+        return this.recordVersion;
     }
 
     /**

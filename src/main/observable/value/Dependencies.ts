@@ -23,10 +23,10 @@ export class Dependencies implements Iterable<Dependency> {
     private readonly index = new Map<Value, Dependency>();
 
     /**
-     * Increased on each recording so after recording we can easily identify dependencies which are no longer used so
-     * they can be removed.
+     * Increased on each recording and set to all found dependencies so after recording we can easily identify and remove dependencies
+     * which still have the old record version.
      */
-    private recordId = 0;
+    private recordVersion = 0;
 
     /**
      * Creates a new dependencies container for the given owner value.
@@ -104,16 +104,22 @@ export class Dependencies implements Iterable<Dependency> {
     private register(value: Value): void {
         let dependency = this.index.get(value);
         if (dependency == null) {
+            // Register new dependency
             dependency = new Dependency(value);
             this.dependencies.add(dependency);
             this.index.set(value, dependency);
+
+            // When owner is watched then start watching this new dependency
             if (this.owner.isWatched()) {
                 dependency.watch(() => this.owner.get());
             }
         } else {
+            // Update existing dependency
             dependency.update();
         }
-        dependency.updateRecordId(this.recordId);
+
+        // Update the record version to mark the dependency as still-used
+        dependency.updateRecordVersion(this.recordVersion);
     }
 
     /**
@@ -126,9 +132,13 @@ export class Dependencies implements Iterable<Dependency> {
         this.active?.register(value);
     }
 
+    /**
+     * Removes dependencies which are no longer used. This is called right after recording so used the record version of used dependencies must match
+     * the current record version. If not then a dependency is out-dated and must be removed and unwatched if necessary.
+     */
     private removeUnused(): void {
         for (const [ value, dependency ] of this.index) {
-            if (dependency.getRecordId() !== this.recordId) {
+            if (dependency.getRecordVersion() !== this.recordVersion) {
                 this.index.delete(value);
                 this.dependencies.delete(dependency);
                 if (dependency.isWatched()) {
@@ -147,7 +157,7 @@ export class Dependencies implements Iterable<Dependency> {
     public record<T>(fn: () => T): T {
         const previousDependencies = Dependencies.active;
         Dependencies.active = this;
-        ++this.recordId;
+        ++this.recordVersion;
         try {
             return fn();
         } finally {

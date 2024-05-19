@@ -1,5 +1,5 @@
-import { Dependency } from "../../../main/observable/value/Dependency";
 import { AbstractValue } from "../../../main/observable/value/AbstractValue";
+import { Dependency } from "../../../main/observable/value/Dependency";
 import { WritableValue } from "../../../main/observable/value/WritableValue";
 import { IllegalStateException } from "../../../main/util/exception";
 
