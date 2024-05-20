@@ -6,13 +6,13 @@
 import { Dependency } from "./Dependency";
 import type { Value } from "./Value";
 
+/** The active dependencies used to record dependencies when a value is used during a computation. */
+let activeDependencies: Dependencies | null = null;
+
 /**
  * Manages the dependencies of a value which has dependencies (like a {@link ComputedValue}).
  */
 export class Dependencies implements Iterable<Dependency> {
-    /** The active dependencies used to record dependencies when a value is used during a computation. */
-    private static active: Dependencies | null = null;
-
     /** The owner of these dependencies. */
     private readonly owner: Value;
 
@@ -129,7 +129,7 @@ export class Dependencies implements Iterable<Dependency> {
      * @param value - The value to register as dependency.
      */
     public static register(value: Value): void {
-        this.active?.register(value);
+        activeDependencies?.register(value);
     }
 
     /**
@@ -155,28 +155,30 @@ export class Dependencies implements Iterable<Dependency> {
      * @returns The function result.
      */
     public record<T>(fn: () => T): T {
-        const previousDependencies = Dependencies.active;
-        Dependencies.active = this;
+        const previousDependencies = activeDependencies;
+        activeDependencies = this;
         ++this.recordVersion;
         try {
             return fn();
         } finally {
-            Dependencies.active = previousDependencies;
+            activeDependencies = previousDependencies;
             this.removeUnused();
-        }
-    }
-
-    public static untracked<T>(value: Value<T>): T {
-        const previousDependencies = this.active;
-        this.active = null;
-        try {
-            return value.get();
-        } finally {
-            this.active = previousDependencies;
         }
     }
 }
 
+/**
+ * Returns the current value of the given observable value without tracking it as a dependency.
+ *
+ * @param value - The observable value from which to return the current value.
+ * @returns the current value of the given observable value.
+ */
 export function untracked<T>(value: Value<T>): T {
-    return Dependencies.untracked(value);
+    const previousDependencies = activeDependencies;
+    activeDependencies = null;
+    try {
+        return value.get();
+    } finally {
+        activeDependencies = previousDependencies;
+    }
 }
