@@ -88,7 +88,7 @@ describe("SharedObservable", () => {
             expect(producer.closed).toBe(true);
         }
     });
-    it("is restarted on next subscription after error", () => {
+    it("immediately replays error on next subscription after error", () => {
         let producer: SubscriptionObserver<number> | undefined;
         const startup = jest.fn();
         const teardown = jest.fn();
@@ -100,14 +100,18 @@ describe("SharedObservable", () => {
         o.subscribe({ error: () => {} });
         startup.mockReset();
         if (producer != null) {
-            producer.error(new Error("Foo!"));
+            const error = new Error("Foo!");
+            producer.error(error);
             expect(teardown).toHaveBeenCalledOnce();
             teardown.mockReset();
-            o.subscribe(() => {});
-            expect(startup).toHaveBeenCalledOnce();
+            const onError = jest.fn();
+            o.subscribe({ error: onError });
+            expect(startup).not.toHaveBeenCalled();
+            expect(teardown).not.toHaveBeenCalled();
+            expect(onError).toHaveBeenCalledExactlyOnceWith(error);
         }
     });
-    it("is restarted on next subscription after completion", () => {
+    it("immediately replays complete on next subscription after completion", () => {
         let producer: SubscriptionObserver<number> | undefined;
         const startup = jest.fn();
         const teardown = jest.fn();
@@ -122,8 +126,11 @@ describe("SharedObservable", () => {
             producer.complete();
             expect(teardown).toHaveBeenCalledOnce();
             teardown.mockReset();
-            o.subscribe(() => {});
-            expect(startup).toHaveBeenCalledOnce();
+            const onComplete = jest.fn();
+            o.subscribe({ complete: onComplete });
+            expect(startup).not.toHaveBeenCalled();
+            expect(teardown).not.toHaveBeenCalled();
+            expect(onComplete).toHaveBeenCalledOnce();
         }
     });
 });
