@@ -147,3 +147,13 @@ export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): un
 export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown {
     return fns.reduce((result, fn) => fn(result), a);
 }
+
+/**
+ * Checks if given object is a direct function and not an instanceof a class which extends Function.
+ *
+ * @param o - The object to check.
+ * @returns True if object is a direct function, false if it is not a function or an instance of a subclass of Function.
+ */
+export function isDirectFunction<T extends () => void>(o: T | object): o is T {
+    return o.constructor === Function;
+}

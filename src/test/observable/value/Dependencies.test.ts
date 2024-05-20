@@ -1,4 +1,5 @@
-import { Dependencies } from "../../../main/observable/value/Dependencies";
+import { ComputedValue } from "../../../main/observable/value/ComputedValue";
+import { Dependencies, untracked } from "../../../main/observable/value/Dependencies";
 import { WritableValue } from "../../../main/observable/value/WritableValue";
 
 describe("Dependencies", () => {
@@ -163,5 +164,28 @@ describe("Dependencies", () => {
             a.set(4);
             expect(spy).toHaveBeenCalledOnce();
         });
+    });
+});
+
+describe("untracked", () => {
+    it("prevents tracking a value as dependency", () => {
+        const a = new WritableValue(1);
+        const b = new WritableValue(2);
+        const c = new ComputedValue(() => untracked(a) + b());
+        expect(c.get()).toBe(3);
+        a.set(10);
+        expect(c.get()).toBe(3);
+        b.set(100);
+        expect(c.get()).toBe(110);
+    });
+    it("prevents tracking the values in a function as dependency", () => {
+        const a = new WritableValue(1);
+        const b = new WritableValue(2);
+        const c = new ComputedValue(() => untracked(() => a()) + b());
+        expect(c.get()).toBe(3);
+        a.set(10);
+        expect(c.get()).toBe(3);
+        b.set(100);
+        expect(c.get()).toBe(110);
     });
 });

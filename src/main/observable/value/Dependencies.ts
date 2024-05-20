@@ -3,6 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
+import { isDirectFunction } from "../../util/function";
 import { Dependency } from "./Dependency";
 import type { Value } from "./Value";
 
@@ -168,16 +169,21 @@ export class Dependencies implements Iterable<Dependency> {
 }
 
 /**
- * Returns the current value of the given observable value without tracking it as a dependency.
+ * Helper function to access an observable value or run some function which access observable values without tracking them as dependencies.
  *
- * @param value - The observable value from which to return the current value.
- * @returns the current value of the given observable value.
+ * @param arg - An observable value or a function. When an observable value is given then its current value is returned without tracking it as a dependency.
+ *              When a function is given then that function is executed without tracking the referenced values as dependencies.
+ * @returns the current value of the given observable value or the function result.
  */
-export function untracked<T>(value: Value<T>): T {
+export function untracked<T>(arg: Value<T> | (() => T)): T {
     const previousDependencies = activeDependencies;
     activeDependencies = null;
     try {
-        return value.get();
+        if (isDirectFunction(arg)) {
+            return arg();
+        } else {
+            return arg.get();
+        }
     } finally {
         activeDependencies = previousDependencies;
     }
