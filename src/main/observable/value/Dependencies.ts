@@ -54,7 +54,7 @@ export class Dependencies implements Iterable<Dependency> {
 
         // Any change on a dependency must call the getter
         for (const dependency of this.dependencies) {
-            dependency.watch(() => this.owner.get());
+            dependency.watch(() => untracked(this.owner));
         }
     }
 
@@ -111,7 +111,7 @@ export class Dependencies implements Iterable<Dependency> {
 
             // When owner is watched then start watching this new dependency
             if (this.owner.isWatched()) {
-                dependency.watch(() => this.owner.get());
+                dependency.watch(() => untracked(this.owner));
             }
         } else {
             // Update existing dependency
@@ -165,4 +165,18 @@ export class Dependencies implements Iterable<Dependency> {
             this.removeUnused();
         }
     }
+
+    public static untracked<T>(value: Value<T>): T {
+        const previousDependencies = this.active;
+        this.active = null;
+        try {
+            return value.get();
+        } finally {
+            this.active = previousDependencies;
+        }
+    }
+}
+
+export function untracked<T>(value: Value<T>): T {
+    return Dependencies.untracked(value);
 }

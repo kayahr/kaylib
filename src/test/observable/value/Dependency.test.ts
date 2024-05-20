@@ -96,13 +96,17 @@ describe("Dependency", () => {
             const dependency = new Dependency(value);
             const callback = jest.fn();
             dependency.watch(callback);
+            expect(callback).toHaveBeenCalledOnce();
+            callback.mockClear();
             value.set(1);
-            expect(callback).toHaveBeenCalledTimes(1);
+            expect(callback).toHaveBeenCalledOnce();
+            callback.mockClear();
             value.set(2);
             value.set(2);
-            expect(callback).toHaveBeenCalledTimes(2);
+            expect(callback).toHaveBeenCalledOnce();
+            callback.mockClear();
             value.set(1);
-            expect(callback).toHaveBeenCalledTimes(3);
+            expect(callback).toHaveBeenCalledOnce();
         });
         it("throws exception when already watching", () => {
             const value = new WritableValue(0);
@@ -114,10 +118,12 @@ describe("Dependency", () => {
     });
     describe("unwatch", () => {
         it("stops a running value watcher", () => {
-            const value = new WritableValue(0);
+            const value = new WritableValue(2);
             const dependency = new Dependency(value);
             const callback = jest.fn();
             dependency.watch(callback);
+            expect(callback).toHaveBeenCalledOnce();
+            callback.mockClear();
             dependency.unwatch();
             value.set(1);
             expect(callback).not.toHaveBeenCalled();

@@ -106,6 +106,8 @@ describe("WritableValue", () => {
             const value = new WritableValue(1);
             const fn = jest.fn();
             value.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(1);
+            fn.mockClear();
             value.set(2);
             expect(fn).toHaveBeenCalledExactlyOnceWith(2);
         });
@@ -119,6 +121,8 @@ describe("WritableValue", () => {
             const value = new WritableValue(1);
             const fn = jest.fn();
             value.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(1);
+            fn.mockClear();
             value.set(1);
             expect(fn).not.toHaveBeenCalled();
         });
@@ -139,6 +143,8 @@ describe("WritableValue", () => {
             const value = new WritableValue(1);
             const fn = jest.fn();
             value.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(1);
+            fn.mockClear();
             value.update(() => 2);
             expect(fn).toHaveBeenCalledExactlyOnceWith(2);
         });
@@ -152,6 +158,8 @@ describe("WritableValue", () => {
             const value = new WritableValue(1);
             const fn = jest.fn();
             value.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(1);
+            fn.mockClear();
             value.update(v => v * 1);
             expect(fn).not.toHaveBeenCalled();
         });

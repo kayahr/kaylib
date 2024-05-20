@@ -9,12 +9,13 @@ import type { Observer } from "../Observer";
 import { SharedObservable } from "../SharedObservable";
 import type { Subscription } from "../Subscription";
 import type { SubscriptionObserver } from "../SubscriptionObserver";
+import { untracked } from "./Dependencies";
 import type { Value } from "./Value";
 
 /**
  * Base class for observable value implementations providing the value version, observable and callable functionality.
  */
-export abstract class AbstractValue<T = unknown> extends Callable<[], T> implements Value<T>  {
+export abstract class AbstractValue<T = unknown> extends Callable<[], T> implements Value<T> {
     /** Value version which is incremented every time the value actually changes. */
     private version = 0;
 
@@ -45,6 +46,8 @@ export abstract class AbstractValue<T = unknown> extends Callable<[], T> impleme
 
     /** @inheritDoc */
     public subscribe(...args: [ Observer<T> ] | [ (value: T) => void, ((error: Error) => void)?, (() => void)? ]): Subscription {
+        const next = args[0] instanceof Function ? args[0] : args[0].next;
+        next?.(untracked(this));
         return this.observable.subscribe(...args);
     }
 

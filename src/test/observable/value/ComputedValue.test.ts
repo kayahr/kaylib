@@ -126,6 +126,7 @@ describe("ComputedValue", () => {
         const output = new ComputedValue(() => (condition() ? a() : b()));
         const fn = jest.fn();
         output.subscribe(fn);
+        expect(fn).toHaveBeenCalledExactlyOnceWith(2);
         fn.mockClear();
         b.set(3);
         expect(fn).toHaveBeenCalledExactlyOnceWith(3);
