@@ -12,8 +12,7 @@ import { isUnsubscribable } from "./Unsubscribable";
 /**
  * A shared observable is a multicast observable maintaining an internal list of subscribers. The subscriber function
  * is called when the first subscriber subscribes to the observable. The teardown function is called when the last
- * subscriber is unsubscribed. The observable is automatically restarted after completion or error when the next
- * subscriber subscribes to the observable.
+ * subscriber is unsubscribed.
  */
 export class SharedObservable<T> extends Observable<T> {
     public constructor(multicastSubscriber: SubscriberFunction<T>) {
