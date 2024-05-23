@@ -106,36 +106,77 @@ describe("ComputedValue", () => {
             value.subscribe(() => {});
             expect(compute).toHaveBeenCalledOnce();
         });
-    });
-    it("informs subscribers when value changes because a dependency changed", () => {
-        const input = new WritableValue(1);
-        const output = new ComputedValue(() => input() * 2);
-        const fn = jest.fn();
-        output.subscribe(fn);
-        fn.mockClear();
-        input.set(2);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(4);
-        fn.mockClear();
-        input.set(3);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(6);
-    });
-    it("informs subscribers when a value changes which is registered late because of conditional dependencies", () => {
-        const a = new WritableValue(1);
-        const b = new WritableValue(2);
-        const condition = new WritableValue(false);
-        const output = new ComputedValue(() => (condition() ? a() : b()));
-        const fn = jest.fn();
-        output.subscribe(fn);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(2);
-        fn.mockClear();
-        b.set(3);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(3);
-        fn.mockClear();
-        condition.set(true);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(1);
-        fn.mockClear();
-        a.set(4);
-        expect(fn).toHaveBeenCalledExactlyOnceWith(4);
+        it("informs subscribers when value changes because a dependency changed", () => {
+            const input = new WritableValue(1);
+            const output = new ComputedValue(() => input() * 2);
+            const fn = jest.fn();
+            output.subscribe(fn);
+            fn.mockClear();
+            input.set(2);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(4);
+            fn.mockClear();
+            input.set(3);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(6);
+        });
+        it("informs subscribers when a value changes which is registered late because of conditional dependencies", () => {
+            const a = new WritableValue(1);
+            const b = new WritableValue(2);
+            const condition = new WritableValue(false);
+            const output = new ComputedValue(() => (condition() ? a() : b()));
+            const fn = jest.fn();
+            output.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(2);
+            fn.mockClear();
+            b.set(3);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(3);
+            fn.mockClear();
+            condition.set(true);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(1);
+            fn.mockClear();
+            a.set(4);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(4);
+        });
+        it("only sends one notify when two dependencies have changed at once", () => {
+            const a = new WritableValue(1);
+            const b = new ComputedValue(() => a() + 1);
+            const c = new ComputedValue(() => a() + b());
+            const fn = jest.fn();
+            c.subscribe(fn);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(3);
+            fn.mockClear();
+            a.set(2);
+            expect(fn).toHaveBeenCalledExactlyOnceWith(5);
+        });
+        it("only calls compute functions once in c = a + (b = a + 1)", () => {
+            const a = new WritableValue(1);
+            const bFunc = jest.fn(() => a() + 1);
+            const b = new ComputedValue(bFunc);
+            const cFunc = jest.fn(() => a() + b());
+            const c = new ComputedValue(cFunc);
+            c.subscribe(() => {});
+            expect(bFunc).toHaveBeenCalledOnce();
+            expect(cFunc).toHaveBeenCalledOnce();
+            bFunc.mockClear();
+            cFunc.mockClear();
+            a.set(2);
+            expect(bFunc).toHaveBeenCalledOnce();
+            expect(cFunc).toHaveBeenCalledOnce();
+        });
+        it("only calls compute functions once in c = (b = a + 1) + a", () => {
+            const a = new WritableValue(1);
+            const bFunc = jest.fn(() => a() + 1);
+            const b = new ComputedValue(bFunc);
+            const cFunc = jest.fn(() => b() + a());
+            const c = new ComputedValue(cFunc);
+            c.subscribe(() => {});
+            expect(bFunc).toHaveBeenCalledOnce();
+            expect(cFunc).toHaveBeenCalledOnce();
+            bFunc.mockClear();
+            cFunc.mockClear();
+            a.set(2);
+            expect(bFunc).toHaveBeenCalledOnce();
+            expect(cFunc).toHaveBeenCalledOnce();
+        });
     });
     describe("isWatched", () => {
         it("returns false when there is none subscriber", () => {

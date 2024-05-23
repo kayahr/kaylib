@@ -23,6 +23,9 @@ export class Dependencies implements Iterable<Dependency> {
     /** Index mapping values to corresponding dependencies. */
     private readonly index = new Map<Value, Dependency>();
 
+    /** Flag indicating that dependencies are currently validating. During validation other validate calls are ignored. */
+    private validating = false;
+
     /**
      * Increased on each recording and set to all found dependencies so after recording we can easily identify and remove dependencies
      * which still have the old record version.
@@ -89,9 +92,16 @@ export class Dependencies implements Iterable<Dependency> {
      */
     public validate(): boolean {
         let needUpdate = false;
-        for (const dependency of this.index.values()) {
-            if (dependency.validate()) {
-                needUpdate = true;
+        if (!this.validating) {
+            this.validating = true;
+            try {
+                for (const dependency of this.index.values()) {
+                    if (dependency.validate()) {
+                        needUpdate = true;
+                    }
+                }
+            } finally {
+                this.validating = false;
             }
         }
         return needUpdate;
