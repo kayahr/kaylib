@@ -8,7 +8,7 @@ export interface Callable<T extends unknown[] = unknown[], R = unknown> {
 }
 
 /**
- * Class with a function signature calling the function specified passed to the constructor.
+ * Class with a function signature calling the function passed to the constructor.
  */
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class Callable<T extends unknown[] = unknown[], R = unknown> extends Function {
