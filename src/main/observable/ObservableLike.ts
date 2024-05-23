@@ -18,6 +18,10 @@ export interface ObservableLike<T> extends Subscribable<T> {
     subscribe(onNext: (value: T) => void, onError?: (error: Error) => void, onComplete?: () => void):
         Subscription;
 
+    /** @inheritDoc */
+    subscribe(...args: [ Observer<T> ] | [ (value: T) => void, ((error: Error) => void)?, (() => void)? ]):
+        Subscription;
+
     /**
      * Returns itself.
      */

@@ -5,6 +5,7 @@
 
 import { AbstractValue } from "./AbstractValue";
 import { Dependencies } from "./Dependencies";
+import { ReadonlyValue } from "./ReadonlyValue";
 
 /**
  * Observable value which can be set manually.
@@ -21,6 +22,13 @@ export class WritableValue<T = unknown> extends AbstractValue<T> {
     public constructor(value: T) {
         super();
         this.value = value;
+    }
+
+    /**
+     * @returns A readonly value wrapping this value.
+     */
+    public asReadonly(): ReadonlyValue<T> {
+        return new ReadonlyValue(this);
     }
 
     /** @inheritDoc */

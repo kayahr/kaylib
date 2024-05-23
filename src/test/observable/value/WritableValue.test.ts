@@ -1,7 +1,10 @@
 import "@kayahr/jest-matchers";
 
+import { from } from "rxjs";
+
 import { AbstractValue } from "../../../main/observable/value/AbstractValue";
 import { Dependencies } from "../../../main/observable/value/Dependencies";
+import { ReadonlyValue } from "../../../main/observable/value/ReadonlyValue";
 import { writable, WritableValue } from "../../../main/observable/value/WritableValue";
 
 class RecorderValue<T = unknown> extends AbstractValue<T> {
@@ -23,6 +26,15 @@ describe("WritableValue", () => {
     it("can be called as a getter function", () => {
         const value = new WritableValue(20);
         expect(value()).toBe(20);
+    });
+    it("can be observed via RxJS for changes on the wrapped value", () => {
+        const a = new WritableValue(10);
+        const fn = jest.fn();
+        from(a).subscribe(fn);
+        expect(fn).toHaveBeenCalledExactlyOnceWith(10);
+        fn.mockClear();
+        a.set(20);
+        expect(fn).toHaveBeenCalledExactlyOnceWith(20);
     });
     describe("get", () => {
         it("returns the initial value passed to constructor", () => {
@@ -162,6 +174,14 @@ describe("WritableValue", () => {
             fn.mockClear();
             value.update(v => v * 1);
             expect(fn).not.toHaveBeenCalled();
+        });
+    });
+    describe("asReadonly", () => {
+        it("returns readonly wrapper", () => {
+            const value = new WritableValue(2);
+            const ro = value.asReadonly();
+            expect(ro).toBeInstanceOf(ReadonlyValue);
+            expect(ro.get()).toBe(2);
         });
     });
 });
