@@ -10,6 +10,11 @@ import type { ObservableLike } from "../ObservableLike";
  */
 export interface Value<T = unknown> extends ObservableLike<T>  {
     /**
+     * @returns The value.
+     */
+    (): T;
+
+    /**
      * @returns The current value version.
      */
     getVersion(): number;

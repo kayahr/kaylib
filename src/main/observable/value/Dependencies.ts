@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { isDirectFunction } from "../../util/function";
+// import { isDirectFunction } from "../../util/function";
 import { Dependency } from "./Dependency";
 import type { Value } from "./Value";
 
@@ -189,11 +189,7 @@ export function untracked<T>(arg: Value<T> | (() => T)): T {
     const previousDependencies = activeDependencies;
     activeDependencies = null;
     try {
-        if (isDirectFunction(arg)) {
-            return arg();
-        } else {
-            return arg.get();
-        }
+        return arg();
     } finally {
         activeDependencies = previousDependencies;
     }
