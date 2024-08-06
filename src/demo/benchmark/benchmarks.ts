@@ -15,6 +15,7 @@ export * from "./benchmarks/observableBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/sequenceBenchmark";
+export * from "./benchmarks/shiftBenchmark";
 export * from "./benchmarks/stringBenchmark";
 export * from "./benchmarks/stringCreateBenchmark";
 export * from "./benchmarks/unshiftBenchmark";
