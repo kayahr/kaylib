@@ -30,15 +30,15 @@ const test = new Test(1, 2);
 
 export const resultCacheBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "resultCache decorator",
-        "func": (): Point => test.cacheByDecorator()
+        name: "resultCache decorator",
+        func: (): Point => test.cacheByDecorator()
     },
     {
-        "name": "manually cached",
-        "func": (): Point => test.cacheManually()
+        name: "manually cached",
+        func: (): Point => test.cacheManually()
     },
     {
-        "name": "uncached",
-        "func": (): Point => test.uncached()
+        name: "uncached",
+        func: (): Point => test.uncached()
     }
 ];

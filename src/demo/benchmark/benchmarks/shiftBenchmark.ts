@@ -36,15 +36,15 @@ function withBigIntShift(): bigint {
 
 export const shiftBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "Multiply",
-        "func": (): number => withMultiply()
+        name: "Multiply",
+        func: (): number => withMultiply()
     },
     {
-        "name": "32 bit shift",
-        "func": (): number => with32BitShift()
+        name: "32 bit shift",
+        func: (): number => with32BitShift()
     },
     {
-        "name": "big int shift",
-        "func": (): bigint => withBigIntShift()
+        name: "big int shift",
+        func: (): bigint => withBigIntShift()
     }
 ];

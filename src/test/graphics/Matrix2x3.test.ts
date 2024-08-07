@@ -67,7 +67,7 @@ describe("Matrix2x3", () => {
         it("initializes matrix from two column vectors", () => {
             const m = Matrix2x3.fromColumns(
                 new Vector3(1, 2, 3),
-                new Vector3(4, 5, 6),
+                new Vector3(4, 5, 6)
             );
             expect(m.toJSON()).toEqual([
                  1, 2, 3,
@@ -81,7 +81,7 @@ describe("Matrix2x3", () => {
             const m = Matrix2x3.fromRows(
                 new Vector2(1, 4),
                 new Vector2(2, 5),
-                new Vector2(3, 6),
+                new Vector2(3, 6)
             );
             expect(m.toJSON()).toEqual([
                  1, 2, 3,
@@ -163,7 +163,7 @@ describe("Matrix2x3", () => {
         it("returns array with the matrix components", () => {
             expect(new Matrix2x3(
                 1, 2.123456789, 4,
-                5, 7, 8,
+                5, 7, 8
             ).toJSON()).toEqual([
                 1, 2.1234567165374756, 4,
                 5, 7, 8
@@ -198,7 +198,7 @@ describe("Matrix2x3", () => {
 
     describe("equals", () => {
         it("correctly implements the equality contract", () => {
-            expect(new Matrix2x3(1, 2, 3, 4, 5, 6,)).toBeEquatable([
+            expect(new Matrix2x3(1, 2, 3, 4, 5, 6)).toBeEquatable([
                 new Matrix2x3(1, 2, 3, 4, 5, 6)
             ], [
                 new Matrix2x3(0, 2, 3, 4, 5, 6),

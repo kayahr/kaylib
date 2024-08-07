@@ -25,11 +25,11 @@ function weakRef(value: object): number {
 
 export const weakRefBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "weak ref",
-        "func": (): number => weakRef({})
+        name: "weak ref",
+        func: (): number => weakRef({})
     },
     {
-        "name": "direct ref",
-        "func": (): number => directRef({})
+        name: "direct ref",
+        func: (): number => directRef({})
     }
 ];

@@ -3,9 +3,6 @@
  * See LICENSE.md for licensing information.
  */
 
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-
 import { BenchmarkCandidate } from "../../../main/util/benchmark";
 
 const symbolProp = Symbol("symbolProp");
@@ -74,36 +71,36 @@ const o = objects[objects.length >> 1];
 
 export const propertiesBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "symbolProp",
-        "func": (): number => {
+        name: "symbolProp",
+        func: (): number => {
             o.symbolProp = o.symbolProp + 1;
             return o.symbolProp;
         }
     },
     {
-        "name": "hashProp",
-        "func": (): number => {
+        name: "hashProp",
+        func: (): number => {
             o.hashProp = o.hashProp + 1;
             return o.hashProp;
         }
     },
     {
-        "name": "underlineProp",
-        "func": (): number => {
+        name: "underlineProp",
+        func: (): number => {
             o.underlineProp = o.underlineProp + 1;
             return o.underlineProp;
         }
     },
     {
-        "name": "weakMapProp",
-        "func": (): number => {
+        name: "weakMapProp",
+        func: (): number => {
             o.weakMapProp = o.weakMapProp + 1;
             return o.weakMapProp;
         }
     },
     {
-        "name": "javaStyleProp",
-        "func": (): number => {
+        name: "javaStyleProp",
+        func: (): number => {
             o.setJavaStyleProp(o.getJavaStyleProp() + 1);
             return o.getJavaStyleProp();
         }

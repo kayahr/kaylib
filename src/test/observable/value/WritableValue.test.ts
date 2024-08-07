@@ -9,15 +9,19 @@ import { writable, WritableValue } from "../../../main/observable/value/Writable
 
 class RecorderValue<T = unknown> extends AbstractValue<T> {
     public dependencies = new Dependencies(this);
+
     public constructor(public readonly func: () => T) {
         super();
     }
+
     public override isValid(): boolean {
         throw new Error("Method not implemented.");
     }
+
     public override validate(): void {
         throw new Error("Method not implemented.");
     }
+
     public override get(): T {
         return this.dependencies.record(this.func);
     }

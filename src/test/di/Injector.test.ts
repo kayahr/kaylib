@@ -18,10 +18,10 @@ describe("Injector", () => {
             injector.injectValue({ a: 2 }, "test2", "test3");
             injector.injectValue(new Test(3));
             injector.injectValue(42, "test4");
-            expect(injector.getSync<{ a : number }>("test1").a).toBe(1);
-            expect(injector.getSync<{ a : number }>("test2").a).toBe(2);
-            expect(injector.getSync<{ a : number }>("test3").a).toBe(2);
-            expect(injector.getSync<{ a : number }>(Test).a).toBe(3);
+            expect(injector.getSync<{ a: number }>("test1").a).toBe(1);
+            expect(injector.getSync<{ a: number }>("test2").a).toBe(2);
+            expect(injector.getSync<{ a: number }>("test3").a).toBe(2);
+            expect(injector.getSync<{ a: number }>(Test).a).toBe(3);
             expect(injector.getSync<number>("test4")).toBe(42);
         });
     });
@@ -155,6 +155,7 @@ describe("Injector", () => {
         it("throws error when type construction is asynchronous", () => {
             class Dep {
                 public foo = "bar";
+
                 @injectable()
                 public static async create(): Promise<Dep> {
                     return Promise.resolve(new Dep());
@@ -177,11 +178,13 @@ describe("Injector", () => {
         it("creates new asynchronous instance of class with asynchronous dependency", async () => {
             class Dep {
                 public foo = "bar";
+
                 @injectable()
                 public static async create(): Promise<Dep> {
                     return Promise.resolve(new Dep());
                 }
             }
+
             @injectable()
             class Test {
                 public constructor(public dep: Dep) {}

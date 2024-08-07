@@ -42,7 +42,7 @@ function withReturnFalse(value: number): number {
 function withException(value: number): number {
     try {
         return throwExceptionWhenValueIs0(value);
-    } catch (e) {
+    } catch {
         return 0;
     }
 }
@@ -50,22 +50,22 @@ function withException(value: number): number {
 function withFixedException(value: number): number {
     try {
         return throwFixedExceptionWhenValueIs0(value);
-    } catch (e) {
+    } catch {
         return 0;
     }
 }
 
 export const exceptionBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "return false",
-        "func": (): number => withReturnFalse(Math.round(Math.random() * 100000))
+        name: "return false",
+        func: (): number => withReturnFalse(Math.round(Math.random() * 100000))
     },
         {
-        "name": "throw exception",
-        "func": (): number => withException(Math.round(Math.random() * 100000))
+        name: "throw exception",
+        func: (): number => withException(Math.round(Math.random() * 100000))
     },
         {
-        "name": "throw fixed exception",
-        "func": (): number => withFixedException(Math.round(Math.random() * 100000))
+        name: "throw fixed exception",
+        func: (): number => withFixedException(Math.round(Math.random() * 100000))
     }
 ];

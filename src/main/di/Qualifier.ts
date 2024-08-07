@@ -91,7 +91,6 @@ export function isQualifier(obj: unknown): obj is Qualifier {
  */
 function createNewQualifier<T>(check: (type: Injectable) => boolean, name: string): Qualifier<T> {
     const qualifierInstance = Object.assign(
-        // eslint-disable-next-line @typescript-eslint/ban-types
         (target: object, propertyKey: string | symbol, index: number) => {
             const paramQualifiers = Reflect.getMetadata("di:qualifiers", target, propertyKey) as Qualifier[] ?? [];
             paramQualifiers[index] = qualifierInstance as Qualifier<T>;

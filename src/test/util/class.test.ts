@@ -15,6 +15,7 @@ describe("class", () => {
         it("returns name of a class with private constructor", () => {
             class PrivateTest {
                 public static foo = 23;
+
                 private constructor() {}
             }
             expect(getClassName(PrivateTest)).toBe("PrivateTest");
@@ -38,6 +39,7 @@ describe("class", () => {
             class Test {
                 private constructor() {
                 }
+
                 public static create(): Test {
                     return new Test();
                 }
@@ -81,6 +83,7 @@ describe("class", () => {
         it("returns the super class of a class with private constructor", () => {
             class Base {
                 protected constructor() {}
+
                 public static create(): Base {
                     return new Base();
                 }
@@ -89,6 +92,7 @@ describe("class", () => {
                 private constructor() {
                     super();
                 }
+
                 public static override create(): Test {
                     return new Test();
                 }

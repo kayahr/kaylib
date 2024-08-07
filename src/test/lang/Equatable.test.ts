@@ -7,6 +7,7 @@ import { Equatable, isEqual, isEquatable } from "../../main/lang/Equatable";
 
 class Test1 implements Equatable {
     public constructor(public readonly value: number) {}
+
     public equals(other: unknown): boolean {
         return isEqual(this, other, other => this.value === other.value);
     }
@@ -22,6 +23,7 @@ class Test3 extends Test2 {
     public constructor(value: number) {
         super(value);
     }
+
     public override equals(other: unknown): boolean {
         return isEqual(this, other, other => this.value === other.value);
     }

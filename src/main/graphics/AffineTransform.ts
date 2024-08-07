@@ -34,6 +34,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get a(): number {
         return this[0];
     }
+
     public set a(v: number) {
         this[0] = v;
     }
@@ -42,6 +43,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get b(): number {
         return this[1];
     }
+
     public set b(v: number) {
         this[1] = v;
     }
@@ -50,6 +52,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get c(): number {
         return this[2];
     }
+
     public set c(v: number) {
         this[2] = v;
     }
@@ -58,6 +61,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get d(): number {
         return this[3];
     }
+
     public set d(v: number) {
         this[3] = v;
     }
@@ -66,6 +70,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get e(): number {
         return this[4];
     }
+
     public set e(v: number) {
         this[4] = v;
     }
@@ -74,6 +79,7 @@ export class AffineTransform extends Matrix3x2 implements Cloneable<AffineTransf
     public get f(): number {
         return this[5];
     }
+
     public set f(v: number) {
         this[5] = v;
     }

@@ -7,6 +7,7 @@ import { Comparable, compare, isComparable } from "../../main/lang/Comparable";
 
 class Test implements Comparable<Test> {
     public constructor(public readonly value: number) {}
+
     public compareTo(other: Test): number {
         return this.value - other.value;
     }

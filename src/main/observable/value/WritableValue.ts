@@ -71,7 +71,6 @@ export class WritableValue<T = unknown> extends AbstractValue<T> {
     }
 }
 
-
 /**
  * Shortcut function to create a {@link WritableValue}.
  *

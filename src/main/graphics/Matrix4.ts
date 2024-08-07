@@ -128,6 +128,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m11(): number {
         return this[0];
     }
+
     public set m11(v: number) {
         this[0] = v;
     }
@@ -136,6 +137,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m12(): number {
         return this[1];
     }
+
     public set m12(v: number) {
         this[1] = v;
     }
@@ -144,6 +146,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m13(): number {
         return this[2];
     }
+
     public set m13(v: number) {
         this[2] = v;
     }
@@ -152,6 +155,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m14(): number {
         return this[3];
     }
+
     public set m14(v: number) {
         this[3] = v;
     }
@@ -160,6 +164,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m21(): number {
         return this[4];
     }
+
     public set m21(v: number) {
         this[4] = v;
     }
@@ -168,6 +173,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m22(): number {
         return this[5];
     }
+
     public set m22(v: number) {
         this[5] = v;
     }
@@ -176,6 +182,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m23(): number {
         return this[6];
     }
+
     public set m23(v: number) {
         this[6] = v;
     }
@@ -184,6 +191,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m24(): number {
         return this[7];
     }
+
     public set m24(v: number) {
         this[7] = v;
     }
@@ -192,6 +200,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m31(): number {
         return this[8];
     }
+
     public set m31(v: number) {
         this[8] = v;
     }
@@ -200,6 +209,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m32(): number {
         return this[9];
     }
+
     public set m32(v: number) {
         this[9] = v;
     }
@@ -208,6 +218,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m33(): number {
         return this[10];
     }
+
     public set m33(v: number) {
         this[10] = v;
     }
@@ -216,6 +227,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m34(): number {
         return this[11];
     }
+
     public set m34(v: number) {
         this[11] = v;
     }
@@ -224,6 +236,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m41(): number {
         return this[12];
     }
+
     public set m41(v: number) {
         this[12] = v;
     }
@@ -232,6 +245,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m42(): number {
         return this[13];
     }
+
     public set m42(v: number) {
         this[13] = v;
     }
@@ -240,6 +254,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m43(): number {
         return this[14];
     }
+
     public set m43(v: number) {
         this[14] = v;
     }
@@ -248,6 +263,7 @@ export class Matrix4 extends AbstractMatrix<4, 4> implements SquareMatrix<4>, Se
     public get m44(): number {
         return this[15];
     }
+
     public set m44(v: number) {
         this[15] = v;
     }

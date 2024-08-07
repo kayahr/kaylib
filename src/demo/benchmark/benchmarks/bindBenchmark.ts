@@ -43,27 +43,27 @@ function functionWithFixedParamsAndCall(func: SumFunc, scope: Scope): SumFunc {
 
 export const bindBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "direct method",
-        "func": (): number => scope.sum(1, 2)
+        name: "direct method",
+        func: (): number => scope.sum(1, 2)
     },
     {
-        "name": "bind",
-        "func": (): number => bindMethod(scope.sum, scope)(1, 2)
+        name: "bind",
+        func: (): number => bindMethod(scope.sum, scope)(1, 2)
     },
     {
-        "name": "dynamic apply",
-        "func": (): number => functionWithDynamicParamsAndApply(scope.sum, scope)(1, 2)
+        name: "dynamic apply",
+        func: (): number => functionWithDynamicParamsAndApply(scope.sum, scope)(1, 2)
     },
     {
-        "name": "dynamic call",
-        "func": (): number => functionWithDynamicParamsAndCall(scope.sum, scope)(1, 2)
+        name: "dynamic call",
+        func: (): number => functionWithDynamicParamsAndCall(scope.sum, scope)(1, 2)
     },
     {
-        "name": "fixed apply",
-        "func": (): number => functionWithFixedParamsAndApply(scope.sum, scope)(1, 2)
+        name: "fixed apply",
+        func: (): number => functionWithFixedParamsAndApply(scope.sum, scope)(1, 2)
     },
     {
-        "name": "fixed call",
-        "func": (): number => functionWithFixedParamsAndCall(scope.sum, scope)(1, 2)
+        name: "fixed call",
+        func: (): number => functionWithFixedParamsAndCall(scope.sum, scope)(1, 2)
     }
 ];

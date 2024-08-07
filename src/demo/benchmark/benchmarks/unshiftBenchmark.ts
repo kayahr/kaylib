@@ -25,11 +25,11 @@ function withReversePush(): number {
 
 export const unshiftBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "unshift",
-        "func": (): number => withUnshift()
+        name: "unshift",
+        func: (): number => withUnshift()
     },
     {
-        "name": "push+reverse",
-        "func": (): number => withReversePush()
+        name: "push+reverse",
+        func: (): number => withReversePush()
     }
 ];

@@ -57,11 +57,11 @@ function withKaylib(): number {
 
 export const observableBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "Kaylib",
-        "func": (): number => withKaylib()
+        name: "Kaylib",
+        func: (): number => withKaylib()
     },
     {
-        "name": "RxJS",
-        "func": (): number => withRxJS()
+        name: "RxJS",
+        func: (): number => withRxJS()
     }
 ];

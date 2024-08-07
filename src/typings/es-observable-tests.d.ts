@@ -9,6 +9,6 @@ declare module "es-observable-tests" {
             passed: number;
             failed: number;
             errored: number;
-        }
+        };
     }>;
 }

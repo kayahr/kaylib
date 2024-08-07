@@ -66,8 +66,8 @@ describe("FastWeakMap", () => {
     });
 
     it("doesn't prevent keys from being garbage collected", async () => {
-        let o: Object | null = {};
-        const map = new WeakMap<Object, number>();
+        let o: object | null = {};
+        const map = new WeakMap<object, number>();
         map.set(o, 2);
         const ref = new WeakRef(o);
         o = null;

@@ -16,6 +16,7 @@ import { RGBAColor } from "./RGBAColor";
 const RGBColorHTMLRegExp = /^\s*#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})\s*$/i;
 
 /** Regular expression to parse RGB color in CSS format. */
+// eslint-disable-next-line regexp/no-super-linear-backtracking
 const RGBColorCSSRegExp = /^\s*rgb\s*\(\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*[\s,]\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*[\s,]\s*([+-]?\d*(?:\.\d+)?(?:e[+-]?\d+)?%?)\s*\)\s*$/i;
 
 /**

@@ -36,8 +36,5 @@ export interface Subscribable<T> {
  * @return True if object is a subscribable, false if not.
  */
 export function isSubscribable(object: unknown): object is Subscribable<unknown> {
-    // This is a false positive from eslint. subscribe is an overloaded method and only some usages of it are
-    // deprecated, not all of them.
-    // eslint-disable-next-line deprecation/deprecation
     return object != null && typeof (object as Subscribable<unknown>).subscribe === "function";
 }

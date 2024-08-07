@@ -9,7 +9,7 @@ import { IllegalArgumentException } from "./exception";
  * Regular expression used to split words in a string. Words can be separated by dashes, underscores or white-spaces.
  * Switching from lower-case to upper-case also separates words.
  */
-const WORD_SPLIT_REGEXP = /(?:(?<=[a-z])(?=[A-Z])|[-_\s]+)/;
+const WORD_SPLIT_REGEXP = /(?<=[a-z])(?=[A-Z])|[-_\s]+/;
 
 /**
  * Splits the given string into a list of words which can then be concatenated in various forms (dash case, snake case,

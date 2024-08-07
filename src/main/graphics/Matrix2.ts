@@ -98,6 +98,7 @@ export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Se
     public get m11(): number {
         return this[0];
     }
+
     public set m11(v: number) {
         this[0] = v;
     }
@@ -106,6 +107,7 @@ export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Se
     public get m12(): number {
         return this[1];
     }
+
     public set m12(v: number) {
         this[1] = v;
     }
@@ -114,6 +116,7 @@ export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Se
     public get m21(): number {
         return this[2];
     }
+
     public set m21(v: number) {
         this[2] = v;
     }
@@ -122,6 +125,7 @@ export class Matrix2 extends AbstractMatrix<2, 2> implements SquareMatrix<2>, Se
     public get m22(): number {
         return this[3];
     }
+
     public set m22(v: number) {
         this[3] = v;
     }

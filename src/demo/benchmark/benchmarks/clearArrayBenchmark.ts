@@ -38,15 +38,15 @@ function splice(): number[] {
 
 export const clearArrayBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "createNewArray",
-        "func": (): number[] => createNewArray()
+        name: "createNewArray",
+        func: (): number[] => createNewArray()
     },
     {
-        "name": "resetLength",
-        "func": (): number[] => resetLength()
+        name: "resetLength",
+        func: (): number[] => resetLength()
     },
     {
-        "name": "splice",
-        "func": (): number[] => splice()
+        name: "splice",
+        func: (): number[] => splice()
     }
 ];

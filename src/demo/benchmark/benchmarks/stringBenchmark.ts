@@ -27,19 +27,19 @@ function template(): string {
 
 export const stringBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "toString()",
-        "func": (): string => toString()
+        name: "toString()",
+        func: (): string => toString()
     },
     {
-        "name": "\"\"+s",
-        "func": (): string => concat()
+        name: "\"\"+s",
+        func: (): string => concat()
     },
     {
-        "name": "String()",
-        "func": (): string => cast()
+        name: "String()",
+        func: (): string => cast()
     },
     {
-        "name": "Template",
-        "func": (): string => template()
+        name: "Template",
+        func: (): string => template()
     }
 ];

@@ -11,8 +11,8 @@ import { normalizePath } from "../util/file";
 import { isNodeJS, isWindows } from "../util/runtime";
 
 /** The regular expression used to parse an URI string. */
-const URI_REGEXP
-    = /^(?:([a-z][a-z0.9]*):)?((?:\/\/((?:(.*?)@)?([a-z0-9.-]*)(?::([0-9]+))?))?(.*?)(?:\?(.*?))?)(?:#(.*))?$/i;
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const URI_REGEXP = /^(?:([a-z][a-z0.9]*):)?((?:\/\/((?:(.*?)@)?([a-z0-9.-]*)(?::(\d+))?))?(.*?)(?:\?(.*?))?)(?:#(.*))?$/i;
 
 /** Thrown when URI could not be parsed. */
 export class URISyntaxException extends Exception {}

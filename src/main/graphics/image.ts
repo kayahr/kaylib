@@ -48,7 +48,7 @@ export function assertImageBitmapSupport(): void {
 /** Set of options for loading an image. */
 export interface LoadImageOptions {
     /** The cross-origin attribute used for image loading. */
-    crossOrigin?: "anonymous" | "use-credentials"
+    crossOrigin?: "anonymous" | "use-credentials";
 }
 
 /**

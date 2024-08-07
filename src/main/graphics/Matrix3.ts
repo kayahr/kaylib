@@ -130,6 +130,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m11(): number {
         return this[0];
     }
+
     public set m11(v: number) {
         this[0] = v;
     }
@@ -138,6 +139,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m12(): number {
         return this[1];
     }
+
     public set m12(v: number) {
         this[1] = v;
     }
@@ -146,6 +148,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m13(): number {
         return this[2];
     }
+
     public set m13(v: number) {
         this[2] = v;
     }
@@ -154,6 +157,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m21(): number {
         return this[3];
     }
+
     public set m21(v: number) {
         this[3] = v;
     }
@@ -162,6 +166,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m22(): number {
         return this[4];
     }
+
     public set m22(v: number) {
         this[4] = v;
     }
@@ -170,6 +175,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m23(): number {
         return this[5];
     }
+
     public set m23(v: number) {
         this[5] = v;
     }
@@ -178,6 +184,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m31(): number {
         return this[6];
     }
+
     public set m31(v: number) {
         this[6] = v;
     }
@@ -186,6 +193,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m32(): number {
         return this[7];
     }
+
     public set m32(v: number) {
         this[7] = v;
     }
@@ -194,6 +202,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public get m33(): number {
         return this[8];
     }
+
     public set m33(v: number) {
         this[8] = v;
     }
@@ -563,6 +572,7 @@ export class Matrix3 extends AbstractMatrix<3, 3> implements SquareMatrix<3>, Se
     public getTranslationY(): number {
         return this[7];
     }
+
     /**
      * Scales this matrix by the specified factor.
      *

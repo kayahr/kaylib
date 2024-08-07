@@ -13,7 +13,7 @@
  * created symbol property in the key object may influence other code which iterates over symbol properties with
  * `Object.getPropertyDescriptors()` or `Object.getPropertySymbols()`. If this bothers you, use the standard WeakMap.
  */
-export class FastWeakMap<K extends Object, V> implements WeakMap<K, V> {
+export class FastWeakMap<K extends object, V> implements WeakMap<K, V> {
     /** The property used by this weak map to store values inside the key object. */
     private readonly property = Symbol("fastWeakMapProperty");
 

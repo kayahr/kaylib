@@ -49,7 +49,7 @@ export function createJoinedCacheKey(values: unknown[]): string {
 export const cacheResult = createMethodDecorator((target, propertyKey, descriptor:
         TypedPropertyDescriptor<() => any>) => {
     const origMethod = target[propertyKey];
-    descriptor.value = function() {
+    descriptor.value = function () {
         const origValue = origMethod.call(this) as unknown;
         Object.defineProperty(this, propertyKey, {
             configurable: true,

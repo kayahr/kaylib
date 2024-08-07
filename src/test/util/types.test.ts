@@ -205,6 +205,7 @@ describe("types", () => {
     describe("Parameter", () => {
         it("obtains specific indexed parameter of a function type", () => {
             const func = (a: number, b: string, c: boolean): string => b + c + a;
+            expect(func).toBeDefined();
             const a: Parameter<typeof func, 0> = 1;
             const b: Parameter<typeof func, 1> = "test";
             const c: Parameter<typeof func, 2> = true;

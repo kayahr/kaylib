@@ -9,6 +9,7 @@ class Test implements Disableable {
     public isDisabled(): boolean {
         return false;
     }
+
     public disable(): void {
     }
 }

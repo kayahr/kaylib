@@ -16,15 +16,15 @@ describe("qualifier", () => {
         @injectable()
         class Test {
             public constructor(
-                @qualifier("one")
+                @(qualifier("one"))
                 public a: number,
-                @qualifier("number").and("two")
+                @(qualifier("number").and("two"))
                 public b: number,
-                @qualifier("number").andNot("two")
+                @(qualifier("number").andNot("two"))
                 public c: number[],
-                @qualifier("number").and(createQualifier("two").or("three"))
+                @(qualifier("number").and(createQualifier("two").or("three")))
                 public d: number[],
-                @qualifier("none").orNot("three").and("number")
+                @(qualifier("none").orNot("three").and("number"))
                 public e: number[]
             ) {}
         }
@@ -40,7 +40,6 @@ describe("qualifier", () => {
         interface Foo {
             foo(): number;
         }
-
 
         @injectable("foo1")
         class Foo1 implements Foo {

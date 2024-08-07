@@ -38,31 +38,31 @@ function classic(): number[] {
 
 export const sequenceBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "A.from(A(s).keys())",
-        "func": (): number[] => fromKeys()
+        name: "A.from(A(s).keys())",
+        func: (): number[] => fromKeys()
     },
     {
-        "name": "A.from(A(size)).map()",
-        "func": (): number[] => mappedFrom()
+        name: "A.from(A(size)).map()",
+        func: (): number[] => mappedFrom()
     },
     {
-        "name": "A.from(A(s),map)",
-        "func": (): number[] => directMappedFrom()
+        name: "A.from(A(s),map)",
+        func: (): number[] => directMappedFrom()
     },
     {
-        "name": "[...A(s).keys()]",
-        "func": (): number[] => spreadKeys()
+        name: "[...A(s).keys()]",
+        func: (): number[] => spreadKeys()
     },
     {
-        "name": "[...A(s).map()]",
-        "func": (): number[] => mappedSpread()
+        name: "[...A(s).map()]",
+        func: (): number[] => mappedSpread()
     },
     {
-        "name": "classic",
-        "func": (): number[] => classic()
+        name: "classic",
+        func: (): number[] => classic()
     },
     {
-        "name": "range()",
-        "func": (): number[] => range(size)
+        name: "range()",
+        func: (): number[] => range(size)
     }
 ];

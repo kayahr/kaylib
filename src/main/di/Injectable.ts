@@ -62,16 +62,13 @@ export class Injectable<T = unknown> {
         if (typeof qualifier === "string") {
             return this.names.includes(qualifier);
         } else {
-            let type = this.type as Constructor;
+            let type: Function | null = this.type;
             while (type != null) {
                 if (type === qualifier) {
                     return true;
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const nextPrototype = Object.getPrototypeOf(type.prototype);
-                // eslint-disable-next-line max-len
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/strict-boolean-expressions,@typescript-eslint/no-unsafe-member-access
-                type = nextPrototype && nextPrototype.constructor;
+                const nextPrototype = Object.getPrototypeOf(type.prototype) as Function | undefined;
+                type = nextPrototype?.constructor ?? null;
             }
             return false;
         }

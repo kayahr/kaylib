@@ -47,11 +47,11 @@ function withSignal(): number {
 
 export const eventBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "RxJS",
-        "func": (): number => withRxJS()
+        name: "RxJS",
+        func: (): number => withRxJS()
     },
     {
-        "name": "Signal",
-        "func": (): number => withSignal()
+        name: "Signal",
+        func: (): number => withSignal()
     }
 ];

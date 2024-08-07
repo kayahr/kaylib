@@ -31,7 +31,7 @@ describe("decorator", () => {
         });
         it("can specify the target type", () => {
             const testDecorator = createMethodDecorator((target: Test, propertyKey, descriptor) => {
-                descriptor.value = function(a: number) {
+                descriptor.value = function (a: number) {
                     return this.bar();
                 };
             });
@@ -52,7 +52,7 @@ describe("decorator", () => {
             const testDecorator = createMethodDecorator((target, propertyKey,
                     descriptor: TypedPropertyDescriptor<() => number>) => {
                 const origMethod = target[propertyKey];
-                descriptor.value = function() {
+                descriptor.value = function () {
                     return origMethod.call(this) * 2;
                 };
             });
@@ -67,7 +67,7 @@ describe("decorator", () => {
         });
         it("supports optional decorator parameter", () => {
             const testDecorator = createMethodDecorator((target, propertyKey, descriptor, param?: string) => {
-                descriptor.value = function() {
+                descriptor.value = function () {
                     if (param == null) {
                         return "no param";
                     } else {
@@ -80,6 +80,7 @@ describe("decorator", () => {
                 public foo(): string {
                     return "foo";
                 }
+
                 @testDecorator("baz")
                 public bar(): string {
                     return "bar";

@@ -42,6 +42,7 @@ export abstract class AbstractValue<T = unknown> extends Callable<[], T> impleme
     }
 
     public subscribe(observer: Observer<T>): Subscription;
+
     public subscribe(next: (value: T) => void, error?: (error: Error) => void, complete?: () => void): Subscription;
 
     /** @inheritDoc */

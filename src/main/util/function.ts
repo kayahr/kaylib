@@ -46,7 +46,7 @@ export function bind<T extends unknown[], R>(func: (...args: T) => R, scope?: ob
     const functionId = funcMap[functionIdKey] ?? (funcMap[functionIdKey] = Symbol("function id"));
 
     // Create, cache and return bound function
-    return scopeMap[functionId] ?? (scopeMap[functionId] = ((...args: T): R => func.apply(scope, args)));
+    return scopeMap[functionId] ?? (scopeMap[functionId] = (...args: T): R => func.apply(scope, args));
 }
 
 function callWeak<T extends unknown[], R>(funcRef: WeakRef<(...args: T) => R>): (...args: T) => R {
@@ -84,7 +84,7 @@ export function weakBind<T extends unknown[], R>(func: (...args: T) => R, scope?
     return boundMap[weakFunctionKey] ?? (boundMap[weakFunctionKey] = callWeak(new WeakRef(bound)));
 }
 
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/max-len */
 export function pipe<A extends unknown[], B>(a: (...a: A) => B): (...a: A) => B;
 export function pipe<A extends unknown[], B, C>(a: (...a: A) => B, b: (a: B) => C): (...a: A) => C;
 export function pipe<A extends unknown[], B, C, D>(a: (...a: A) => B, b: (a: B) => C, c: (a: C) => D): (...a: A) => D;
@@ -110,13 +110,13 @@ export function pipe<A extends unknown[], B, C, D, E, F, G, H, I, J, K, L, M, N,
 export function pipe<A extends unknown[], B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X>(a: (...a: A) => B, b: (a: B) => C, c: (a: C) => D, d: (a: D) => E, e: (a: E) => F, f: (a: F) => G, g: (a: G) => H, h: (a: H) => I, i: (a: I) => J, j: (a: J) => K, k: (a: K) => L, l: (a: L) => M, m: (a: M) => N, n: (a: N) => O, o: (a: O) => P, p: (a: P) => Q, q: (a: Q) => R, r: (a: R) => S, s: (a: S) => T, t: (a: T) => U, u: (a: U) => V, v: (a: V) => W, w: (a: W) => X): (...a: A) => X;
 export function pipe<A extends unknown[], B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y>(a: (...a: A) => B, b: (a: B) => C, c: (a: C) => D, d: (a: D) => E, e: (a: E) => F, f: (a: F) => G, g: (a: G) => H, h: (a: H) => I, i: (a: I) => J, j: (a: J) => K, k: (a: K) => L, l: (a: L) => M, m: (a: M) => N, n: (a: N) => O, o: (a: O) => P, p: (a: P) => Q, q: (a: Q) => R, r: (a: R) => S, s: (a: S) => T, t: (a: T) => U, u: (a: U) => V, v: (a: V) => W, w: (a: W) => X, x: (a: X) => Y): (...a: A) => Y;
 export function pipe<A extends unknown[], B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>(a: (...a: A) => B, b: (a: B) => C, c: (a: C) => D, d: (a: D) => E, e: (a: E) => F, f: (a: F) => G, g: (a: G) => H, h: (a: H) => I, i: (a: I) => J, j: (a: J) => K, k: (a: K) => L, l: (a: L) => M, m: (a: M) => N, n: (a: N) => O, o: (a: O) => P, p: (a: P) => Q, q: (a: Q) => R, r: (a: R) => S, s: (a: S) => T, t: (a: T) => U, u: (a: U) => V, v: (a: V) => W, w: (a: W) => X, x: (a: X) => Y, y: (a: Y) => Z): (...a: A) => Z;
-/* eslint-enable max-len */
+/* eslint-enable @stylistic/max-len */
 export function pipe(fn: (...a: unknown[]) => unknown, ...fns: Array<(a: unknown) => unknown>): unknown;
 export function pipe(fn: (...a: unknown[]) => unknown, ...fns: Array<(a: unknown) => unknown>): unknown {
     return (...arg: unknown[]) => fns.reduce((result, fn) => fn(result), fn(...arg));
 }
 
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/max-len */
 export function pipeWith<A>(a: A): A;
 export function pipeWith<A, B>(a: A, b: (a: A) => B): B;
 export function pipeWith<A, B, C>(a: A, b: (a: A) => B, c: (a: B) => C): C;
@@ -142,7 +142,8 @@ export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S
 export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W): W;
 export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X): X;
 export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X, y: (a: X) => Y): Y;
-export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X, y: (a: X) => Y, z: (a: Y) => Z): Z;/* eslint-enable max-len */
+export function pipeWith<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>(a: A, b: (a: A) => B, c: (a: B) => C, d: (a: C) => D, e: (a: D) => E, f: (a: E) => F, g: (a: F) => G, h: (a: G) => H, i: (a: H) => I, j: (a: I) => J, k: (a: J) => K, l: (a: K) => L, m: (a: L) => M, n: (a: M) => N, o: (a: N) => O, p: (a: O) => P, q: (a: P) => Q, r: (a: Q) => R, s: (a: R) => S, t: (a: S) => T, u: (a: T) => U, v: (a: U) => V, w: (a: V) => W, x: (a: W) => X, y: (a: X) => Y, z: (a: Y) => Z): Z;
+/* eslint-enable @stylistic/max-len */
 export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown;
 export function pipeWith(a: unknown, ...fns: Array<(a: unknown) => unknown>): unknown {
     return fns.reduce((result, fn) => fn(result), a);

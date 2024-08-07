@@ -12,9 +12,11 @@ interface TestJSON {
 
 class Test implements Serializable<TestJSON> {
     public constructor(public readonly value: number) {}
+
     public toJSON(): TestJSON {
         return { value: this.value };
     }
+
     public static fromJSON(json: TestJSON): Test {
         return new Test(json.value);
     }

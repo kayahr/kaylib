@@ -69,7 +69,7 @@ export interface ReadonlyMatrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 
 /**
  * Interface for a matrix.
  */
-export interface Matrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4,>
+export interface Matrix<Columns extends 2 | 3 | 4, Rows extends 2 | 3 | 4>
         extends ReadonlyMatrix<Columns, Rows>, MatrixLike<Columns, Rows> {
     [index: number]: number;
 

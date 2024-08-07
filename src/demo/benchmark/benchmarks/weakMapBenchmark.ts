@@ -57,19 +57,19 @@ function customSymbolProperty(value: object): number {
 
 export const weakMapBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "weak map",
-        "func": (): number => weakMap({})
+        name: "weak map",
+        func: (): number => weakMap({})
     },
     {
-        "name": "fast weak map",
-        "func": (): number => fastWeakMap({})
+        name: "fast weak map",
+        func: (): number => fastWeakMap({})
     },
     {
-        "name": "custom named property",
-        "func": (): number => customNamedProperty({})
+        name: "custom named property",
+        func: (): number => customNamedProperty({})
     },
     {
-        "name": "custom symbol property",
-        "func": (): number => customSymbolProperty({})
+        name: "custom symbol property",
+        func: (): number => customSymbolProperty({})
     }
 ];

@@ -49,19 +49,19 @@ function customSymbolProperty(value: object): void {
 
 export const weakSetBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "weak set",
-        "func": (): void => weakSet({})
+        name: "weak set",
+        func: (): void => weakSet({})
     },
     {
-        "name": "fast weak set",
-        "func": (): void => fastWeakSet({})
+        name: "fast weak set",
+        func: (): void => fastWeakSet({})
     },
     {
-        "name": "custom named property",
-        "func": (): void => customNamedProperty({})
+        name: "custom named property",
+        func: (): void => customNamedProperty({})
     },
     {
-        "name": "custom symbol property",
-        "func": (): void => customSymbolProperty({})
+        name: "custom symbol property",
+        func: (): void => customSymbolProperty({})
     }
 ];

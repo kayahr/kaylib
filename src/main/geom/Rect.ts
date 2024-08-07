@@ -149,7 +149,7 @@ export class Rect implements RectLike, SizeLike, Serializable<RectJSON>, Equatab
      * @return The parsed rectangle.
      */
     public static fromString(s: string): Rect {
-        const values = s.trim().split(/(?:[^-+0-9.]|(?=[+-]))+/s, 4).map(value => +value);
+        const values = s.trim().split(/(?:[^-+0-9.]|(?=[+-]))+/, 4).map(value => +value);
         if (values.length !== 4 || values.some(value => isNaN(value))) {
             throw new IllegalArgumentException("Invalid rectangle string: " + s);
         }

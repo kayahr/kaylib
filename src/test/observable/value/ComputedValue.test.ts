@@ -65,7 +65,7 @@ describe("ComputedValue", () => {
         it("does not call compute function again after a transient dependency has changed but the change does not affect the value", () => {
             const a = new WritableValue(1);
             const odd = new ComputedValue(() => (a() & 1) === 1);
-            const compute = jest.fn(() => (odd() ? "odd" : "even"));
+            const compute = jest.fn(() => odd() ? "odd" : "even");
             const parity = new ComputedValue(compute);
             expect(parity.get()).toBe("odd");
             expect(compute).toHaveBeenCalledOnce();
@@ -89,7 +89,7 @@ describe("ComputedValue", () => {
             const a = new WritableValue(1);
             const b = new WritableValue(2);
             const condition = new WritableValue(false);
-            const output = new ComputedValue(() => (condition() ? a() : b()));
+            const output = new ComputedValue(() => condition() ? a() : b());
             expect(output.get()).toBe(2);
             b.set(3);
             expect(output.get()).toBe(3);
@@ -122,7 +122,7 @@ describe("ComputedValue", () => {
             const a = new WritableValue(1);
             const b = new WritableValue(2);
             const condition = new WritableValue(false);
-            const output = new ComputedValue(() => (condition() ? a() : b()));
+            const output = new ComputedValue(() => condition() ? a() : b());
             const fn = jest.fn();
             output.subscribe(fn);
             expect(fn).toHaveBeenCalledExactlyOnceWith(2);

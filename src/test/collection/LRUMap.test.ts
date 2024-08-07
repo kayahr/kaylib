@@ -28,7 +28,6 @@ describe("LRUMap", () => {
 
     describe("toString", () => {
         it("returns the correct class name", () => {
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             expect(new LRUMap(10).toString()).toBe("[object LRUMap]");
         });
     });

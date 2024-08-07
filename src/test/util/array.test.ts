@@ -114,7 +114,7 @@ describe("array", () => {
         it("calls callback with specified this argument", () => {
             const a = [ 1, 2, 3, 4, 5, 6 ];
             const ctx = { foo: 23 };
-            const v = findLast(a, function(v) {
+            const v = findLast(a, function (v) {
                 expect(this).toBe(ctx);
                 expect(this.foo).toBe(23);
                 return v < 3;
@@ -124,7 +124,7 @@ describe("array", () => {
         it("works with typed arrays", () => {
             const a = new Uint8Array([ 1, 2, 3, 4, 5, 6 ]);
             const ctx = { foo: 23 };
-            const v = findLast(a, function(value, index, array) {
+            const v = findLast(a, function (value, index, array) {
                 expect(array).toBe(a);
                 expect(array).toBeInstanceOf(Uint8Array);
                 expect(array.buffer).toBeInstanceOf(ArrayBuffer);
@@ -163,7 +163,7 @@ describe("array", () => {
         it("calls callback with specified this argument", () => {
             const a = [ 1, 2, 3, 4, 5, 6 ];
             const ctx = { foo: 23 };
-            const v = findLastIndex(a, function(v) {
+            const v = findLastIndex(a, function (v) {
                 expect(this).toBe(ctx);
                 expect(this.foo).toBe(23);
                 return v < 3;
@@ -173,7 +173,7 @@ describe("array", () => {
         it("works with typed arrays", () => {
             const a = new Uint8Array([ 1, 2, 3, 4, 5, 6 ]);
             const ctx = { foo: 23 };
-            const v = findLastIndex(a, function(value, index, array) {
+            const v = findLastIndex(a, function (value, index, array) {
                 expect(array).toBe(a);
                 expect(array).toBeInstanceOf(Uint8Array);
                 expect(array.buffer).toBeInstanceOf(ArrayBuffer);

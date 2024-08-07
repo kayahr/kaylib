@@ -37,15 +37,15 @@ function withMathMax(a: number, b: number): number {
 
 export const maxBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "If",
-        "func": (): number => withIf(Math.random(), Math.random())
+        name: "If",
+        func: (): number => withIf(Math.random(), Math.random())
     },
     {
-        "name": "Ternary",
-        "func": (): number => withTernary(Math.random(), Math.random())
+        name: "Ternary",
+        func: (): number => withTernary(Math.random(), Math.random())
     },
     {
-        "name": "Math.max",
-        "func": (): number => withMathMax(Math.random(), Math.random())
+        name: "Math.max",
+        func: (): number => withMathMax(Math.random(), Math.random())
     }
 ];

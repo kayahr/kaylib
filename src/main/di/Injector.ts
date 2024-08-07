@@ -99,6 +99,7 @@ export class Injector {
     }
 
     public createSync<T>(type: Constructor<T>): T;
+
     public createSync<T>(type: Class<T>, factory: (...args: any[]) => T): T;
 
     /**

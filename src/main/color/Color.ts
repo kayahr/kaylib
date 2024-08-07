@@ -58,7 +58,7 @@ export namespace Color {
         for (const implementation of [ RGBColor, RGBAColor ]) {
             try {
                 return implementation.fromString(s);
-            } catch (e) {
+            } catch {
                 // Incompatible implementation, continue searching
             }
         }

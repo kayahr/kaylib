@@ -26,15 +26,15 @@ function arrayFrom(): number[] {
 
 export const cloneArrayBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "slice",
-        "func": (): number[] => slice()
+        name: "slice",
+        func: (): number[] => slice()
     },
     {
-        "name": "spread",
-        "func": (): number[] => spread()
+        name: "spread",
+        func: (): number[] => spread()
     },
     {
-        "name": "arrayFrom",
-        "func": (): number[] => arrayFrom()
+        name: "arrayFrom",
+        func: (): number[] => arrayFrom()
     }
 ];

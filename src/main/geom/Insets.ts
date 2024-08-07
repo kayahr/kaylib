@@ -65,7 +65,7 @@ export class Insets implements InsetsLike, Serializable<InsetsJSON>, Equatable {
      * @return The parsed insets.
      */
     public static fromString(s: string): Insets {
-        const values = s.trim().split(/[^-+0-9.]+/s, 4).filter(value => value !== "").map(value => +value);
+        const values = s.trim().split(/[^-+0-9.]+/, 4).filter(value => value !== "").map(value => +value);
         if (values.length < 1 || values.some(value => isNaN(value))) {
             throw new IllegalArgumentException("Invalid insets string: " + s);
         }

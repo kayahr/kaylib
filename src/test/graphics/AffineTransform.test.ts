@@ -198,7 +198,7 @@ describe("AffineTransform", () => {
             expect(new AffineTransform(
                 1, 2.123456789,
                 4, 5,
-                7, 8,
+                7, 8
             ).toJSON()).toEqual([
                 1, 2.1234567165374756,
                 4, 5,
@@ -234,7 +234,7 @@ describe("AffineTransform", () => {
 
     describe("equals", () => {
         it("correctly implements the equality contract", () => {
-            expect(new AffineTransform(1, 2, 3, 4, 5, 6,)).toBeEquatable([
+            expect(new AffineTransform(1, 2, 3, 4, 5, 6)).toBeEquatable([
                 new AffineTransform(1, 2, 3, 4, 5, 6)
             ], [
                 new AffineTransform(0, 2, 3, 4, 5, 6),

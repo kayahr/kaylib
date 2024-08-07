@@ -47,19 +47,19 @@ function iterateForEach(): number {
 
 export const iterateBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "for of (Array)",
-        "func": (): number => iterateForOfArray()
+        name: "for of (Array)",
+        func: (): number => iterateForOfArray()
     },
     {
-        "name": "for of (Set)",
-        "func": (): number => iterateForOfSet()
+        name: "for of (Set)",
+        func: (): number => iterateForOfSet()
     },
     {
-        "name": "for",
-        "func": (): number => iterateFor()
+        name: "for",
+        func: (): number => iterateFor()
     },
     {
-        "name": "forEach",
-        "func": (): number => iterateForEach()
+        name: "forEach",
+        func: (): number => iterateForEach()
     }
 ];

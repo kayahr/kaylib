@@ -87,6 +87,7 @@ describe("object", () => {
         it("supports equatable objects", () => {
             class Test implements Equatable {
                 public constructor(public readonly value: number) {}
+
                 public equals(other: unknown): boolean {
                     return isEqual(this, other, other => this.value === other.value);
                 }

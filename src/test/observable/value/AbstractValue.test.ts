@@ -4,11 +4,14 @@ class TestValue<T = unknown> extends AbstractValue<T> {
     public constructor(public value: T, init?: () => void, tearDown?: () => void) {
         super(init, tearDown);
     }
+
     public override isValid(): boolean {
         return true;
     }
+
     public override validate(): void {
     }
+
     public override get(): T {
         return this.value;
     }

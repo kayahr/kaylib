@@ -59,7 +59,7 @@ export class Point implements PointLike, Serializable<PointJSON>, Equatable {
      * @return The parsed point.
      */
     public static fromString(s: string): Point {
-        const values = s.trim().split(/[^-+0-9.]+/s, 2).map(value => +value);
+        const values = s.trim().split(/[^-+0-9.]+/, 2).map(value => +value);
         if (values.length !== 2 || values.some(value => isNaN(value))) {
             throw new IllegalArgumentException("Invalid point string: " + s);
         }

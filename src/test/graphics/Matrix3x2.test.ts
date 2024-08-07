@@ -168,7 +168,7 @@ describe("Matrix3x2", () => {
             expect(new Matrix3x2(
                 1, 2.123456789,
                 4, 5,
-                7, 8,
+                7, 8
             ).toJSON()).toEqual([
                 1, 2.1234567165374756,
                 4, 5,
@@ -204,7 +204,7 @@ describe("Matrix3x2", () => {
 
     describe("equals", () => {
         it("correctly implements the equality contract", () => {
-            expect(new Matrix3x2(1, 2, 3, 4, 5, 6,)).toBeEquatable([
+            expect(new Matrix3x2(1, 2, 3, 4, 5, 6)).toBeEquatable([
                 new Matrix3x2(1, 2, 3, 4, 5, 6)
             ], [
                 new Matrix3x2(0, 2, 3, 4, 5, 6),

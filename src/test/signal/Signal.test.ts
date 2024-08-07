@@ -53,6 +53,7 @@ describe("Signal", () => {
         it("can emit signal to methods", () => {
             class Test {
                 public value: number = 0;
+
                 public setValue(value: number): void {
                     this.value = value;
                 }

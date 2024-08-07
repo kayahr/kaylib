@@ -13,7 +13,7 @@
  * created symbol property in the key object may influence other code which iterates over symbol properties with
  * `Object.getPropertyDescriptors()` or `Object.getPropertySymbols()`. If this bothers you, use the standard WeakSet.
  */
-export class FastWeakSet<T extends Object> implements WeakSet<T> {
+export class FastWeakSet<T extends object> implements WeakSet<T> {
     /** The property used by this weak set to store values inside the key object. */
     private readonly property = Symbol("fastWeakSetProperty");
 

@@ -52,7 +52,7 @@ describe("FastWeakSet", () => {
     });
 
     it("doesn't prevent values from being garbage collected", async () => {
-        let o: Object | null = {};
+        let o: object | null = {};
         const set = new WeakSet();
         set.add(o);
         const ref = new WeakRef(o);

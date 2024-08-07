@@ -144,7 +144,7 @@ export function permute<T>(values: T[]): T[][] {
     const numIndices = indices.length;
 
     const result: T[][] = [];
-    do {
+    while (true) {
         result.push(indices.map(v => values[v]));
         let i = numIndices - 2;
         while (indices[i] >= indices[i + 1]) {
@@ -161,7 +161,7 @@ export function permute<T>(values: T[]): T[][] {
         for (let k = 0; k < length; k++) {
             swap(indices, i + 1 + k, numIndices - 1 - k);
         }
-    } while (true);
+    }
 }
 
 /**

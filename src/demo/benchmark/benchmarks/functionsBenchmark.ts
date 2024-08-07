@@ -39,19 +39,19 @@ const test = new Test();
 
 export const functionsBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "nested function",
-        "func": (): number => nested(1, 2)
+        name: "nested function",
+        func: (): number => nested(1, 2)
     },
     {
-        "name": "nested arrow function",
-        "func": (): number => nestedArrow(1, 2)
+        name: "nested arrow function",
+        func: (): number => nestedArrow(1, 2)
     },
     {
-        "name": "not nested function",
-        "func": (): number => notNested(1, 2)
+        name: "not nested function",
+        func: (): number => notNested(1, 2)
     },
     {
-        "name": "static method",
-        "func": (): number => test.staticMethod(1, 2)
+        name: "static method",
+        func: (): number => test.staticMethod(1, 2)
     }
 ];

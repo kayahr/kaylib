@@ -34,15 +34,15 @@ function concat(): string {
 
 export const stringCreateBenchmark: BenchmarkCandidate[] = [
     {
-        "name": "append()",
-        "func": (): string => append()
+        name: "append()",
+        func: (): string => append()
     },
     {
-        "name": "join",
-        "func": (): string => join()
+        name: "join",
+        func: (): string => join()
     },
     {
-        "name": "concat",
-        "func": (): string => concat()
+        name: "concat",
+        func: (): string => concat()
     }
 ];

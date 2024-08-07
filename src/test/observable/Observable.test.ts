@@ -64,6 +64,7 @@ describe("Observable", () => {
         const values: number[] = [];
         class MyObserver {
             private readonly factor: number = 2;
+
             public next(value: number): void {
                 values.push(value * this.factor);
             }
@@ -84,6 +85,7 @@ describe("Observable", () => {
         const values: number[] = [];
         class MyObserver {
             private readonly factor: number = 3;
+
             public complete(): void {
                 values.push(this.factor);
             }
@@ -103,6 +105,7 @@ describe("Observable", () => {
         const values: number[] = [];
         class MyObserver {
             private readonly factor: number = 4;
+
             public error(e: Error): void {
                 values.push(+e.message * this.factor);
             }
@@ -124,6 +127,7 @@ describe("Observable", () => {
         it("creates observable from a subscribable object", () => {
             class Test implements Subscribable<number> {
                 public onNext: ((value: number) => void) | null | undefined = null;
+
                 public subscribe(observer?: null | Observer<number> | ((value: number) => void)): Unsubscribable {
                     if (observer != null) {
                         this.onNext = (observer instanceof Function) ? observer : observer.next?.bind(observer);

@@ -5,14 +5,17 @@ import { IllegalStateException } from "../../../main/util/exception";
 
 class TestValue<T = unknown> extends AbstractValue<T> {
     public valid = true;
+
     public override isValid(): boolean {
         return this.valid;
     }
-    public override validate(): void {
-    }
+
+    public override validate(): void {}
+
     public override get(): T {
         throw new Error("Method not implemented.");
     }
+
     public override incrementVersion(): void {
         super.incrementVersion();
     }
