@@ -13,6 +13,7 @@ export * from "./benchmarks/iterateBenchmark";
 export * from "./benchmarks/maxBenchmark";
 export * from "./benchmarks/observableBenchmark";
 export * from "./benchmarks/propertiesBenchmark";
+export * from "./benchmarks/pushArrayBenchmark";
 export * from "./benchmarks/resultCacheBenchmark";
 export * from "./benchmarks/sequenceBenchmark";
 export * from "./benchmarks/shiftBenchmark";
